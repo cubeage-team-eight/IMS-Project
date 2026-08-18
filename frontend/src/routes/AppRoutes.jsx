@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { ROUTES } from "./routeConstants";
 import Home from "../pages/home/Home";
 
+// import Login from "../pages/auth/Login";
 import Login from "../pages/auth/Login";
 import Sign_up from "../pages/auth/Sign_up";
 import RoleSelection from "../pages/auth/RoleSelection";
@@ -28,6 +29,7 @@ import RoleSelection from "../pages/auth/RoleSelection";
 // import MarkAttendance from "../pages/student/MarkAttendance";
 // import MyTasks from "../pages/student/MyTasks";
 
+// import CollegeDashboard from "../pages/college/Dashboard";
 // import CollegeDashboard from "i../pages/college/Dashboard";
 // import NominatedStudents from "../pages/college/NominatedStudents";
 
