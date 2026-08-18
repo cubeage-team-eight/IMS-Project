@@ -3,6 +3,9 @@ import { ROUTES } from "./routeConstants";
 import Home from "../pages/home/Home";
 
 // import Login from "../pages/auth/Login";
+import Login from "../pages/auth/Login";
+import Sign_up from "../pages/auth/Sign_up";
+import RoleSelection from "../pages/auth/RoleSelection";
 // import ForgotPassword from "../pages/auth/ForgotPassword";
 // import ResetPassword from "../pages/auth/ResetPassword";
 
@@ -27,6 +30,7 @@ import Home from "../pages/home/Home";
 // import MyTasks from "../pages/student/MyTasks";
 
 // import CollegeDashboard from "../pages/college/Dashboard";
+// import CollegeDashboard from "i../pages/college/Dashboard";
 // import NominatedStudents from "../pages/college/NominatedStudents";
 
 // import ProtectedRoute from "./ProtectedRoute";
@@ -37,6 +41,9 @@ const AppRoutes = () => {
     <Routes>
       {/* Public Routes */}
       <Route path={ROUTES.HOME} element={<Home />} />
+      <Route path={ROUTES.AUTH.LOGIN} element={<RoleSelection />} />
+      <Route path={`${ROUTES.AUTH.LOGIN}/:role`} element={<Login />} />
+      <Route path={`${ROUTES.AUTH.SIGN_UP}/:role`} element={<Sign_up />} />
     </Routes>
   );
 };
