@@ -8,8 +8,8 @@ function Home() {
   return (
     <>
       <Hero /> 
-      <User />
       <Objective />
+      <User />
       <TechStack />
     </>
   )

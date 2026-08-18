@@ -39,7 +39,7 @@ import RoleSelection from "../pages/auth/RoleSelection";
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* Public Routes */} 
       <Route path={ROUTES.HOME} element={<Home />} />
       <Route path={ROUTES.AUTH.LOGIN} element={<RoleSelection />} />
       <Route path={`${ROUTES.AUTH.LOGIN}/:role`} element={<Login />} />
