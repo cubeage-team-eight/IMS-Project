@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { ROUTES } from "./routeConstants";
 import Home from "../pages/home/Home";
 
-// import Login from "../pages/auth/Login";
+import Login from "../pages/auth/Login";
 // import ForgotPassword from "../pages/auth/ForgotPassword";
 // import ResetPassword from "../pages/auth/ResetPassword";
 
@@ -38,8 +38,7 @@ const AppRoutes = () => {
     <Routes>
       {/* Public Routes */}
       <Route path={ROUTES.HOME} element={<Home />} />
-
-         
+    
     </Routes>
   );
 };

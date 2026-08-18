@@ -2,7 +2,7 @@ import React from 'react'
 
 function Objective() {
   return (
-    <div>Objective Komal Kadam </div>
+    <div>Objective</div>
   )
 }
 
