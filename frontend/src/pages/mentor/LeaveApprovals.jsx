@@ -1,6 +1,6 @@
 import React from 'react'
 
-function LeaveApprovals() {
+const LeaveApprovals = () => {
   return (
     <div>LeaveApprovals</div>
   )

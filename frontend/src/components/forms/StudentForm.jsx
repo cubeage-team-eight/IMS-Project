@@ -1,6 +1,6 @@
 import React from 'react'
 
-function StudentForm() {
+const StudentForm = () => {
   return (
     <div>StudentForm</div>
   )

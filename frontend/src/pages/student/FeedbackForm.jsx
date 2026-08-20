@@ -1,6 +1,6 @@
 import React from 'react'
 
-function FeedbackForm() {
+const FeedbackForm = () => {
   return (
     <div>FeedbackForm</div>
   )

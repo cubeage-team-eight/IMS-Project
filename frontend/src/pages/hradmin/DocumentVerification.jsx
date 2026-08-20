@@ -1,6 +1,6 @@
 import React from 'react'
 
-function DocumentVerification() {
+const DocumentVerification = () => {
   return (
     <div>DocumentVerification</div>
   )

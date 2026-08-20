@@ -1,6 +1,6 @@
 import React from 'react'
 
-function SystemAnalytics() {
+const SystemAnalytics = () => {
   return (
     <div>SystemAnalytics</div>
   )

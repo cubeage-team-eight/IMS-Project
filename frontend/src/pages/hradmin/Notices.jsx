@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Notices() {
+const Notices = () => {
   return (
     <div>Notices</div>
   )

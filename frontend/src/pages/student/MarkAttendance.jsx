@@ -1,6 +1,6 @@
 import React from 'react'
 
-function MarkAttendance() {
+const MarkAttendance = () => {
   return (
     <div>MarkAttendance</div>
   )

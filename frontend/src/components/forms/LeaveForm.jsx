@@ -1,6 +1,6 @@
 import React from 'react'
 
-function LeaveForm() {
+const LeaveForm = () => {
   return (
     <div>LeaveForm</div>
   )

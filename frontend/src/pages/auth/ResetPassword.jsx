@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ResetPassword() {
+const ResetPassword = () => {
   return (
     <div>ResetPassword</div>
   )

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function DailyReportSubmit() {
+const DailyReportSubmit = () => {
   return (
     <div>DailyReportSubmit</div>
   )

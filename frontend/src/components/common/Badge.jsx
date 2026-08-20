@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Badge() {
+const Badge = () => {
   return (
     <div>Badge</div>
   )

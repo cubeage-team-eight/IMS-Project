@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ReviewDailyReports() {
+const ReviewDailyReports = () => {
   return (
     <div>ReviewDailyReports</div>
   )

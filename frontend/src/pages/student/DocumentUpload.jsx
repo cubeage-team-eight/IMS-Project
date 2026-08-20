@@ -1,6 +1,6 @@
 import React from 'react'
 
-function DocumentUpload() {
+const DocumentUpload = () => {
   return (
     <div>DocumentUpload</div>
   )

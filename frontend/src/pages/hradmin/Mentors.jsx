@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Mentors() {
+const Mentors = () => {
   return (
     <div>Mentors</div>
   )

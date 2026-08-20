@@ -1,6 +1,6 @@
 import React from 'react'
 
-function PerformanceEvaluation() {
+const PerformanceEvaluation = () => {
   return (
     <div>PerformanceEvaluation</div>
   )

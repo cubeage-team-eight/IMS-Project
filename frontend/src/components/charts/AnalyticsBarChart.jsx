@@ -1,6 +1,6 @@
 import React from 'react'
 
-function AnalyticsBarChart() {
+const AnalyticsBarChart = () => {
   return (
     <div>AnalyticsBarChart</div>
   )

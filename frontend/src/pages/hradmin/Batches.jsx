@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Batches() {
+const Batches = () => {
   return (
     <div>Batches</div>
   )

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ProgressTracking() {
+const ProgressTracking = () => {
   return (
     <div>ProgressTracking</div>
   )

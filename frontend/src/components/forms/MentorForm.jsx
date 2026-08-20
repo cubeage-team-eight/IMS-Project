@@ -1,9 +1,10 @@
 import React from 'react'
 
-function MentorForm() {
+const MentorForm = () => {
   return (
     <div>MentorForm</div>
   )
 }
 
 export default MentorForm
+

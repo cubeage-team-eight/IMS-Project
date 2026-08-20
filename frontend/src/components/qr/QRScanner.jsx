@@ -1,6 +1,6 @@
 import React from 'react'
 
-function QRScanner() {
+const QRScanner = () => {
   return (
     <div>QRScanner</div>
   )

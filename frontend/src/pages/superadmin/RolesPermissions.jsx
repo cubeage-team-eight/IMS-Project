@@ -1,6 +1,6 @@
 import React from 'react'
 
-function RolesPermissions() {
+const RolesPermissions = () => {
   return (
     <div>RolesPermissions</div>
   )

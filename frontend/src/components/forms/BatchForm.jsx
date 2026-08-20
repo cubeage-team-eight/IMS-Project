@@ -1,6 +1,6 @@
 import React from 'react'
 
-function BatchForm() {
+const BatchForm = () => {
   return (
     <div>BatchForm</div>
   )

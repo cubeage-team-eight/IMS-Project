@@ -1,6 +1,6 @@
 import React from 'react'
 
-function AttendanceChart() {
+const AttendanceChart = () => {
   return (
     <div>AttendanceChart</div>
   )

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function TaskForm() {
+const TaskForm = () => {
   return (
     <div>TaskForm</div>
   )

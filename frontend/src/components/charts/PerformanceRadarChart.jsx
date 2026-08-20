@@ -1,6 +1,6 @@
 import React from 'react'
 
-function PerformanceRadarChart() {
+const PerformanceRadarChart = () => {
   return (
     <div>PerformanceRadarChart</div>
   )

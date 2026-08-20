@@ -1,6 +1,6 @@
 import React from 'react'
 
-function AttendanceOverview() {
+const AttendanceOverview = () => {
   return (
     <div>AttendanceOverview</div>
   )

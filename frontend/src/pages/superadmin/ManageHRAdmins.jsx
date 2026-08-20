@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ManageHRAdmins() {
+const ManageHRAdmins = () => {
   return (
     <div>ManageHRAdmins</div>
   )

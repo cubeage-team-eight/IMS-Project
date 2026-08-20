@@ -1,6 +1,6 @@
 import React from 'react'
 
-function RoleBasedRoute() {
+const RoleBasedRoute = () => {
   return (
     <div>RoleBasedRoute</div>
   )

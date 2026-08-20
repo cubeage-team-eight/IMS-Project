@@ -1,6 +1,6 @@
 import React from 'react'
 
-function QRCodeDisplay() {
+const QRCodeDisplay = () => {
   return (
     <div>QRCodeDisplay</div>
   )

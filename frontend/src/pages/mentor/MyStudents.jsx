@@ -1,6 +1,7 @@
+
 import React from 'react'
 
-function MyStudents() {
+const MyStudents = () => {
   return (
     <div>MyStudents</div>
   )

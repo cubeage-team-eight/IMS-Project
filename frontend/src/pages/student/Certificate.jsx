@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Certificate() {
+const Certificate = () => {
   return (
     <div>Certificate</div>
   )

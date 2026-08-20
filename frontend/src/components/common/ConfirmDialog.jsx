@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ConfirmDialog() {
+const ConfirmDialog = () => {
   return (
     <div>ConfirmDialog</div>
   )

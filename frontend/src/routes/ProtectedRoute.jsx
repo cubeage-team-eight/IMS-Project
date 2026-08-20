@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ProtectedRoute() {
+const ProtectedRoute = () => {
   return (
     <div>ProtectedRoute</div>
   )

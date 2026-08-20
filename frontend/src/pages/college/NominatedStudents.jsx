@@ -1,6 +1,6 @@
 import React from 'react'
 
-function NominatedStudents() {
+const NominatedStudents = () => {
   return (
     <div>NominatedStudents</div>
   )

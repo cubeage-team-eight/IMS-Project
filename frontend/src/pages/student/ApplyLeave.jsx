@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ApplyLeave() {
+const ApplyLeave = () => {
   return (
     <div>ApplyLeave</div>
   )
