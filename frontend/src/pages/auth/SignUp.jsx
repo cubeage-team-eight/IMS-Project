@@ -8,7 +8,7 @@ import AuthBrandingPanel from '../../components/common/AuthBrandingPanel'
 import AuthInput from '../../components/common/AuthInput'
 import AuthSubmitButton from '../../components/common/AuthSubmitButton'
 
-function Sign_up() {
+function SignUp() {
   const { role } = useParams()
   const navigate = useNavigate()
   const currentRole = roleConfig[role] || roleConfig['student-intern']
