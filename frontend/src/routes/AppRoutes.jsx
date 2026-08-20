@@ -5,7 +5,7 @@ import Home from "../pages/home/Home";
 
 // ================= AUTH =================
 import Login from "../pages/auth/Login";
-import Sign_up from "../pages/auth/Sign_up";
+import SignUp from "../pages/auth/Signup";
 import RoleSelection from "../pages/auth/RoleSelection";
 
 // ================= LAYOUTS =================
@@ -45,8 +45,8 @@ const AppRoutes = () => {
       />
 
       <Route
-        path={`${ROUTES.AUTH.SIGN_UP}/:role`}
-        element={<Sign_up />}
+        path={`${ROUTES.AUTH.SIGNUP}/:role`}
+        element={<SignUp />}
       />
 
       {/* ================= SUPER ADMIN ================= */}
@@ -92,5 +92,7 @@ const AppRoutes = () => {
     </Routes>
   );
 };
+
+
 
 export default AppRoutes;
