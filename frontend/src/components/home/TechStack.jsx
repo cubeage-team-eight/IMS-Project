@@ -1,9 +1,7 @@
 import { useState } from "react";
 
 
-
 const NAV_ITEMS = ["Overview", "Objectives", "User Roles", "Modules", "Workflow", "Tech Stack"];
-
 
 const techStack = [
   { category: "Frontend", technologies: ["React.js", "Tailwind CSS", "Material UI", "Axios", "React Router"] },
