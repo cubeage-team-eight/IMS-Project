@@ -21,7 +21,11 @@ import HRAdminDashboard from "../pages/hradmin/Dashboard";
 import CollegeDashboard from "../pages/college/Dashboard";
 import StudentDashboard from "../pages/student/Dashboard";
 import MentorDashboard from "../pages/mentor/Dashboard";
-
+import Colleges from "../pages/hradmin/Colleges";
+import Mentors from "../pages/hradmin/Mentors";
+import Batches from "../pages/hradmin/Batches";
+import Students from "../pages/hradmin/Students";
+import DocumentVerification from "../pages/hradmin/DocumentVerification";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -63,7 +67,28 @@ const AppRoutes = () => {
           path={ROUTES.HR_ADMIN.DASHBOARD}
           element={<HRAdminDashboard />}
         />
+        <Route
+          path={ROUTES.HR_ADMIN.COLLEGES}
+          element={<Colleges/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.MENTORS}
+          element={<Mentors/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.BATCHES}
+          element={<Batches/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.STUDENTS}
+          element={<Students/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.DOCUMENT_VERIFICATION}
+          element={<DocumentVerification/>}
+        />
       </Route>
+      
 
       {/* ================= COLLEGE COORDINATOR ================= */}
       <Route element={<CollegeCoordinatorLayout />}>
