@@ -17,6 +17,13 @@ import MentorLayout from "../layouts/MentorLayout";
 
 // ================= DASHBOARDS =================
 import SuperAdminDashboard from "../pages/superadmin/Dashboard";
+import ManageHRAdmins from "../pages/superadmin/ManageHRAdmins";
+import RolesPermissions from "../pages/superadmin/RolesPermissions";
+import SystemAnalytics from "../pages/superadmin/SystemAnalytics";
+import ActivityLog from "../pages/superadmin/activitylog";
+import SystemSettings from "../pages/superadmin/systemsettings";
+
+
 import HRAdminDashboard from "../pages/hradmin/Dashboard";
 import CollegeDashboard from "../pages/college/Dashboard";
 import StudentDashboard from "../pages/student/Dashboard";
@@ -55,6 +62,30 @@ const AppRoutes = () => {
           path={ROUTES.SUPER_ADMIN.DASHBOARD}
           element={<SuperAdminDashboard />}
         />
+       <Route
+         path="/superadmin/hr-admins"
+         element={<ManageHRAdmins />}
+       />
+
+      <Route
+        path="/superadmin/roles"
+        element={<RolesPermissions />}
+      />
+
+      <Route
+        path="/superadmin/analytics"
+        element={<SystemAnalytics />}
+      />
+
+      <Route
+        path="/superadmin/activity"
+        element={<ActivityLog />}
+      />
+
+      <Route
+        path="/superadmin/settings"
+        element={<SystemSettings />}
+      />
       </Route>
 
       {/* ================= HR ADMIN ================= */}
