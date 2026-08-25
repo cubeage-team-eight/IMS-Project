@@ -1,5 +1,6 @@
 import React from 'react'
 import {useState} from 'react'
+import {X} from 'lucide-react'
 const mentors = [
     {
         initials: "AP",
@@ -57,9 +58,10 @@ const FieldLabel = ({ children }) => (
 const inputClasses =
   "w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition";
 
-function MentorRegistrationForm({ onSubmit }) {
+  
+function MentorRegistrationForm({ onSubmit, onCancle}) {
   const [form, setForm] = useState(initialState);
- 
+  
   const handleChange = (field) => (e) =>
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
  
@@ -71,11 +73,9 @@ function MentorRegistrationForm({ onSubmit }) {
   };
  
   return (
+    
     <div className="w-full mt-4 mx-auto rounded-2xl bg-white shadow-sm ring-1 ring-slate-100 p-5 sm:p-8">
-      <h2 className="text-base sm:text-lg font-semibold text-slate-900 mb-6">
-        Mentor Registration Form
-      </h2>
- 
+    <div>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
           <div>
@@ -174,6 +174,7 @@ function MentorRegistrationForm({ onSubmit }) {
           </button>
         </div>
       </form>
+      </div>
     </div>
   );
 }
@@ -247,16 +248,48 @@ function Mentorlist() {
 }
 
 function Mentors() {
+     const [isOpen, setIsOpen] = useState(false);
+  const [mentors, setMentors] = useState([]);
+ 
+  const closeModal = () => setIsOpen(false);
+ 
+  const handleRegister = (formData) => {
+    setMentors((prev) => [...prev, formData]);
+    closeModal();
+    console.log(formData)
+    
+  };
     return (
         
         <div className=" p-6 min-h-screen">
             <div className='flex justify-between items-center'>
                 <h1 className='text-xl font-medium'>Mentor Management</h1>
-                <button className='bg-blue-500 text-white px-4 py-2 rounded-md'> + Add Mentor</button>
+                <button className='bg-blue-500 text-white px-4 py-2 rounded-md' onClick={()=>setIsOpen(true)}> 
+                    + Add Mentor
+                </button>
             </div>
             
             <Mentorlist />
-            <MentorRegistrationForm/>
+            {isOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onClick={closeModal}
+        >
+          <div
+            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-4 shadow-lg relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={closeModal}
+              className="absolute right-6 top-2 rounded-md p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 z-10"
+            >
+              <X size={14} />
+            </button>
+            <MentorRegistrationForm onSubmit={handleRegister} onCancel={closeModal} />
+          </div>
+        </div>
+      )}
+            
         </div>
     )
 }

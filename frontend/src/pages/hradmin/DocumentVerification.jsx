@@ -54,8 +54,8 @@ function PendingDocuments() {
   };
 
   return (
-    <div className="min-h-screen w-full  p-3 sm:p-6">
-      <div className="mx-auto max-w-4xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div className="min-h-screen w-full mt-4">
+      <div className="mx-auto overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         {/* Header */}
         <div className="flex flex-wrap items-center gap-3 border-b border-slate-200  px-4 py-4 sm:px-6">
           <span className="text-xs font-semibold tracking-wider text-slate-400">

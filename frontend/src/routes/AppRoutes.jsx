@@ -26,6 +26,9 @@ import Mentors from "../pages/hradmin/Mentors";
 import Batches from "../pages/hradmin/Batches";
 import Students from "../pages/hradmin/Students";
 import DocumentVerification from "../pages/hradmin/DocumentVerification";
+import AttendanceOverview from "../pages/hradmin/AttendanceOverview";
+import Certificates from "../pages/hradmin/Certificates";
+import Reports from "../pages/hradmin/Reports";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -86,6 +89,18 @@ const AppRoutes = () => {
         <Route
           path={ROUTES.HR_ADMIN.DOCUMENT_VERIFICATION}
           element={<DocumentVerification/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.ATTENDANCE}
+          element={<AttendanceOverview/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.CERTIFICATES}
+          element={<Certificates/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.REPORTS}
+          element={<Reports/>}
         />
       </Route>
       
