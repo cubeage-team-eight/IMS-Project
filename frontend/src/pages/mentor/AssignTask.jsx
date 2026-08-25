@@ -1,6 +1,6 @@
 import React from 'react'
 
-function AssignTask() {
+const AssignTask = () => {
   return (
     <div>AssignTask</div>
   )
