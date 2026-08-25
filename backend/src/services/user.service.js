@@ -10,7 +10,6 @@ export const createUser = async ({
   password,
   roleId,
 }) => {
-  // Check if user already exists
   const existingUser = await User.findOne({
     where: { email },
   });
@@ -19,17 +18,14 @@ export const createUser = async ({
     throw new Error("User already exists with this email");
   }
 
-  // Check role
   const role = await Role.findByPk(roleId);
 
   if (!role) {
     throw new Error("Invalid role");
   }
 
-  // Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Create user
   const user = await User.create({
     name,
     email,
@@ -37,14 +33,7 @@ export const createUser = async ({
     roleId,
   });
 
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    roleId: user.roleId,
-    role: role.name,
-    isActive: user.isActive,
-  };
+  return user;
 };
 
 // =========================
