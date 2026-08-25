@@ -140,7 +140,7 @@ const StatCard = ({ title, value, subtitle, valueColor }) => (
     <p className="text-[15px] text-slate-500">{title}</p>
 
     <p
-  className={`mt-3 text-[35px] font-bold leading-none ${valueColor}`}
+  className={`mt-3 text-[32px] font-bold leading-none ${valueColor}`}
   style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
 >
   {value}

@@ -83,7 +83,7 @@ const SystemAnalytics = () => {
                 <p className="text-[15px] text-slate-500">{s.title}</p>
 
                <p
-                  className={`mt-2 text-[44px] font-bold leading-none ${s.valueColor}`}
+                  className={`mt-2 text-[32px] font-bold leading-none ${s.valueColor}`}
                 >
                   {s.value}
                 </p>
