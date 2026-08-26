@@ -17,6 +17,13 @@ import MentorLayout from "../layouts/MentorLayout";
 
 // ================= DASHBOARDS =================
 import SuperAdminDashboard from "../pages/superadmin/Dashboard";
+import ManageHRAdmins from "../pages/superadmin/ManageHRAdmins";
+import RolesPermissions from "../pages/superadmin/RolesPermissions";
+import SystemAnalytics from "../pages/superadmin/SystemAnalytics";
+import ActivityLog from "../pages/superadmin/activitylog";
+import SystemSettings from "../pages/superadmin/systemsettings";
+
+
 import HRAdminDashboard from "../pages/hradmin/Dashboard";
 import CollegeDashboard from "../pages/college/Dashboard";
 import StudentDashboard from "../pages/student/Dashboard";
@@ -30,7 +37,14 @@ import MyPerformance from "../pages/student/MyPerformance";
 import Certificate from "../pages/student/Certificate";
 import FeedbackForm from "../pages/student/FeedbackForm";
 import MentorDashboard from "../pages/mentor/Dashboard";
-
+import Colleges from "../pages/hradmin/Colleges";
+import Mentors from "../pages/hradmin/Mentors";
+import Batches from "../pages/hradmin/Batches";
+import Students from "../pages/hradmin/Students";
+import DocumentVerification from "../pages/hradmin/DocumentVerification";
+import AttendanceOverview from "../pages/hradmin/AttendanceOverview";
+import Certificates from "../pages/hradmin/Certificates";
+import Reports from "../pages/hradmin/Reports";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -64,6 +78,30 @@ const AppRoutes = () => {
           path={ROUTES.SUPER_ADMIN.DASHBOARD}
           element={<SuperAdminDashboard />}
         />
+       <Route
+         path="/superadmin/hr-admins"
+         element={<ManageHRAdmins />}
+       />
+
+      <Route
+        path="/superadmin/roles"
+        element={<RolesPermissions />}
+      />
+
+      <Route
+        path="/superadmin/analytics"
+        element={<SystemAnalytics />}
+      />
+
+      <Route
+        path="/superadmin/activity"
+        element={<ActivityLog />}
+      />
+
+      <Route
+        path="/superadmin/settings"
+        element={<SystemSettings />}
+      />
       </Route>
 
       {/* ================= HR ADMIN ================= */}
@@ -72,7 +110,40 @@ const AppRoutes = () => {
           path={ROUTES.HR_ADMIN.DASHBOARD}
           element={<HRAdminDashboard />}
         />
+        <Route
+          path={ROUTES.HR_ADMIN.COLLEGES}
+          element={<Colleges/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.MENTORS}
+          element={<Mentors/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.BATCHES}
+          element={<Batches/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.STUDENTS}
+          element={<Students/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.DOCUMENT_VERIFICATION}
+          element={<DocumentVerification/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.ATTENDANCE}
+          element={<AttendanceOverview/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.CERTIFICATES}
+          element={<Certificates/>}
+        />
+        <Route
+          path={ROUTES.HR_ADMIN.REPORTS}
+          element={<Reports/>}
+        />
       </Route>
+      
 
       {/* ================= COLLEGE COORDINATOR ================= */}
       <Route element={<CollegeCoordinatorLayout />}>

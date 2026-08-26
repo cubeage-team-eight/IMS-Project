@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 import Sidebar from "../components/common/Sidebar";
 import Navbar from "../components/navbar/Navbar";
@@ -15,7 +15,7 @@ import {
 const superAdminMenu = [
   {
     label: "Overview",
-    path: "/superadmin",
+    path: "/superadmin/dashboard",
     icon: LayoutDashboard,
   },
   {
@@ -47,9 +47,22 @@ const superAdminMenu = [
 ];
 
 const SuperAdminLayout = () => {
+  const location = useLocation();
+
+  const pageTitles = {
+    "/superadmin/dashboard": "Overview",
+    "/superadmin/hr-admins": "HR / Admin Management",
+    "/superadmin/roles": "Role & Permissions",
+    "/superadmin/analytics": "System Analytics",
+    "/superadmin/activity": "Activity Log",
+    "/superadmin/settings": "System Settings",
+  };
+
+  const currentTitle =
+    pageTitles[location.pathname] || "Super Admin";
+
   return (
     <div className="min-h-screen bg-[#EEF3F8]">
-
       <Sidebar
         role="Super Admin"
         userName="Suresh Kumar"
@@ -57,18 +70,15 @@ const SuperAdminLayout = () => {
       />
 
       <div className="ml-[337px]">
-
         <Navbar
           role="Super Admin"
-          title="Overview"
+          title={currentTitle}
         />
 
         <main className="pt-[90px] p-8">
           <Outlet />
         </main>
-
       </div>
-
     </div>
   );
 };
