@@ -19,9 +19,14 @@ import MentorLayout from "../layouts/MentorLayout";
 import SuperAdminDashboard from "../pages/superadmin/Dashboard";
 import HRAdminDashboard from "../pages/hradmin/Dashboard";
 import CollegeDashboard from "../pages/college/Dashboard";
+import NominatedStudents from "../pages/college/NominatedStudents";
+import ProgressTracking from "../pages/college/ProgressTracking";
+import Reports from "../pages/college/Reports";
 import StudentDashboard from "../pages/student/Dashboard";
 import MentorDashboard from "../pages/mentor/Dashboard";
-
+import Attendance from "../pages/college/Attendance";
+import Certificates from "../pages/college/Certificates";
+import UploadStudentList from "../pages/college/UploadStudentList";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -66,12 +71,53 @@ const AppRoutes = () => {
       </Route>
 
       {/* ================= COLLEGE COORDINATOR ================= */}
+      
       <Route element={<CollegeCoordinatorLayout />}>
+
+       {/* Dashboard */}
         <Route
-          path={ROUTES.COLLEGE.DASHBOARD}
-          element={<CollegeDashboard />}
-        />
-      </Route>
+        path={ROUTES.COLLEGE.DASHBOARD}
+       element={<CollegeDashboard />}
+      />
+
+     {/* Student List */}
+      <Route
+    path={ROUTES.COLLEGE.STUDENTS}
+    element={<NominatedStudents />}
+    />
+
+    {/* Attendance - temporary */}
+      <Route
+    path={ROUTES.COLLEGE.ATTENDANCE}
+    element={<Attendance />}
+    />
+
+    {/* Student Progress */}
+     <Route
+    path={ROUTES.COLLEGE.PROGRESS}
+    element={<ProgressTracking />}
+   />
+
+   {/* Reports */}
+    <Route
+    path={ROUTES.COLLEGE.REPORTS}
+    element={<Reports />}
+   />
+
+    {/* Certificates - temporary */}
+    <Route
+    path={ROUTES.COLLEGE.CERTIFICATES}
+    element={<Certificates />}
+   />
+
+    {/* Upload Student List - temporary */}
+    <Route
+    path={ROUTES.COLLEGE.UPLOAD_STUDENT_LIST}
+    element={<UploadStudentList />}
+   />
+
+   </Route>
+  
 
       {/* ================= STUDENT / INTERN ================= */}
       <Route element={<StudentLayout />}>
@@ -93,4 +139,4 @@ const AppRoutes = () => {
   );
 };
 
-export default AppRoutes;
+export default AppRoutes;  
