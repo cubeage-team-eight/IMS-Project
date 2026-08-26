@@ -5,7 +5,7 @@ export const ROUTES = {
 
   AUTH: {
     LOGIN: "/login",
-    SIGN_UP: "/signup",
+    SIGNUP: "/signup",
     FORGOT_PASSWORD: "/forgot-password",
     RESET_PASSWORD: "/reset-password",
   },
@@ -46,7 +46,7 @@ export const ROUTES = {
     DOCUMENTS: "/student/documents",
     ATTENDANCE: "/student/attendance",
     TASKS: "/student/tasks",
-    DAILY_REPORT: "/student/daily-report",
+    DAILY_REPORT: "/student/reports",
     LEAVE: "/student/leave",
     PERFORMANCE: "/student/performance",
     CERTIFICATE: "/student/certificate",

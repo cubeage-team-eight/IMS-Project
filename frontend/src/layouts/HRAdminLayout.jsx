@@ -43,7 +43,7 @@ const hrAdminMenu = [
   },
   {
     label: "Document Verification",
-    path: "/hradmin/documents",
+    path: "/hradmin/document-verification",
     icon: FileText,
     badge: 7,
   },
