@@ -49,8 +49,8 @@ import Batches from "../pages/hradmin/Batches";
 import Students from "../pages/hradmin/Students";
 import DocumentVerification from "../pages/hradmin/DocumentVerification";
 import AttendanceOverview from "../pages/hradmin/AttendanceOverview";
-import Certificates from "../pages/hradmin/Certificates";
-import Reports from "../pages/hradmin/Reports";
+import StudentCertificates from "../pages/hradmin/Certificates";
+import HrReports from "../pages/hradmin/Reports";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -142,11 +142,11 @@ const AppRoutes = () => {
         />
         <Route
           path={ROUTES.HR_ADMIN.CERTIFICATES}
-          element={<Certificates/>}
+          element={<StudentCertificates/>}
         />
         <Route
           path={ROUTES.HR_ADMIN.REPORTS}
-          element={<Reports/>}
+          element={<HrReports/>}
         />
       </Route>
       

@@ -40,13 +40,13 @@ const mentors = [
 
 const initialState = {
   initials:"",
-  name: " ",
-  email: " ",
-  mobile: " ",
-  empId: " ",
-  branch: " ",
-  role: " ",
-  internCount:" ",
+  name: "",
+  email: "",
+  mobile: "",
+  empId: "",
+  branch: "",
+  role: "",
+  internCount:"",
 };
 
 const FieldLabel = ({ children }) => (

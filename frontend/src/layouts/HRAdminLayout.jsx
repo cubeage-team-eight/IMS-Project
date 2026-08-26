@@ -18,7 +18,7 @@ import {
 const hrAdminMenu = [
   {
     label: "Overview",
-    path: "/hradmin",
+    path: "/hradmin/dashboard",
     icon: LayoutDashboard,
   },
   {

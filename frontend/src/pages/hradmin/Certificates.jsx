@@ -54,7 +54,7 @@ function CertificatePreview({
     </div>
   );
 }
-function Certificates() {
+function StudentCertificates() {
   return (
     <div className='p-6 min-h-screen'>
          <div className='flex justify-between items-center'>
@@ -69,4 +69,4 @@ function Certificates() {
   )
 }
 
-export default Certificates
+export default StudentCertificates
