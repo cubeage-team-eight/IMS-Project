@@ -28,7 +28,7 @@ import HRAdminDashboard from "../pages/hradmin/Dashboard";
 import CollegeDashboard from "../pages/college/Dashboard";
 import NominatedStudents from "../pages/college/NominatedStudents";
 import ProgressTracking from "../pages/college/ProgressTracking";
-import Reports from "../pages/college/Reports";
+import CollegeReports from "../pages/college/Reports";
 import StudentDashboard from "../pages/student/Dashboard";
 import Profile from "../pages/student/Profile";
 import DocumentUpload from "../pages/student/DocumentUpload";
@@ -41,7 +41,7 @@ import Certificate from "../pages/student/Certificate";
 import FeedbackForm from "../pages/student/FeedbackForm";
 import MentorDashboard from "../pages/mentor/Dashboard";
 import Attendance from "../pages/college/Attendance";
-import Certificates from "../pages/college/Certificates";
+import CollegeCertificates from "../pages/college/Certificates";
 import UploadStudentList from "../pages/college/UploadStudentList";
 import Colleges from "../pages/hradmin/Colleges";
 import Mentors from "../pages/hradmin/Mentors";
@@ -49,8 +49,8 @@ import Batches from "../pages/hradmin/Batches";
 import Students from "../pages/hradmin/Students";
 import DocumentVerification from "../pages/hradmin/DocumentVerification";
 import AttendanceOverview from "../pages/hradmin/AttendanceOverview";
-import Certificates from "../pages/hradmin/Certificates";
-import Reports from "../pages/hradmin/Reports";
+import HRAdminCertificates from "../pages/hradmin/Certificates";
+import HRAdminReports from "../pages/hradmin/Reports";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -142,11 +142,11 @@ const AppRoutes = () => {
         />
         <Route
           path={ROUTES.HR_ADMIN.CERTIFICATES}
-          element={<Certificates/>}
+          element={<HRAdminCertificates/>}
         />
         <Route
           path={ROUTES.HR_ADMIN.REPORTS}
-          element={<Reports/>}
+          element={<HRAdminReports/>}
         />
       </Route>
       
@@ -182,13 +182,13 @@ const AppRoutes = () => {
    {/* Reports */}
     <Route
     path={ROUTES.COLLEGE.REPORTS}
-    element={<Reports />}
+    element={<CollegeReports />}
    />
 
     {/* Certificates - temporary */}
     <Route
     path={ROUTES.COLLEGE.CERTIFICATES}
-    element={<Certificates />}
+    element={<CollegeCertificates />}
    />
 
     {/* Upload Student List - temporary */}
