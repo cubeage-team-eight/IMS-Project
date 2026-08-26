@@ -15,7 +15,7 @@ import {
 const collegeMenu = [
   {
     label: "Overview",
-    path: "/college",
+    path: "/college/dashboard",
     icon: LayoutDashboard,
   },
   {
@@ -45,7 +45,7 @@ const collegeMenu = [
   },
   {
     label: "Upload Student List",
-    path: "/college/upload",
+    path: "/college/upload-student-list",
     icon: Upload,
   },
 ];

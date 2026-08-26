@@ -58,5 +58,9 @@ export const ROUTES = {
     NOMINATED_STUDENTS: "/college/nominated-students",
     PROGRESS: "/college/progress",
     REPORTS: "/college/reports",
+    CERTIFICATES: "/college/certificates",
+    UPLOAD_STUDENT_LIST: "/college/upload-student-list",
+    ATTENDANCE: "/college/attendance",
+    STUDENTS: "/college/students",
   },
 };
