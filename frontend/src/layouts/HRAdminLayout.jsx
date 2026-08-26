@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-
+import {useState} from "react"
 import Sidebar from "../components/common/Sidebar";
 import Navbar from "../components/navbar/Navbar";
 
@@ -13,6 +13,7 @@ import {
   CheckCircle,
   Trophy,
   BarChart3,
+  Menu,
 } from "lucide-react";
 
 const hrAdminMenu = [
@@ -65,15 +66,17 @@ const hrAdminMenu = [
 ];
 
 const HRAdminLayout = () => {
+    const [collapsed,setCollapsed] = useState(false)
+    const [mobileOpen,setMobileOpen] = useState(false)
   return (
     <div className="min-h-screen bg-[#EEF3F8]">
-
+  
       <Sidebar
         role="HR / Admin"
         userName="Priya Sharma"
         menuItems={hrAdminMenu}
       />
-
+    
       <div className="ml-[337px]">
 
         <Navbar
