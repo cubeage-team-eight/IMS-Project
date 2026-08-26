@@ -46,7 +46,7 @@ export const ROUTES = {
     DOCUMENTS: "/student/documents",
     ATTENDANCE: "/student/attendance",
     TASKS: "/student/tasks",
-    DAILY_REPORT: "/student/daily-report",
+    DAILY_REPORT: "/student/reports",
     LEAVE: "/student/leave",
     PERFORMANCE: "/student/performance",
     CERTIFICATE: "/student/certificate",
