@@ -13,7 +13,7 @@ const Certificate = () => {
       <div className="bg-white rounded-2xl border border-slate-200 p-8 flex flex-col items-center justify-center py-16">
         
         {/* Certificate Card */}
-        <div className="bg-[#0f172a] rounded-xl border border-orange-500/30 p-10 w-full max-w-2xl text-center relative overflow-hidden shadow-2xl">
+        <div className="bg-[#0f172a] rounded-xl border border-orange-500/30 p-6 sm:p-10 w-full max-w-2xl text-center relative overflow-hidden shadow-2xl">
           
           {/* Decorative corners could go here */}
           
@@ -25,7 +25,7 @@ const Certificate = () => {
             This is to certify that
           </p>
           
-          <h1 className="text-4xl font-serif font-bold text-white mb-4">
+          <h1 className="text-2xl sm:text-4xl font-serif font-bold text-white mb-4">
             Aditi Verma
           </h1>
           

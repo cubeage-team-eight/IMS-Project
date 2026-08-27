@@ -33,7 +33,15 @@ function TechStackNavbar() {
             return (
               <li key={item}>
                 <a
-                  href={isActive ? "/tech-stack" : "#"}
+                  href={`#${item.toLowerCase().replace(' ', '-')}`}
+                  onClick={(e) => {
+                    const id = item === "Overview" ? "overview" : item === "Objectives" ? "objectives" : item === "User Roles" ? "user-roles" : item === "Workflow" ? "workflow" : item === "Tech Stack" ? "tech-stack" : "modules";
+                    const element = document.getElementById(id);
+                    if (element) {
+                      e.preventDefault();
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
                   className={isActive ? "active" : ""}
                   aria-current={isActive ? "page" : undefined}
                 >
@@ -68,7 +76,15 @@ function TechStackNavbar() {
             return (
               <a
                 key={item}
-                href={isActive ? "/tech-stack" : "#"}
+                href={`#${item.toLowerCase().replace(' ', '-')}`}
+                onClick={(e) => {
+                  const id = item === "Overview" ? "overview" : item === "Objectives" ? "objectives" : item === "User Roles" ? "user-roles" : item === "Workflow" ? "workflow" : item === "Tech Stack" ? "tech-stack" : "modules";
+                  const element = document.getElementById(id);
+                  if (element) {
+                    e.preventDefault();
+                    element.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
                 className={isActive ? "active" : ""}
                 aria-current={isActive ? "page" : undefined}
               >
@@ -344,7 +360,7 @@ const styles = `
 // Route: /tech-stack
 export default function TechStack() {
   return (
-    <div className="techstack-page">
+    <div id="tech-stack" className="techstack-page">
       <style>{styles}</style>
       <TechStackNavbar />
       <TechStackHero />

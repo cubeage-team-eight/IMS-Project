@@ -62,7 +62,7 @@ const RoleCard = ({ role }) => (
       </span>
     </div>
 
-    <div className="mt-5 grid grid-cols-2 gap-4">
+    <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
       <Metric value={role.users} label="Users" />
       <Metric
         value={role.permissions}

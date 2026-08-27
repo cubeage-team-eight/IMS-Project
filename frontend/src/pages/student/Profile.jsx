@@ -36,13 +36,13 @@ const Profile = () => {
         </div>
 
         {/* Right Column: Details */}
-        <div className="col-span-2 space-y-6">
+        <div className="md:col-span-2 space-y-6">
           
           {/* Personal Details Card */}
           <div className="bg-white rounded-2xl border border-slate-200 p-6">
             <h3 className="text-slate-400 text-xs tracking-widest uppercase mb-5 font-mono">Personal Details</h3>
             
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <p className="text-slate-300 text-xs mb-1">Gender</p>
                 <p className="text-sm font-medium">Female</p>
@@ -66,7 +66,7 @@ const Profile = () => {
           <div className="bg-white rounded-2xl border border-slate-200 p-6">
             <h3 className="text-slate-400 text-xs tracking-widest uppercase mb-5 font-mono">Internship Details</h3>
             
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <p className="text-slate-300 text-xs mb-1">Batch</p>
                 <p className="text-sm font-medium">Batch 2025 Q1</p>
