@@ -1,92 +1,141 @@
 import React from "react";
+import { Download, FileText } from "lucide-react";
 
 const Reports = () => {
   const reports = [
     {
       id: 1,
-      title: "Student Internship Report",
-      description: "Complete student internship progress report.",
-      date: "24 Aug 2026",
+      title: "Attendance Report",
+      description: "Student-wise daily attendance for current semester",
+      date: "30 Jul 2025",
     },
     {
       id: 2,
-      title: "Attendance Report",
-      description: "Student internship attendance summary.",
-      date: "24 Aug 2026",
+      title: "Student Progress Report",
+      description: "Individual progress and performance metrics",
+      date: "29 Jul 2025",
     },
     {
       id: 3,
-      title: "Completion Report",
-      description: "Internship completion statistics.",
-      date: "24 Aug 2026",
+      title: "Internship Completion Report",
+      description: "Summary of completed and ongoing internships",
+      date: "28 Jul 2025",
+    },
+    {
+      id: 4,
+      title: "College Summary Report",
+      description: "High-level batch and outcome overview",
+      date: "25 Jul 2025",
     },
   ];
 
+  // ================= EXCEL DOWNLOAD =================
+  const handleExcelDownload = (report) => {
+    const csvContent = `Report,Description,Updated Date
+"${report.title}","${report.description}","${report.date}"`;
+
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${report.title
+      .toLowerCase()
+      .replaceAll(" ", "-")}.csv`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  };
+
+  // ================= PDF BUTTON =================
+  const handlePdfDownload = (report) => {
+    alert(`${report.title} PDF download will be connected to backend.`);
+  };
+
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Reports
+    <div className="min-h-[calc(100vh-84px)] bg-[#f1f5f9] p-8">
+
+      {/* ================= PAGE HEADER ================= */}
+      <div className="mb-8">
+        <h1 className="text-[24px] font-semibold text-[#071627]">
+          Available Reports
         </h1>
 
-        <p className="text-gray-500">
-          Generate and download internship related reports.
+        <p className="mt-1 text-[17px] text-[#8b9ab0]">
+          Download reports for your college's internship program
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-        <div className="bg-white p-5 rounded-xl shadow-sm">
-          <p className="text-gray-500">Total Students</p>
-          <h2 className="text-3xl font-bold mt-2">120</h2>
-        </div>
+      {/* ================= REPORT GRID ================= */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
 
-        <div className="bg-white p-5 rounded-xl shadow-sm">
-          <p className="text-gray-500">Completed</p>
-          <h2 className="text-3xl font-bold text-green-600 mt-2">
-            85
-          </h2>
-        </div>
+        {reports.map((report) => (
+          <div
+            key={report.id}
+            className="bg-white border border-[#dce3eb] rounded-2xl p-6 min-h-[152px] flex flex-col justify-between"
+          >
 
-        <div className="bg-white p-5 rounded-xl shadow-sm">
-          <p className="text-gray-500">In Progress</p>
-          <h2 className="text-3xl font-bold text-blue-600 mt-2">
-            35
-          </h2>
-        </div>
-      </div>
+            {/* ================= REPORT INFO ================= */}
+            <div>
+              <div className="flex items-center gap-2">
 
-      <div className="bg-white rounded-xl shadow-sm p-5">
-        <h2 className="text-lg font-semibold mb-5">
-          Available Reports
-        </h2>
-
-        <div className="space-y-4">
-          {reports.map((report) => (
-            <div
-              key={report.id}
-              className="border rounded-lg p-4 flex justify-between items-center"
-            >
-              <div>
-                <h3 className="font-semibold text-gray-800">
+                <h2 className="text-[18px] font-semibold text-[#071627]">
                   {report.title}
-                </h3>
+                </h2>
 
-                <p className="text-sm text-gray-500 mt-1">
-                  {report.description}
-                </p>
-
-                <p className="text-xs text-gray-400 mt-2">
-                  Generated: {report.date}
-                </p>
               </div>
 
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                Download
-              </button>
+              <p className="text-[#8b9ab0] text-[15px] mt-1">
+                {report.description}
+              </p>
             </div>
-          ))}
-        </div>
+
+            {/* ================= BOTTOM SECTION ================= */}
+            <div className="flex items-center justify-between mt-6">
+
+              {/* Updated Date */}
+              <p className="text-[#c0cad6] font-mono text-[14px]">
+                Updated {report.date}
+              </p>
+
+              {/* Buttons */}
+              <div className="flex items-center gap-2">
+
+                {/* Excel */}
+                <button
+                  onClick={() => handleExcelDownload(report)}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-[#d5f7e9] hover:bg-[#c4f1df] text-[#008c68] rounded-md text-sm font-medium transition"
+                >
+                  <Download size={15} />
+
+                  Excel
+                </button>
+
+                {/* PDF */}
+                <button
+                  onClick={() => handlePdfDownload(report)}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-[#edf3fc] hover:bg-[#e4ecf9] text-[#2563eb] rounded-md text-sm font-medium transition"
+                >
+                  <Download size={15} />
+
+                  PDF
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+        ))}
+
       </div>
+
     </div>
   );
 };
