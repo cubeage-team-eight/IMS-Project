@@ -58,71 +58,63 @@ const roles = [
 
 function User() {
   return (
-    <section className="min-h-screen w-full bg-[#081626] px-8 py-10.5 text-white">
+    <section className="w-full bg-[#081626] px-6 py-20 text-white sm:px-10">
+      <div className="mx-auto max-w-[1240px]">
+        {/* Heading */}
+        <div className="mb-14">
+          <p className="mb-5 font-mono text-[13px] font-medium tracking-[3px] text-[#ff8a00]">
+            03 — USER ROLES
+          </p>
 
-      {/* Heading */}
-      <div className="mb-22.5">
-        <p className="mb-7 font-mono text-[14px] font-medium tracking-[3px] text-[#ff8a00]">
-          05 — USER ROLES
-        </p>
+          <h2 className="font-['Playfair_Display',serif] text-[36px] font-bold leading-[1.15] text-white sm:text-[44px] lg:text-[50px]">
+            Five distinct
+            <br />
+            <i>access levels</i>
+          </h2>
+        </div>
 
-        <h2 className="font-['Playfair_Display',serif]  text-[56px] font-bold leading-tight text-white">
-          Five distinct
-          <br />
-          <i>access levels</i>
-        </h2>
-      </div>
+        {/* Role Cards */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {roles.map((role) => (
+            <div
+              key={role.code}
+              className="h-full rounded-[10px] border border-[#25354a] bg-[#121f31] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#51657e]"
+            >
+              {/* Card Header */}
+              <div className="mb-5 flex items-center gap-3">
+                {/* Role Code */}
+                <div
+                  style={{ backgroundColor: role.color }}
+                  className="flex h-[44px] w-[44px] min-w-[44px] items-center justify-center rounded-[6px] font-mono text-[12.5px] font-bold"
+                >
+                  {role.code}
+                </div>
 
-      {/* Role Cards */}
-      <div className="grid grid-cols-5 gap-5">
-
-        {roles.map((role) => (
-          <div
-            key={role.code}
-            className="min-h-88.5 rounded-[10px] border border-[#25354a] bg-[#121f31] p-7.5 transition-all duration-300 hover:-translate-y-1.25 hover:border-[#51657e]"
-          >
-
-            {/* Card Header */}
-            <div className="mb-7 flex items-start gap-3.75">
-
-              {/* Role Code */}
-              <div
-                style={{ backgroundColor: role.color }}
-                className="flex h-[50px] w-[50px] min-w-[50px] items-center justify-center rounded-[5px] font-mono text-[13px] font-bold"
-              >
-                {role.code}
+                {/* Role Title */}
+                <h3 className="font-[Arial,sans-serif] text-[16px] font-bold leading-[1.25] text-white">
+                  {role.title}
+                </h3>
               </div>
 
-              {/* Role Title */}
-              <h3 className="pt-7px font-[Arial,sans-serif] text-[17px] font-bold leading-tight text-white">
-                {role.title}
-              </h3>
+              {/* Features */}
+              <ul className="m-0 list-none space-y-2.5 p-0">
+                {role.features.map((feature) => (
+                  <li
+                    key={feature}
+                    className="flex items-start gap-2.5 font-[Arial,sans-serif] text-[14.5px] leading-[1.45] text-[#7188a5]"
+                  >
+                    <span className="font-bold text-[#ff8a00]">—</span>
 
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-
-            {/* Features */}
-            <ul className="m-0 list-none space-y-13px p-0">
-
-              {role.features.map((feature) => (
-                <li
-                  key={feature}
-                  className="flex items-start gap-3 font-[Arial,sans-serif] text-[15px] leading-[1.45] text-[#7188a5]"
-                >
-                  <span className="font-bold text-[#ff8a00]">
-                    —
-                  </span>
-
-                  <span>{feature}</span>
-                </li>
-              ))}
-
-            </ul>
-          </div>
-        ))}
-
+          ))}
+        </div>
       </div>
     </section>
   );
 }
 
-export default User;  
+export default User;
