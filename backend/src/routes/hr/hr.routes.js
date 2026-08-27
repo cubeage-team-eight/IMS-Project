@@ -36,6 +36,15 @@ import {
   assignStudent,
 } from "../../controllers/hr/batch.controller.js";
 
+
+import {
+  createInternship,
+  getAllInternships,
+  getInternshipById,
+  updateInternship,
+  deleteInternship,
+} from "../../controllers/hr/internship.controller.js";
+
 const router = express.Router();
 
 // HR/Admin authentication and authorization
@@ -78,6 +87,20 @@ router.post(
 router.get("/students", getAllStudents);
 
 router.get("/students/:id", getStudentById);
+
+// =========================
+// INTERNSHIP MANAGEMENT
+// =========================
+
+router.post("/internships", createInternship);
+
+router.get("/internships", getAllInternships);
+
+router.get("/internships/:id", getInternshipById);
+
+router.put("/internships/:id", updateInternship);
+
+router.delete("/internships/:id", deleteInternship);
 
 router.put(
   "/students/:id",
