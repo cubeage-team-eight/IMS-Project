@@ -3,7 +3,7 @@ const Dashboard = () => {
     <div className="space-y-5 p-5">
 
       {/* ================= STATS ================= */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 ls:grid-cols-3 xl:grid-cols-4">
 
         <StatCard
           title="Total Colleges"
@@ -36,7 +36,7 @@ const Dashboard = () => {
 
 
       {/* ================= CONTENT ================= */}
-      <div className="grid grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
 
         {/* ================= PENDING DOCUMENTS ================= */}
         <div className="col-span-2 bg-white rounded-xl border border-slate-200 p-5">
@@ -118,7 +118,7 @@ const StatCard = ({
   subtitle,
   valueColor = "text-slate-900",
 }) => (
-  <div className="bg-white rounded-xl border border-slate-200 p-5">
+  <div className="bg-white rounded-xl border border-slate-200 p-5 font-[satoshi] ">
 
     <p className="text-[13px] text-slate-400">
       {title}

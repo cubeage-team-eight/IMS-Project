@@ -59,7 +59,7 @@ function StudentCertificates() {
     <div className='p-6 min-h-screen'>
          <div className='flex justify-between items-center'>
             <div>
-                <h1 className='text-xl font-medium'>Certifcate Management</h1>
+                <h1 className='text-xl font-medium'>Certificate Management</h1>
                 <p className='text-slate-400'>Generate and manage internship completion certificates</p>
             </div>
             <button className='bg-blue-500 text-white px-4 py-2 rounded-md'>Generate Certificate</button>

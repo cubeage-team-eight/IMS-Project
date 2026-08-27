@@ -66,8 +66,7 @@ const hrAdminMenu = [
 ];
 
 const HRAdminLayout = () => {
-    const [collapsed,setCollapsed] = useState(false)
-    const [mobileOpen,setMobileOpen] = useState(false)
+    
   return (
     <div className="min-h-screen bg-[#EEF3F8]">
   

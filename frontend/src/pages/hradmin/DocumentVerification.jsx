@@ -103,11 +103,11 @@ function PendingDocuments() {
                     {doc.date}
                   </span>
 
-                  <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex shrink-0 flex-wrap items-center gap-2">
                     <button
                       onClick={() => handleDecision(doc.id, "approved")}
                       disabled={!!decision}
-                      className={`inline-flex items-center gap-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                      className={`inline-flex items-center gap-1 rounded-md px-3 py-2 sm:py-1.5 text-xs font-medium transition-colors ${
                         decision === "approved"
                           ? "bg-emerald-500 text-white"
                           : decision === "rejected"
@@ -121,7 +121,7 @@ function PendingDocuments() {
                     <button
                       onClick={() => handleDecision(doc.id, "rejected")}
                       disabled={!!decision}
-                      className={`inline-flex items-center gap-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                      className={`inline-flex items-center gap-1 rounded-md px-3 py-2 sm:py-1.5 text-xs font-medium transition-colors ${
                         decision === "rejected"
                           ? "bg-red-500 text-white"
                           : decision === "approved"
@@ -169,7 +169,7 @@ function DocumentVerification() {
                 <h1 className='text-xl font-medium'>Document Verification</h1>
                 
             </div>
-        <div className='grid grid-cols-4 gap-4 mt-6'>
+        <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-6'>
             <StatCard
                 title="Pending Review"
                 value= "7"
