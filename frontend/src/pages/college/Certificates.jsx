@@ -1,206 +1,122 @@
 import React from "react";
+import { Download } from "lucide-react";
 
 const Certificates = () => {
-
-  const certificates = [
+  const students = [
     {
-      id: 1,
-      name: "Rahul Patil",
-      internship: "Web Development",
-      completion: 100,
-      status: "Issued",
-      date: "20 Aug 2026",
+      name: "Rohan Gupta",
+      certificateNo: "IMS-2025-0298",
+      batch: "2024-Q4",
+      issueDate: "15 Jan 2025",
+      status: "Ready",
     },
     {
-      id: 2,
-      name: "Priya Sharma",
-      internship: "Machine Learning",
-      completion: 100,
-      status: "Issued",
-      date: "21 Aug 2026",
+      name: "Priya Nair",
+      certificateNo: "IMS-2025-0301",
+      batch: "2024-Q4",
+      issueDate: "15 Jan 2025",
+      status: "Ready",
     },
     {
-      id: 3,
-      name: "Amit Jadhav",
-      internship: "Full Stack Development",
-      completion: 85,
-      status: "Pending",
-      date: "-",
+      name: "Aditi Verma",
+      certificateNo: "–",
+      batch: "2025-Q1",
+      issueDate: "Pending",
+      status: "In Progress",
+    },
+    {
+      name: "Simran Kaur",
+      certificateNo: "–",
+      batch: "2025-Q2",
+      issueDate: "Pending",
+      status: "In Progress",
     },
   ];
 
+  const handleDownload = (student) => {
+    if (student.status === "Ready") {
+      alert(`Downloading certificate for ${student.name}`);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-[#eef3f8] p-7">
+      <h2 className="text-[23px] font-semibold text-[#07172b]">
+        Student Certificates
+      </h2>
 
-      {/* Header */}
-      <div className="mb-6">
+      <p className="mt-1 mb-7 text-[16px] text-[#91a5c1]">
+        Download completion certificates for eligible students
+      </p>
 
-        <h1 className="text-2xl font-bold text-gray-800">
-          Certificates
-        </h1>
+      <div className="overflow-hidden rounded-[16px] border border-[#dce4ec] bg-white">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="h-[49px] border-b border-[#dce4ec]">
+              {["STUDENT", "CERTIFICATE NO.", "BATCH", "ISSUE DATE", "STATUS", "ACTION"].map(
+                (title) => (
+                  <th
+                    key={title}
+                    className="px-5 text-left font-mono text-[13px] font-medium text-[#8ba0bd]"
+                  >
+                    {title}
+                  </th>
+                )
+              )}
+            </tr>
+          </thead>
 
-        <p className="text-gray-500 mt-1">
-          Manage and download student internship certificates.
-        </p>
+          <tbody>
+            {students.map((student) => (
+              <tr
+                key={student.name}
+                className="h-[64px] border-b border-[#e5ebf1]"
+              >
+                <td className="px-5 font-medium">{student.name}</td>
 
-      </div>
+                <td className="px-5 font-mono text-[14px] text-[#7189a8]">
+                  {student.certificateNo}
+                </td>
 
-      {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                <td className="px-5 font-mono text-[14px] text-[#8ba0bd]">
+                  {student.batch}
+                </td>
 
-        <div className="bg-white rounded-xl shadow-sm p-5">
+                <td className="px-5 text-[14px] text-[#8ba0bd]">
+                  {student.issueDate}
+                </td>
 
-          <p className="text-gray-500">
-            Total Certificates
-          </p>
+                <td className="px-5">
+                  <span
+                    className={`rounded-full px-3 py-1 font-mono text-[13px] ${
+                      student.status === "Ready"
+                        ? "bg-[#cef6e4] text-[#087d5b]"
+                        : "bg-[#fff0c4] text-[#9a5800]"
+                    }`}
+                  >
+                    {student.status}
+                  </span>
+                </td>
 
-          <h2 className="text-3xl font-bold mt-2">
-            85
-          </h2>
-
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm p-5">
-
-          <p className="text-gray-500">
-            Issued
-          </p>
-
-          <h2 className="text-3xl font-bold text-green-600 mt-2">
-            75
-          </h2>
-
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm p-5">
-
-          <p className="text-gray-500">
-            Pending
-          </p>
-
-          <h2 className="text-3xl font-bold text-orange-500 mt-2">
-            10
-          </h2>
-
-        </div>
-
-      </div>
-
-      {/* Certificate Table */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
-
-        <h2 className="text-lg font-semibold mb-5">
-          Student Certificates
-        </h2>
-
-        <div className="overflow-x-auto">
-
-          <table className="w-full text-left">
-
-            <thead>
-
-              <tr className="border-b bg-gray-50">
-
-                <th className="p-3">
-                  Student
-                </th>
-
-                <th className="p-3">
-                  Internship
-                </th>
-
-                <th className="p-3">
-                  Completion
-                </th>
-
-                <th className="p-3">
-                  Status
-                </th>
-
-                <th className="p-3">
-                  Issue Date
-                </th>
-
-                <th className="p-3">
-                  Action
-                </th>
-
+                <td className="px-5">
+                  <button
+                    disabled={student.status !== "Ready"}
+                    onClick={() => handleDownload(student)}
+                    className={`flex items-center gap-1.5 rounded-md px-4 py-2 text-[14px] font-semibold ${
+                      student.status === "Ready"
+                        ? "bg-[#0cbd86] text-white"
+                        : "cursor-not-allowed bg-[#f2f5f8] text-[#d9e0e8]"
+                    }`}
+                  >
+                    <Download size={15} />
+                    Download
+                  </button>
+                </td>
               </tr>
-
-            </thead>
-
-            <tbody>
-
-              {certificates.map((certificate) => (
-
-                <tr
-                  key={certificate.id}
-                  className="border-b hover:bg-gray-50"
-                >
-
-                  <td className="p-3 font-medium">
-                    {certificate.name}
-                  </td>
-
-                  <td className="p-3">
-                    {certificate.internship}
-                  </td>
-
-                  <td className="p-3">
-                    {certificate.completion}%
-                  </td>
-
-                  <td className="p-3">
-
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        certificate.status === "Issued"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-orange-100 text-orange-700"
-                      }`}
-                    >
-                      {certificate.status}
-                    </span>
-
-                  </td>
-
-                  <td className="p-3">
-                    {certificate.date}
-                  </td>
-
-                  <td className="p-3">
-
-                    {certificate.status === "Issued" ? (
-
-                      <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                        Download
-                      </button>
-
-                    ) : (
-
-                      <button
-                        disabled
-                        className="bg-gray-200 text-gray-500 px-4 py-2 rounded-lg"
-                      >
-                        Pending
-                      </button>
-
-                    )}
-
-                  </td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
-
-        </div>
-
+            ))}
+          </tbody>
+        </table>
       </div>
-
     </div>
   );
 };
