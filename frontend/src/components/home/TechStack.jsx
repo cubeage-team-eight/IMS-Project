@@ -1,9 +1,4 @@
-import { useState } from "react";
-
-
-
-const NAV_ITEMS = ["Overview", "Objectives", "User Roles", "Modules", "Workflow", "Tech Stack"];
-
+import { useNavigate } from "react-router-dom";
 
 const techStack = [
   { category: "Frontend", technologies: ["React.js", "Tailwind CSS", "Material UI", "Axios", "React Router"] },
@@ -16,95 +11,11 @@ const techStack = [
 ];
 
 
-function TechStackNavbar() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <nav className="navbar" aria-label="Primary">
-        <a className="brand" href="/" aria-label="IMS home">
-          <span className="brand-mark" aria-hidden="true">IMS</span>
-          <span className="brand-name">INTERNSHIP MANAGEMENT SYSTEM</span>
-        </a>
-
-        <ul className="nav-links">
-          {NAV_ITEMS.map((item) => {
-            const isActive = item === "Tech Stack";
-            return (
-              <li key={item}>
-                <a
-                  href={`#${item.toLowerCase().replace(' ', '-')}`}
-                  onClick={(e) => {
-                    const id = item === "Overview" ? "overview" : item === "Objectives" ? "objectives" : item === "User Roles" ? "user-roles" : item === "Workflow" ? "workflow" : item === "Tech Stack" ? "tech-stack" : "modules";
-                    const element = document.getElementById(id);
-                    if (element) {
-                      e.preventDefault();
-                      element.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
-                  className={isActive ? "active" : ""}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  {item}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-
-        <button className="nav-cta desktop-only" type="button">
-          Login →
-        </button>
-
-        <button
-          className="nav-toggle"
-          aria-label="Toggle menu"
-          aria-expanded={open}
-          aria-controls="mobilePanel"
-          onClick={() => setOpen((v) => !v)}
-        >
-          <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-            <path d="M2 4.5H16M2 9H16M2 13.5H16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-          </svg>
-        </button>
-      </nav>
-
-      {open && (
-        <div className="mobile-panel" id="mobilePanel">
-          {NAV_ITEMS.map((item) => {
-            const isActive = item === "Tech Stack";
-            return (
-              <a
-                key={item}
-                href={`#${item.toLowerCase().replace(' ', '-')}`}
-                onClick={(e) => {
-                  const id = item === "Overview" ? "overview" : item === "Objectives" ? "objectives" : item === "User Roles" ? "user-roles" : item === "Workflow" ? "workflow" : item === "Tech Stack" ? "tech-stack" : "modules";
-                  const element = document.getElementById(id);
-                  if (element) {
-                    e.preventDefault();
-                    element.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }}
-                className={isActive ? "active" : ""}
-                aria-current={isActive ? "page" : undefined}
-              >
-                {item}
-              </a>
-            );
-          })}
-          <button className="nav-cta" type="button">
-            Login →
-          </button>
-        </div>
-      )}
-    </>
-  );
-}
 
 function TechStackHero() {
   return (
     <header className="hero">
-      <p className="eyebrow">11 — TECHNOLOGY STACK</p>
+      <p className="eyebrow">6 — TECHNOLOGY STACK</p>
       <h1 className="hero-title">
         MERN Stack
         <span className="serif">architecture</span>
@@ -138,19 +49,54 @@ function TechStackTable() {
   );
 }
 
+function TechStackCTA() {
+  const navigate = useNavigate();
+
+  return (
+    <section className="cta">
+      <h2 className="cta-title">
+        Ready to explore
+        <span className="serif">the platform?</span>
+      </h2>
+
+      <p className="cta-sub">Select your role to access a fully detailed dashboard view.</p>
+
+      <button className="cta-button" type="button"
+       onClick={() => navigate("/login")}>
+        Enter the Platform →
+      </button>
+    </section>
+  );
+}
+
+function TechStackFooter() {
+  return (
+    <footer className="footer">
+      <div className="footer-brand">
+        <span className="brand-mark" aria-hidden="true">IMS</span>
+        <span>Internship Management System</span>
+      </div>
+
+      <div className="footer-meta">MERN Stack · JWT · MongoDB Atlas · Vercel</div>
+    </footer>
+  );
+}
+
 const styles = `
 .techstack-page{
-  --bg: #080b15;
+  --bg: #0e121f;
   --bg-nav: #0b0f1c;
+  --bg-footer: #0b0f1c;
   --text-hi: #f6f5f2;
-  --text-lo: #8a92a6;
+  --text-lo: #6e7f96;
   --chip-text: #c9cedb;
-  --accent: #d9773f;
-  --accent-soft: rgba(217,119,63,0.12);
-  --border: rgba(255,255,255,0.09);
-  --chip-bg: transparent;
-  --chip-border: rgba(255,255,255,0.14);
-  --page-pad: clamp(24px, 12vw, 170px);
+  --accent: #e76d26;
+  --accent-soft: rgba(232,145,42,0.12);
+  --cta: #cb5f20;
+  --border: rgba(255,255,255,0.08);
+  --chip-bg: rgba(255,255,255,0.04);
+  --chip-border: rgba(255,255,255,0.12);
+  --page-pad: clamp(24px, 11vw, 150px);
 
   background: var(--bg);
   color: var(--text-hi);
@@ -162,130 +108,17 @@ const styles = `
 .techstack-page a{ color: inherit; text-decoration: none; }
 .techstack-page :focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 
-/* ---------- NAVBAR ---------- */
-.techstack-page .navbar{
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 24px;
-  padding: 14px var(--page-pad);
-  background: var(--bg-nav);
-  border-bottom: 1px solid var(--border);
-}
 
-.techstack-page .brand{ display:flex; align-items:center; gap: 10px; min-width: 0; }
-
-.techstack-page .brand-mark{
-  flex: 0 0 auto;
-  width: 26px; height: 26px;
-  border-radius: 6px;
-  background: var(--accent);
-  display:flex; align-items:center; justify-content:center;
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  color: #ffffff;
-}
-
-.techstack-page .brand-name{
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: var(--text-hi);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.techstack-page .nav-links{
-  display:flex;
-  align-items:center;
-  gap: clamp(10px, 1.8vw, 26px);
-  list-style:none;
-  margin:0; padding:0;
-}
-
-.techstack-page .nav-links a{
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-lo);
-  padding: 8px 6px;
-  border-radius: 6px;
-  transition: color .16s ease, background .16s ease;
-  white-space: nowrap;
-}
-.techstack-page .nav-links a:hover{ color: var(--text-hi); }
-.techstack-page .nav-links a.active{
-  color: var(--accent);
-  background: var(--accent-soft);
-  padding: 8px 14px;
-  font-weight: 600;
-}
-
-.techstack-page .nav-cta{
-  flex: 0 0 auto;
-  display:inline-flex;
-  align-items:center;
-  gap: 6px;
-  background: var(--accent);
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 13.5px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: filter .16s ease, transform .16s ease;
-}
-.techstack-page .nav-cta:hover{ filter: brightness(1.1); transform: translateY(-1px); }
-
-.techstack-page .nav-toggle{
-  display:none;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  width: 36px; height: 36px;
-  color: var(--text-hi);
-  align-items:center; justify-content:center;
-  cursor: pointer;
-}
-
-.techstack-page .mobile-panel{
-  display:flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px var(--page-pad) 16px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-nav);
-}
-.techstack-page .mobile-panel a{
-  padding: 12px 4px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-lo);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.techstack-page .mobile-panel a.active{ color: var(--accent); }
-.techstack-page .mobile-panel .nav-cta{ margin-top: 12px; justify-content:center; }
-
-@media (max-width: 860px){
-  .techstack-page .nav-links{ display:none; }
-  .techstack-page .nav-cta.desktop-only{ display:none; }
-  .techstack-page .nav-toggle{ display:flex; }
-}
 
 /* ---------- HERO ---------- */
-.techstack-page .hero{ padding: clamp(56px, 9vw, 96px) var(--page-pad) clamp(48px, 6vw, 70px); }
+.techstack-page .hero{ padding: clamp(56px, 8vw, 92px) var(--page-pad) clamp(44px, 6vw, 74px); }
 
 .techstack-page .eyebrow{
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.18em;
   color: var(--accent);
-  margin: 0 0 20px;
+  margin: 0 0 22px;
   font-family: 'JetBrains Mono', monospace;
 }
 
@@ -294,8 +127,8 @@ const styles = `
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 700;
   letter-spacing: -0.01em;
-  line-height: 1.06;
-  font-size: clamp(38px, 5.5vw, 64px);
+  line-height: 1.1;
+  font-size: clamp(38px, 5vw, 58px);
   color: var(--text-hi);
 }
 
@@ -307,13 +140,13 @@ const styles = `
 }
 
 /* ---------- STACK TABLE ---------- */
-.techstack-page .stack-section{ padding: 0 var(--page-pad) clamp(64px, 8vw, 100px); }
+.techstack-page .stack-section{ padding: 0 var(--page-pad) clamp(64px, 8vw, 96px); }
 
 .techstack-page .stack-row{
   display:flex;
   align-items: center;
   gap: clamp(20px, 4vw, 48px);
-  padding: 15px 0;
+  padding: 18px 0;
   border-bottom: 1px solid var(--border);
 }
 .techstack-page .stack-row:first-child{ border-top: 1px solid var(--border); }
@@ -322,7 +155,7 @@ const styles = `
   flex: 0 0 200px;
   color: var(--text-lo);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
+  font-size: 13.5px;
   letter-spacing: 0.01em;
 }
 
@@ -336,24 +169,118 @@ const styles = `
 .techstack-page .chip{
   display:inline-flex;
   align-items:center;
-  padding: 8px 14px;
+  padding: 9px 15px;
   background: var(--chip-bg);
   border: 1px solid var(--chip-border);
   border-radius: 6px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--chip-text);
   transition: background .16s ease, border-color .16s ease, color .16s ease;
 }
 .techstack-page .chip:hover{
-  background: rgba(217,119,63,0.07);
-  border-color: rgba(217,119,63,0.55);
+  background: rgba(232,145,42,0.08);
+  border-color: rgba(161, 150, 138, 0.55);
   color: var(--text-hi);
+}
+
+/* ---------- CTA ---------- */
+.techstack-page .cta{
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: clamp(80px, 11vw, 140px) var(--page-pad);
+  background:
+    radial-gradient(60% 90% at 8% 55%, rgba(120,130,110,0.14), transparent 70%),
+    var(--bg);
+  border-top: 1px solid var(--border);
+}
+
+.techstack-page .cta-title{
+  margin: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-size: clamp(38px, 5.4vw, 64px);
+  color: var(--text-hi);
+}
+
+.techstack-page .cta-title .serif{
+  display:block;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.techstack-page .cta-sub{
+  margin: clamp(20px, 3vw, 34px) 0 0;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 17px;
+  color: #b9c4d4;
+}
+
+.techstack-page .cta-button{
+  margin-top: clamp(28px, 4vw, 48px);
+  background: var(--cta);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 19px 34px;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  transition: filter .16s ease, transform .16s ease;
+}
+.techstack-page .cta-button:hover{ filter: brightness(1.06); transform: translateY(-1px); }
+
+.techstack-page .brand-mark{
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--cta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+}
+
+/* ---------- FOOTER ---------- */
+.techstack-page .footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 26px var(--page-pad);
+  background: var(--bg-footer);
+}
+
+.techstack-page .footer-brand{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-lo);
+}
+
+.techstack-page .footer-meta{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
+  color: var(--text-lo);
 }
 
 @media (max-width: 640px){
   .techstack-page .stack-row{ flex-direction: column; align-items: flex-start; gap: 10px; }
   .techstack-page .stack-label{ flex: none; }
+  .techstack-page .footer{ flex-direction: column; align-items: flex-start; }
 }
 `;
 
@@ -362,10 +289,11 @@ export default function TechStack() {
   return (
     <div id="tech-stack" className="techstack-page">
       <style>{styles}</style>
-      <TechStackNavbar />
+      
       <TechStackHero />
       <TechStackTable />
+      <TechStackCTA />
+      <TechStackFooter />
     </div>
   );
 }
-

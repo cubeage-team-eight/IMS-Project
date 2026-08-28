@@ -51,7 +51,7 @@ function ProjectWorkflow() {
 
         <div className="font-serif px-4 sm:px-6 md:px-10 py-6 md:py-10 pl-0 md:pl-8 lg:pl-24">
         <span className=" text-lg text-orange-400 font-mono text-sm">
-          08-PROJECT WORKFLOW</span>
+          05-PROJECT WORKFLOW</span>
         <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl leading-tight ">
           End-to-End <br/>
         <i>internship lifecycle</i> </h1>
