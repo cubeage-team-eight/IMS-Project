@@ -3,7 +3,7 @@ const Dashboard = () => {
     <div className="space-y-5 p-5">
 
       {/* ================= STATS ================= */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
         <StatCard
           title="Total Colleges"
@@ -35,8 +35,8 @@ const Dashboard = () => {
       </div>
 
 
-      {/* ================= CONTENT ================= */}
-      <div className="grid grid-cols-3 gap-5">
+      {/* ================= MIDDLE SECTION ================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
         {/* ================= PENDING DOCUMENTS ================= */}
         <div className="col-span-2 bg-white rounded-xl border border-slate-200 p-5">

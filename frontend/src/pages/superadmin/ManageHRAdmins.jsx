@@ -457,7 +457,7 @@ const AccountCard = ({ account, onView, onEdit, onToggle, onDelete }) => {
         </div>
 
         {/* --- stats --- */}
-        <div className="mt-4 grid grid-cols-3 divide-x divide-slate-200 rounded-lg border border-slate-200">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 rounded-lg border border-slate-200">
           <Stat value={account.colleges} label="Colleges" />
           <Stat
             value={account.permissions}
@@ -485,7 +485,7 @@ const AccountCard = ({ account, onView, onEdit, onToggle, onDelete }) => {
       </div>
 
       {/* --- actions --- */}
-      <div className="grid grid-cols-2 divide-x divide-slate-200 border-t border-slate-200 sm:grid-cols-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 border-t border-slate-200">
         <Action
           icon={Eye}
           label="View"
@@ -867,7 +867,7 @@ const ProfileDrawer = ({ account, onClose, onEdit, onToggle }) => {
           </DrawerSection>
 
           <DrawerSection title="Statistics">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="rounded-lg bg-slate-50 py-5 text-center">
                 <p className="font-['Source_Serif_4',Georgia,serif] text-[26px] font-bold leading-none">
                   {account.colleges}

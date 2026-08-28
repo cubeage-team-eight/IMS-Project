@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function Hero() {
   return (
-    <div className="relative min-h-screen bg-[#0a0f1c] text-white overflow-hidden flex flex-col">
+    <div id="overview" className="relative min-h-screen bg-[#0a0f1c] text-white overflow-hidden flex flex-col">
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
       
@@ -14,12 +14,12 @@ function Hero() {
         </div>
         
         <div className="hidden md:flex items-center gap-8 text-xs tracking-widest font-medium text-gray-500">
-          <a href="#" className="text-[#f97316]">Overview</a>
-          <a href="#" className="hover:text-white transition-colors">Objectives</a>
-          <a href="#" className="hover:text-white transition-colors">User Roles</a>
-          <a href="#" className="hover:text-white transition-colors">Modules</a>
-          <a href="#" className="hover:text-white transition-colors">Workflow</a>
-          <a href="#" className="hover:text-white transition-colors">Tech Stack</a>
+          <a href="#overview" onClick={(e) => { e.preventDefault(); document.getElementById('overview')?.scrollIntoView({ behavior: 'smooth' }); }} className="text-[#f97316]">Overview</a>
+          <a href="#objectives" onClick={(e) => { e.preventDefault(); document.getElementById('objectives')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Objectives</a>
+          <a href="#user-roles" onClick={(e) => { e.preventDefault(); document.getElementById('user-roles')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">User Roles</a>
+          <a href="#modules" onClick={(e) => { e.preventDefault(); document.getElementById('modules')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Modules</a>
+          <a href="#workflow" onClick={(e) => { e.preventDefault(); document.getElementById('workflow')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Workflow</a>
+          <a href="#tech-stack" onClick={(e) => { e.preventDefault(); document.getElementById('tech-stack')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Tech Stack</a>
         </div>
 
         <Link 

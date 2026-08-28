@@ -1,177 +1,138 @@
 import React from "react";
 
 const Attendance = () => {
-  const attendanceData = [
+  const students = [
     {
       id: 1,
-      name: "Rahul Patil",
-      internship: "Web Development",
-      totalDays: 30,
-      present: 27,
-      absent: 3,
-      percentage: 90,
-      status: "Good",
+      name: "Sneha Joshi",
+      studentId: "CS2021067",
+      batch: "2025-Q1",
+      attendance: 98,
     },
     {
       id: 2,
-      name: "Priya Sharma",
-      internship: "Machine Learning",
-      totalDays: 30,
-      present: 25,
-      absent: 5,
-      percentage: 83,
-      status: "Good",
+      name: "Aditi Verma",
+      studentId: "CS2021042",
+      batch: "2025-Q1",
+      attendance: 94,
     },
     {
       id: 3,
-      name: "Amit Jadhav",
-      internship: "Full Stack Development",
-      totalDays: 30,
-      present: 20,
-      absent: 10,
-      percentage: 67,
-      status: "Low",
+      name: "Rohan Gupta",
+      studentId: "ME2021033",
+      batch: "2025-Q2",
+      attendance: 91,
+    },
+    {
+      id: 4,
+      name: "Simran Kaur",
+      studentId: "IT2021055",
+      batch: "2025-Q2",
+      attendance: 89,
+    },
+    {
+      id: 5,
+      name: "Vikram Singh",
+      studentId: "EC2021018",
+      batch: "2025-Q1",
+      attendance: 87,
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-[calc(100vh-84px)] bg-[#f1f5f9] p-8">
 
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Student Attendance
+      {/* ================= PAGE HEADER ================= */}
+      <div className="mb-8">
+        <h1 className="text-[24px] font-semibold text-[#071627]">
+          Attendance Records
         </h1>
 
-        <p className="text-gray-500 mt-1">
-          Monitor internship attendance of students.
+        <p className="mt-1 text-[17px] text-[#8b9ab0]">
+          View attendance details for all your students
         </p>
       </div>
 
-      {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+      {/* ================= STUDENT LIST ================= */}
+      <div className="space-y-5">
 
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <p className="text-gray-500">
-            Total Students
-          </p>
+        {students.map((student) => {
+          const isLowAttendance = student.attendance < 90;
 
-          <h2 className="text-3xl font-bold text-gray-800 mt-2">
-            120
-          </h2>
-        </div>
+          return (
+            <div
+              key={student.id}
+              className="bg-white border border-[#dce3eb] rounded-2xl px-5 py-5 min-h-[88px] flex items-center justify-between"
+            >
 
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <p className="text-gray-500">
-            Average Attendance
-          </p>
+              {/* ================= STUDENT INFO ================= */}
+              <div className="flex items-center gap-5">
 
-          <h2 className="text-3xl font-bold text-green-600 mt-2">
-            85%
-          </h2>
-        </div>
+                {/* Avatar */}
+                <div className="w-12 h-12 rounded-full bg-[#d2f8e8] flex items-center justify-center flex-shrink-0">
+                  <span className="text-[#008c68] font-semibold text-[16px]">
+                    {student.name.charAt(0)}
+                  </span>
+                </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-5">
-          <p className="text-gray-500">
-            Low Attendance
-          </p>
-
-          <h2 className="text-3xl font-bold text-red-500 mt-2">
-            15
-          </h2>
-        </div>
-
-      </div>
-
-      {/* Attendance Table */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
-
-        <div className="flex justify-between items-center mb-5">
-
-          <h2 className="text-lg font-semibold text-gray-800">
-            Attendance Records
-          </h2>
-
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            Export Report
-          </button>
-
-        </div>
-
-        <div className="overflow-x-auto">
-
-          <table className="w-full text-left">
-
-            <thead>
-              <tr className="border-b bg-gray-50">
-
-                <th className="p-3">Student</th>
-                <th className="p-3">Internship</th>
-                <th className="p-3">Total Days</th>
-                <th className="p-3">Present</th>
-                <th className="p-3">Absent</th>
-                <th className="p-3">Attendance</th>
-                <th className="p-3">Status</th>
-
-              </tr>
-            </thead>
-
-            <tbody>
-
-              {attendanceData.map((student) => (
-
-                <tr
-                  key={student.id}
-                  className="border-b hover:bg-gray-50"
-                >
-
-                  <td className="p-3 font-medium">
+                {/* Name + ID */}
+                <div>
+                  <h2 className="text-[17px] font-medium text-[#071627]">
                     {student.name}
-                  </td>
+                  </h2>
 
-                  <td className="p-3">
-                    {student.internship}
-                  </td>
+                  <p className="text-[#8b9ab0] text-[15px] mt-0.5">
+                    {student.studentId}
+                    <span className="mx-1">·</span>
+                    {student.batch}
+                  </p>
+                </div>
 
-                  <td className="p-3">
-                    {student.totalDays}
-                  </td>
+              </div>
 
-                  <td className="p-3 text-green-600">
-                    {student.present}
-                  </td>
+              {/* ================= ATTENDANCE ================= */}
+              <div className="w-[235px]">
 
-                  <td className="p-3 text-red-500">
-                    {student.absent}
-                  </td>
+                {/* Label + Percentage */}
+                <div className="flex items-center justify-between mb-1">
 
-                  <td className="p-3 font-semibold">
-                    {student.percentage}%
-                  </td>
+                  <span className="text-[#8797af] text-[15px]">
+                    Attendance
+                  </span>
 
-                  <td className="p-3">
+                  <span
+                    className={`font-semibold text-[15px] ${
+                      isLowAttendance
+                        ? "text-[#e57d00]"
+                        : "text-[#00b878]"
+                    }`}
+                  >
+                    {student.attendance}%
+                  </span>
 
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        student.percentage >= 75
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
-                      }`}
-                    >
-                      {student.status}
-                    </span>
+                </div>
 
-                  </td>
+                {/* Progress Bar */}
+                <div className="w-full h-[10px] bg-[#edf1f5] rounded-full overflow-hidden">
 
-                </tr>
+                  <div
+                    className={`h-full rounded-full ${
+                      isLowAttendance
+                        ? "bg-[#e57d00]"
+                        : "bg-[#0dbb8a]"
+                    }`}
+                    style={{
+                      width: `${student.attendance}%`,
+                    }}
+                  />
 
-              ))}
+                </div>
 
-            </tbody>
+              </div>
 
-          </table>
-
-        </div>
+            </div>
+          );
+        })}
 
       </div>
 
