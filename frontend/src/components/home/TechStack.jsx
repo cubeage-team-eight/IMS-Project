@@ -287,7 +287,7 @@ const styles = `
 // Route: /tech-stack
 export default function TechStack() {
   return (
-    <div className="techstack-page">
+    <div id="tech-stack" className="techstack-page">
       <style>{styles}</style>
       
       <TechStackHero />
