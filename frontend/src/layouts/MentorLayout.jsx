@@ -76,7 +76,7 @@ const MentorLayout = () => {
       />
 
       {/* RIGHT CONTENT */}
-      <div className="w-full lg:ml-[337px] transition-all duration-300 ease-in-out min-h-screen flex flex-col">
+      <div className="lg:ml-[337px] transition-all duration-300 ease-in-out min-h-screen flex flex-col overflow-x-hidden">
 
         {/* FIXED NAVBAR */}
         <Navbar

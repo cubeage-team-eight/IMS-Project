@@ -39,7 +39,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
         {/* ================= PENDING DOCUMENTS ================= */}
-        <div className="col-span-2 bg-white rounded-xl border border-slate-200 p-5">
+        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-5">
 
           <h2 className="text-[17px] font-semibold mb-4">
             Pending Document Verifications
