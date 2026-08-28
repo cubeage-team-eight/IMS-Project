@@ -45,6 +45,14 @@ import {
   deleteInternship,
 } from "../../controllers/hr/internship.controller.js";
 
+import {
+  createAssignment,
+  getAllAssignments,
+  getAssignmentById,
+  updateAssignment,
+  deleteAssignment,
+} from "../../controllers/hr/assignment.controller.js";
+
 const router = express.Router();
 
 // HR/Admin authentication and authorization
@@ -93,14 +101,20 @@ router.get("/students/:id", getStudentById);
 // =========================
 
 router.post("/internships", createInternship);
-
 router.get("/internships", getAllInternships);
-
-router.get("/internships/:id", getInternshipById);
-
+router.get("/internships/:id", getInternshipById)
 router.put("/internships/:id", updateInternship);
-
 router.delete("/internships/:id", deleteInternship);
+
+// =========================
+// ASSIGNMENT MANAGEMENT
+// =========================
+
+router.post("/assignments", createAssignment);
+router.get("/assignments", getAllAssignments);
+router.get("/assignments/:id", getAssignmentById);
+router.put("/assignments/:id", updateAssignment);
+router.delete("/assignments/:id", deleteAssignment);
 
 router.put(
   "/students/:id",
