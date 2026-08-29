@@ -32,7 +32,7 @@ function LandingNavbar() {
             if (name) setActiveSection(name);
           }
         },
-        { rootMargin: "-50% 0px -50% 0px" }
+        { rootMargin: "-20% 0px -60% 0px" } // Triggers when section is in top half of screen
       );
 
       observer.observe(element);
@@ -44,6 +44,7 @@ function LandingNavbar() {
 
   const scrollToSection = (e, item) => {
     e.preventDefault();
+    setActiveSection(item); // Instantly update active state on click
     const id = SECTION_IDS[item];
     const element = document.getElementById(id);
     if (element) {
