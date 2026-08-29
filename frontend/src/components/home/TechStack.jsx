@@ -362,7 +362,7 @@ export default function TechStack() {
   return (
     <div id="tech-stack" className="techstack-page">
       <style>{styles}</style>
-      <TechStackNavbar />
+      <div className="hidden"><TechStackNavbar /></div>
       <TechStackHero />
       <TechStackTable />
     </div>
