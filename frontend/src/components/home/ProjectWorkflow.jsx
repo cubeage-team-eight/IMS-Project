@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 function ProjectWorkflow() {
 
@@ -24,17 +25,40 @@ function ProjectWorkflow() {
   ];
 
   return (
-    <div className="bg-slate-900 text-white w-full pl-0 md:pl-8 lg:pl-24 cdoverflow-hidden">
-        <div className="font-serif px-4 sm:px-6 md:px-10 py-6 md:py-10">
+    <div id="workflow" className="bg-slate-900 text-white w-full cdoverflow-hidden relative pb-10">
+      {/* Navigation Bar */}
+      <nav className="relative w-full p-6 flex justify-between items-center z-20 max-w-7xl mx-auto">
+        <div className="w-12 h-8 bg-[#f97316] flex items-center justify-center rounded-sm">
+          <span className="text-white font-bold text-sm tracking-wider">IMS</span>
+        </div>
+        
+        <div className="hidden md:flex items-center gap-8 text-xs tracking-widest font-medium text-gray-500">
+          <a href="#overview" onClick={(e) => { e.preventDefault(); document.getElementById('overview')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Overview</a>
+          <a href="#objectives" onClick={(e) => { e.preventDefault(); document.getElementById('objectives')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Objectives</a>
+          <a href="#user-roles" onClick={(e) => { e.preventDefault(); document.getElementById('user-roles')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">User Roles</a>
+          <a href="#modules" onClick={(e) => { e.preventDefault(); document.getElementById('modules')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Modules</a>
+          <a href="#workflow" onClick={(e) => { e.preventDefault(); document.getElementById('workflow')?.scrollIntoView({ behavior: 'smooth' }); }} className="text-[#f97316]">Workflow</a>
+          <a href="#tech-stack" onClick={(e) => { e.preventDefault(); document.getElementById('tech-stack')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Tech Stack</a>
+        </div>
+
+        <Link 
+          to="/login"
+          className="px-6 py-2 bg-[#f97316] text-white rounded-md font-medium text-sm flex items-center gap-2 hover:bg-[#ea580c] transition-colors"
+        >
+          Login <span>&rarr;</span>
+        </Link>
+      </nav>
+
+        <div className="font-serif px-4 sm:px-6 md:px-10 py-6 md:py-10 pl-0 md:pl-8 lg:pl-24">
         <span className=" text-lg text-orange-400 font-mono text-sm">
           05-PROJECT WORKFLOW</span>
         <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl leading-tight ">
           End-to-End <br/>
         <i>internship lifecycle</i> </h1>
         </div>
-      <div className="flex flex-col min-w-0 gap-2 relative pl-8 sm:pl-10 pr-4 sm:pr-6 pb-8">
+      <div className="flex flex-col min-w-0 gap-2 relative pl-8 sm:pl-10 pr-4 sm:pr-6 pb-8 md:pl-16 lg:pl-32">
        
-        <div className="absolute left-[49px] sm:left-[65.5px] w-[0.5px] h-full bg-orange-400/20"/>
+        <div className="absolute left-[49px] sm:left-[65.5px] md:left-[89.5px] lg:left-[153.5px] w-[0.5px] h-full bg-orange-400/20"/>
 
 
         {Items.map((item, index) => (

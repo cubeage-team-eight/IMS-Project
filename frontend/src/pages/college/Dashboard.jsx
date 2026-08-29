@@ -30,7 +30,7 @@ const Dashboard = () => {
     <div className="space-y-5 p-5">
 
       {/* ================= STATS ================= */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
         <StatCard
           title="Total Students"
@@ -63,7 +63,7 @@ const Dashboard = () => {
 
 
       {/* ================= LOWER ================= */}
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
         {/* ================= TOP STUDENTS ================= */}
         <div className="bg-white rounded-xl border border-slate-200 p-5">

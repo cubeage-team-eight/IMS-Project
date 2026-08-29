@@ -17,7 +17,7 @@ export const ROUTES = {
     ANALYTICS: "/superadmin/analytics",
   },
 
-  HR_ADMIN: {
+  HR_ADMIN: {  
     DASHBOARD: "/hradmin/dashboard",
     COLLEGES: "/hradmin/colleges",
     MENTORS: "/hradmin/mentors",
