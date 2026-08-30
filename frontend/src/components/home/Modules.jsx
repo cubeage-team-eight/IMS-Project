@@ -69,7 +69,7 @@ const MODULES = [
 
 function Modules() {
   return (
-    <div id="modules" className="bg-[#f8f9fa] text-[#0f172a] py-24">
+    <div id="modules" className="scroll-mt-14 bg-[#f8f9fa] text-[#0f172a] py-24">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         
         {/* Header */}

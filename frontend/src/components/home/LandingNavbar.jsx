@@ -16,6 +16,8 @@ function LandingNavbar() {
   const [activeSection, setActiveSection] = useState("Overview");
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const isScrolling = React.useRef(false);
+
   // IntersectionObserver to auto-detect which section is in view
   useEffect(() => {
     const sectionIds = Object.values(SECTION_IDS);
@@ -27,7 +29,7 @@ function LandingNavbar() {
 
       const observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && !isScrolling.current) {
             const name = Object.keys(SECTION_IDS).find((key) => SECTION_IDS[key] === id);
             if (name) setActiveSection(name);
           }
@@ -45,11 +47,19 @@ function LandingNavbar() {
   const scrollToSection = (e, item) => {
     e.preventDefault();
     setActiveSection(item); // Instantly update active state on click
+    isScrolling.current = true;
+    
     const id = SECTION_IDS[item];
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+    
+    // Release the lock after smooth scroll is likely finished
+    setTimeout(() => {
+      isScrolling.current = false;
+    }, 1000);
+    
     setMobileOpen(false);
   };
 
@@ -59,7 +69,7 @@ function LandingNavbar() {
       <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between gap-6 px-6 lg:px-10 py-3.5 bg-[#0b0f1c] border-b border-white/[0.09]">
 
         {/* — Brand — */}
-        <a href="/" className="flex items-center gap-2.5 min-w-0 no-underline">
+        <a href="/" className="flex items-center gap-2.5 flex-shrink-0 no-underline">
           <span className="flex-shrink-0 w-[26px] h-[26px] rounded-md bg-[#f97316] flex items-center justify-center text-[11px] font-bold tracking-[0.02em] text-white">
             IMS
           </span>

@@ -13,7 +13,7 @@ const OBJECTIVES = [
 
 function Objective() {
   return (
-    <div id="objectives" className="bg-[#fcfdfd] text-[#0f172a] py-24 border-y border-slate-200">
+    <div id="objectives" className="scroll-mt-14 bg-[#fcfdfd] text-[#0f172a] py-24 border-y border-slate-200">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-col lg:flex-row gap-16 lg:gap-24">
         
         {/* Left Column */}

@@ -48,25 +48,25 @@ function Hero() {
           <div className="grid grid-cols-2 gap-4 lg:gap-6 mt-12 lg:mt-0">
             {/* Card 1 */}
             <div className="bg-white/[0.02] border border-white/5 p-8 rounded-xl backdrop-blur-sm">
-              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4">10</h3>
+              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4 lining-nums">16</h3>
               <p className="text-gray-500 text-[10px] tracking-widest uppercase font-mono">System Modules</p>
             </div>
             
             {/* Card 2 */}
             <div className="bg-white/[0.02] border border-white/5 p-8 rounded-xl backdrop-blur-sm">
-              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4">2</h3>
+              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4 lining-nums">5</h3>
               <p className="text-gray-500 text-[10px] tracking-widest uppercase font-mono">User Roles</p>
             </div>
             
             {/* Card 3 */}
             <div className="bg-white/[0.02] border border-white/5 p-8 rounded-xl backdrop-blur-sm">
-              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4">7.5K<span className="text-3xl font-sans">+</span></h3>
+              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4 lining-nums">10K<span className="text-3xl font-sans">+</span></h3>
               <p className="text-gray-500 text-[10px] tracking-widest uppercase font-mono">Students Supported</p>
             </div>
             
             {/* Card 4 */}
             <div className="bg-white/[0.02] border border-white/5 p-8 rounded-xl backdrop-blur-sm">
-              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4">80<span className="text-3xl font-sans">%</span></h3>
+              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4 lining-nums">100<span className="text-3xl font-sans">%</span></h3>
               <p className="text-gray-500 text-[10px] tracking-widest uppercase font-mono">Paperless Workflow</p>
             </div>
           </div>
