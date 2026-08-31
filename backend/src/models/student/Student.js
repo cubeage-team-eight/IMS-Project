@@ -1,3 +1,4 @@
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../../config/database.js";
 
@@ -70,7 +71,8 @@ const Student = sequelize.define(
     },
 
     status: {
-      type: DataTypes.ENUM("ACTIVE", "INACTIVE", "COMPLETED"),
+      type: DataTypes.STRING,
+      allowNull: true,
       defaultValue: "ACTIVE",
     },
   },

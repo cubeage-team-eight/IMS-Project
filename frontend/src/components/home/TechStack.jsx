@@ -10,8 +10,6 @@ const techStack = [
   { category: "Deployment", technologies: ["Vercel (Frontend)", "Render / Hostinger VPS"] },
 ];
 
-
-
 function TechStackHero() {
   return (
     <header className="hero">
@@ -38,7 +36,6 @@ function TechStackRow({ category, technologies }) {
     </div>
   );
 }
-
 function TechStackTable() {
   return (
     <section className="stack-section" role="list">
