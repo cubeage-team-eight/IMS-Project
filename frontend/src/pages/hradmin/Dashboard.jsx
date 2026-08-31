@@ -3,7 +3,11 @@ const Dashboard = () => {
     <div className="space-y-5 p-5">
 
       {/* ================= STATS ================= */}
+<<<<<<< HEAD
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 ls:grid-cols-3 xl:grid-cols-4">
+=======
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+>>>>>>> afd108c472f7f0d30f09652d1f195f2767e392a9
 
         <StatCard
           title="Total Colleges"
@@ -35,11 +39,16 @@ const Dashboard = () => {
       </div>
 
 
+<<<<<<< HEAD
       {/* ================= CONTENT ================= */}
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+=======
+      {/* ================= MIDDLE SECTION ================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+>>>>>>> afd108c472f7f0d30f09652d1f195f2767e392a9
 
         {/* ================= PENDING DOCUMENTS ================= */}
-        <div className="col-span-2 bg-white rounded-xl border border-slate-200 p-5">
+        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-5">
 
           <h2 className="text-[17px] font-semibold mb-4">
             Pending Document Verifications

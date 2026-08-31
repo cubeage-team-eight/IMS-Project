@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/common/Sidebar";
 import Navbar from "../components/navbar/Navbar";
@@ -51,20 +52,31 @@ const collegeMenu = [
 ];
 
 const CollegeCoordinatorLayout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-[#EEF3F8]">
+      {/* MOBILE OVERLAY */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
       <Sidebar
         role="College Coordinator"
         userName="Dr. Preethi Shetty"
         menuItems={collegeMenu}
+        isOpen={isSidebarOpen}
       />
 
-      <div className="ml-[337px]">
+      <div className="lg:ml-[337px] transition-all duration-300 ease-in-out min-h-screen flex flex-col overflow-x-hidden">
 
         <Navbar
           role="College Coordinator"
           title="Overview"
+          onMenuClick={() => setIsSidebarOpen(true)}
         />
 
         <main className="pt-[90px] p-8">

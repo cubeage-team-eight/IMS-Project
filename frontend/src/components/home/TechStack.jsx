@@ -1,10 +1,3 @@
-import { useState } from "react";
-
-
-
-const NAV_ITEMS = ["Overview", "Objectives", "User Roles", "Modules", "Workflow", "Tech Stack"];
-
-
 const techStack = [
   { category: "Frontend", technologies: ["React.js", "Tailwind CSS", "Material UI", "Axios", "React Router"] },
   { category: "Backend", technologies: ["Node.js", "Express.js"] },
@@ -15,95 +8,50 @@ const techStack = [
   { category: "Deployment", technologies: ["Vercel (Frontend)", "Render / Hostinger VPS"] },
 ];
 
+/* Shared horizontal page padding — was the --page-pad variable */
+const PAGE_PAD = "px-[clamp(24px,11vw,150px)]";
 
-function TechStackNavbar() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <nav className="navbar" aria-label="Primary">
-        <a className="brand" href="/" aria-label="IMS home">
-          <span className="brand-mark" aria-hidden="true">IMS</span>
-          <span className="brand-name">INTERNSHIP MANAGEMENT SYSTEM</span>
-        </a>
-
-        <ul className="nav-links">
-          {NAV_ITEMS.map((item) => {
-            const isActive = item === "Tech Stack";
-            return (
-              <li key={item}>
-                <a
-                  href={isActive ? "/tech-stack" : "#"}
-                  className={isActive ? "active" : ""}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  {item}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-
-        <button className="nav-cta desktop-only" type="button">
-          Login →
-        </button>
-
-        <button
-          className="nav-toggle"
-          aria-label="Toggle menu"
-          aria-expanded={open}
-          aria-controls="mobilePanel"
-          onClick={() => setOpen((v) => !v)}
-        >
-          <svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-            <path d="M2 4.5H16M2 9H16M2 13.5H16" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-          </svg>
-        </button>
-      </nav>
-
-      {open && (
-        <div className="mobile-panel" id="mobilePanel">
-          {NAV_ITEMS.map((item) => {
-            const isActive = item === "Tech Stack";
-            return (
-              <a
-                key={item}
-                href={isActive ? "/tech-stack" : "#"}
-                className={isActive ? "active" : ""}
-                aria-current={isActive ? "page" : undefined}
-              >
-                {item}
-              </a>
-            );
-          })}
-          <button className="nav-cta" type="button">
-            Login →
-          </button>
-        </div>
-      )}
-    </>
-  );
-}
+/* ================================================================= */
+/*                              HERO                                 */
+/* ================================================================= */
 
 function TechStackHero() {
   return (
-    <header className="hero">
-      <p className="eyebrow">11 — TECHNOLOGY STACK</p>
-      <h1 className="hero-title">
+    <header
+      className={`${PAGE_PAD} pb-[clamp(44px,6vw,74px)] pt-[clamp(56px,8vw,92px)]`}
+    >
+      <p className="mb-[22px] text-[12.5px] font-semibold tracking-[0.18em] text-[#e76d26]">
+        11 — TECHNOLOGY STACK
+      </p>
+
+      <h1 className="font-['Playfair_Display',Georgia,serif] text-[clamp(38px,5vw,58px)] font-bold leading-[1.1] tracking-[-0.01em] text-[#f6f5f2]">
         MERN Stack
-        <span className="serif">architecture</span>
+        <span className="block font-medium italic">architecture</span>
       </h1>
     </header>
   );
 }
 
+/* ================================================================= */
+/*                           STACK ROW                               */
+/* ================================================================= */
+
 function TechStackRow({ category, technologies }) {
   return (
-    <div className="stack-row" role="listitem">
-      <div className="stack-label">{category}</div>
-      <div className="stack-chips">
+    <div
+      role="listitem"
+      className="flex flex-col items-start gap-2.5 border-b border-white/[0.08] py-[18px] first:border-t sm:flex-row sm:items-center sm:gap-[clamp(20px,4vw,48px)]"
+    >
+      <div className="text-[13.5px] tracking-[0.01em] text-[#6e7f96] sm:w-[200px] sm:shrink-0">
+        {category}
+      </div>
+
+      <div className="flex flex-1 flex-wrap gap-2.5">
         {technologies.map((tech) => (
-          <span className="chip" key={tech}>
+          <span
+            key={tech}
+            className="inline-flex items-center rounded-md border border-white/[0.12] bg-white/[0.04] px-[15px] py-[9px] text-[13px] text-[#c9cedb] transition duration-150 hover:border-[#A1968A8C] hover:bg-[#E8912A14] hover:text-[#f6f5f2]"
+          >
             {tech}
           </span>
         ))}
@@ -114,7 +62,10 @@ function TechStackRow({ category, technologies }) {
 
 function TechStackTable() {
   return (
-    <section className="stack-section" role="list">
+    <section
+      role="list"
+      className={`${PAGE_PAD} pb-[clamp(64px,8vw,96px)]`}
+    >
       {techStack.map((row) => (
         <TechStackRow key={row.category} category={row.category} technologies={row.technologies} />
       ))}
@@ -122,234 +73,81 @@ function TechStackTable() {
   );
 }
 
-const styles = `
-.techstack-page{
-  --bg: #080b15;
-  --bg-nav: #0b0f1c;
-  --text-hi: #f6f5f2;
-  --text-lo: #8a92a6;
-  --chip-text: #c9cedb;
-  --accent: #d9773f;
-  --accent-soft: rgba(217,119,63,0.12);
-  --border: rgba(255,255,255,0.09);
-  --chip-bg: transparent;
-  --chip-border: rgba(255,255,255,0.14);
-  --page-pad: clamp(24px, 12vw, 170px);
+/* ================================================================= */
+/*                               CTA                                 */
+/* ================================================================= */
 
-  background: var(--bg);
-  color: var(--text-hi);
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  min-height: 100vh;
+function TechStackCTA() {
+  return (
+    <section
+      className={`relative overflow-hidden border-t border-white/[0.08] bg-[#0e121f] text-center ${PAGE_PAD} py-[clamp(80px,11vw,140px)]`}
+    >
+      {/* soft glow at the left edge */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_90%_at_8%_55%,rgba(120,130,110,0.14),transparent_70%)]"
+      />
+
+      <div className="relative">
+        <h2 className="font-['Playfair_Display',Georgia,serif] text-[clamp(38px,5.4vw,64px)] font-bold leading-[1.1] tracking-[-0.01em] text-[#f6f5f2]">
+          Ready to explore
+          <span className="block font-medium italic">the platform?</span>
+        </h2>
+
+        <p className="mt-[clamp(20px,3vw,34px)] font-['Plus_Jakarta_Sans',system-ui,sans-serif] text-[17px] text-[#b9c4d4]">
+          Select your role to access a fully detailed dashboard view.
+        </p>
+
+        <button
+          type="button"
+          className="mt-[clamp(28px,4vw,48px)] cursor-pointer rounded-md bg-[#cb5f20] px-[34px] py-[19px] font-['Plus_Jakarta_Sans',system-ui,sans-serif] text-[17px] font-bold text-white transition duration-150 hover:-translate-y-px hover:brightness-[1.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e76d26] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0e121f]"
+        >
+          Enter the Platform →
+        </button>
+      </div>
+    </section>
+  );
 }
 
-.techstack-page *{ box-sizing: border-box; }
-.techstack-page a{ color: inherit; text-decoration: none; }
-.techstack-page :focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+/* ================================================================= */
+/*                             FOOTER                                */
+/* ================================================================= */
 
-/* ---------- NAVBAR ---------- */
-.techstack-page .navbar{
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 24px;
-  padding: 14px var(--page-pad);
-  background: var(--bg-nav);
-  border-bottom: 1px solid var(--border);
+function TechStackFooter() {
+  return (
+    <footer
+      className={`flex flex-col items-start justify-between gap-5 bg-[#0b0f1c] ${PAGE_PAD} py-[26px] sm:flex-row sm:flex-wrap sm:items-center`}
+    >
+      <div className="flex items-center gap-3 text-[13.5px] tracking-[0.06em] text-[#6e7f96]">
+        <span
+          aria-hidden="true"
+          className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md bg-[#cb5f20] text-[10px] font-bold tracking-[0.02em] text-white"
+        >
+          IMS
+        </span>
+
+        <span>Internship Management System</span>
+      </div>
+
+      <div className="text-[13.5px] text-[#6e7f96]">
+        MERN Stack · JWT · MongoDB Atlas · Vercel
+      </div>
+    </footer>
+  );
 }
 
-.techstack-page .brand{ display:flex; align-items:center; gap: 10px; min-width: 0; }
-
-.techstack-page .brand-mark{
-  flex: 0 0 auto;
-  width: 26px; height: 26px;
-  border-radius: 6px;
-  background: var(--accent);
-  display:flex; align-items:center; justify-content:center;
-  font-weight: 700;
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  color: #ffffff;
-}
-
-.techstack-page .brand-name{
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  color: var(--text-hi);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.techstack-page .nav-links{
-  display:flex;
-  align-items:center;
-  gap: clamp(10px, 1.8vw, 26px);
-  list-style:none;
-  margin:0; padding:0;
-}
-
-.techstack-page .nav-links a{
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-lo);
-  padding: 8px 6px;
-  border-radius: 6px;
-  transition: color .16s ease, background .16s ease;
-  white-space: nowrap;
-}
-.techstack-page .nav-links a:hover{ color: var(--text-hi); }
-.techstack-page .nav-links a.active{
-  color: var(--accent);
-  background: var(--accent-soft);
-  padding: 8px 14px;
-  font-weight: 600;
-}
-
-.techstack-page .nav-cta{
-  flex: 0 0 auto;
-  display:inline-flex;
-  align-items:center;
-  gap: 6px;
-  background: var(--accent);
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 13.5px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: filter .16s ease, transform .16s ease;
-}
-.techstack-page .nav-cta:hover{ filter: brightness(1.1); transform: translateY(-1px); }
-
-.techstack-page .nav-toggle{
-  display:none;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  width: 36px; height: 36px;
-  color: var(--text-hi);
-  align-items:center; justify-content:center;
-  cursor: pointer;
-}
-
-.techstack-page .mobile-panel{
-  display:flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px var(--page-pad) 16px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-nav);
-}
-.techstack-page .mobile-panel a{
-  padding: 12px 4px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-lo);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.techstack-page .mobile-panel a.active{ color: var(--accent); }
-.techstack-page .mobile-panel .nav-cta{ margin-top: 12px; justify-content:center; }
-
-@media (max-width: 860px){
-  .techstack-page .nav-links{ display:none; }
-  .techstack-page .nav-cta.desktop-only{ display:none; }
-  .techstack-page .nav-toggle{ display:flex; }
-}
-
-/* ---------- HERO ---------- */
-.techstack-page .hero{ padding: clamp(56px, 9vw, 96px) var(--page-pad) clamp(48px, 6vw, 70px); }
-
-.techstack-page .eyebrow{
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  color: var(--accent);
-  margin: 0 0 20px;
-  font-family: 'JetBrains Mono', monospace;
-}
-
-.techstack-page .hero-title{
-  margin: 0;
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1.06;
-  font-size: clamp(38px, 5.5vw, 64px);
-  color: var(--text-hi);
-}
-
-.techstack-page .hero-title .serif{
-  display:block;
-  font-style: italic;
-  font-weight: 500;
-  color: var(--text-hi);
-}
-
-/* ---------- STACK TABLE ---------- */
-.techstack-page .stack-section{ padding: 0 var(--page-pad) clamp(64px, 8vw, 100px); }
-
-.techstack-page .stack-row{
-  display:flex;
-  align-items: center;
-  gap: clamp(20px, 4vw, 48px);
-  padding: 15px 0;
-  border-bottom: 1px solid var(--border);
-}
-.techstack-page .stack-row:first-child{ border-top: 1px solid var(--border); }
-
-.techstack-page .stack-label{
-  flex: 0 0 200px;
-  color: var(--text-lo);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  letter-spacing: 0.01em;
-}
-
-.techstack-page .stack-chips{
-  display:flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  flex: 1;
-}
-
-.techstack-page .chip{
-  display:inline-flex;
-  align-items:center;
-  padding: 8px 14px;
-  background: var(--chip-bg);
-  border: 1px solid var(--chip-border);
-  border-radius: 6px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12.5px;
-  color: var(--chip-text);
-  transition: background .16s ease, border-color .16s ease, color .16s ease;
-}
-.techstack-page .chip:hover{
-  background: rgba(217,119,63,0.07);
-  border-color: rgba(217,119,63,0.55);
-  color: var(--text-hi);
-}
-
-@media (max-width: 640px){
-  .techstack-page .stack-row{ flex-direction: column; align-items: flex-start; gap: 10px; }
-  .techstack-page .stack-label{ flex: none; }
-}
-`;
+/* ================================================================= */
+/*                              PAGE                                 */
+/* ================================================================= */
 
 // Route: /tech-stack
 export default function TechStack() {
   return (
-    <div className="techstack-page">
-      <style>{styles}</style>
-      <TechStackNavbar />
+    <div className="min-h-screen bg-[#0e121f] font-['JetBrains_Mono',ui-monospace,monospace] text-[#f6f5f2]">
       <TechStackHero />
       <TechStackTable />
+      <TechStackCTA />
+      <TechStackFooter />
     </div>
   );
 }
-

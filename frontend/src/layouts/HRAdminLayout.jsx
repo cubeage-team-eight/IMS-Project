@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import {useState} from "react"
 import Sidebar from "../components/common/Sidebar";
@@ -66,21 +67,43 @@ const hrAdminMenu = [
 ];
 
 const HRAdminLayout = () => {
+<<<<<<< HEAD
     
   return (
     <div className="min-h-screen bg-[#EEF3F8]">
   
+=======
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-[#EEF3F8]">
+      {/* MOBILE OVERLAY */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+>>>>>>> afd108c472f7f0d30f09652d1f195f2767e392a9
       <Sidebar
         role="HR / Admin"
         userName="Priya Sharma"
         menuItems={hrAdminMenu}
+        isOpen={isSidebarOpen}
       />
+<<<<<<< HEAD
     
       <div className="ml-[337px]">
+=======
+
+      <div className="lg:ml-[337px] transition-all duration-300 ease-in-out min-h-screen flex flex-col overflow-x-hidden">
+>>>>>>> afd108c472f7f0d30f09652d1f195f2767e392a9
 
         <Navbar
           role="HR / Admin"
           title="Overview"
+          onMenuClick={() => setIsSidebarOpen(true)}
         />
 
         <main className="pt-[90px] p-8">

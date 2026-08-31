@@ -169,7 +169,11 @@ function DocumentVerification() {
                 <h1 className='text-xl font-medium'>Document Verification</h1>
                 
             </div>
+<<<<<<< HEAD
         <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-6'>
+=======
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6'>
+>>>>>>> afd108c472f7f0d30f09652d1f195f2767e392a9
             <StatCard
                 title="Pending Review"
                 value= "7"

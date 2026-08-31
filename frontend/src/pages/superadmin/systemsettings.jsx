@@ -22,17 +22,23 @@ const SystemSettings = () => {
 
   const [form, setForm] = useState(DEFAULTS);
   const [saved, setSaved] = useState(false);
+  const [wasReset, setWasReset] = useState(false);
 
   const update = (key) => (e) => {
     setForm({ ...form, [key]: e.target.value });
     setSaved(false);
+    setWasReset(false);
   };
 
-  const save = () => setSaved(true);
+  const save = () => {
+    setSaved(true);
+    setWasReset(false);
+  };
 
   const reset = () => {
-    setForm(DEFAULTS);
+    setForm({ ...DEFAULTS });
     setSaved(false);
+    setWasReset(true);
   };
 
   return (
@@ -98,6 +104,12 @@ const SystemSettings = () => {
             Settings saved
           </span>
         )}
+
+        {wasReset && (
+          <span className="text-[14px] font-medium text-slate-500">
+            Defaults restored
+          </span>
+        )}
       </div>
     </main>
   </div>
@@ -124,15 +136,7 @@ const Field = ({ label, value, onChange, type = "text" }) => (
   </div>
 );
 
-/* ================================================================= */
-/*                            SIDEBAR                                */
-/* ================================================================= */
 
-
-
-/* ================================================================= */
-/*                             TOPBAR                                */
-/* ================================================================= */
 
 
 

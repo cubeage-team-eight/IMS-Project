@@ -21,9 +21,10 @@ const Sidebar = ({
   role,
   userName,
   menuItems = [],
+  isOpen
 }) => {
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[337px] bg-[#08182A] text-white flex flex-col">
+    <aside className={`fixed left-0 top-0 bottom-0 w-[337px] bg-[#08182A] text-white flex flex-col z-50 transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
 
       {/* ================= BRAND ================= */}
       <div className="h-[78px] px-3 flex items-center border-b border-white/10">

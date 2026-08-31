@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import Sidebar from "../components/common/Sidebar";
@@ -54,23 +55,34 @@ const mentorMenu = [
 ];
 
 const MentorLayout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-[#EEF3F8]">
+      {/* MOBILE OVERLAY */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
       {/* FIXED SIDEBAR */}
       <Sidebar
         role="Mentor"
         userName="Dr. Arun Patel"
         menuItems={mentorMenu}
+        isOpen={isSidebarOpen}
       />
 
       {/* RIGHT CONTENT */}
-      <div className="ml-[337px]">
+      <div className="lg:ml-[337px] transition-all duration-300 ease-in-out min-h-screen flex flex-col overflow-x-hidden">
 
         {/* FIXED NAVBAR */}
         <Navbar
           role="Mentor"
           title="Overview"
+          onMenuClick={() => setIsSidebarOpen(true)}
         />
 
         {/* PAGE CONTENT */}
