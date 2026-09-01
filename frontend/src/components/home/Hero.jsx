@@ -3,32 +3,9 @@ import { Link } from 'react-router-dom';
 
 function Hero() {
   return (
-    <div id="overview" className="relative min-h-screen bg-[#0a0f1c] text-white overflow-hidden flex flex-col">
+    <div id="overview" className="relative min-h-screen bg-[#0a0f1c] text-white overflow-hidden flex flex-col pt-[52px]">
       {/* Background Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
-      
-      {/* Navigation Bar */}
-      <nav className="relative w-full p-6 flex justify-between items-center z-20 max-w-7xl mx-auto">
-        <div className="w-12 h-8 bg-[#f97316] flex items-center justify-center rounded-sm">
-          <span className="text-white font-bold text-sm tracking-wider">IMS</span>
-        </div>
-        
-        <div className="hidden md:flex items-center gap-8 text-xs tracking-widest font-medium text-gray-500">
-          <a href="#overview" onClick={(e) => { e.preventDefault(); document.getElementById('overview')?.scrollIntoView({ behavior: 'smooth' }); }} className="text-[#f97316]">Overview</a>
-          <a href="#objectives" onClick={(e) => { e.preventDefault(); document.getElementById('objectives')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Objectives</a>
-          <a href="#user-roles" onClick={(e) => { e.preventDefault(); document.getElementById('user-roles')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">User Roles</a>
-          <a href="#modules" onClick={(e) => { e.preventDefault(); document.getElementById('modules')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Modules</a>
-          <a href="#workflow" onClick={(e) => { e.preventDefault(); document.getElementById('workflow')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Workflow</a>
-          <a href="#tech-stack" onClick={(e) => { e.preventDefault(); document.getElementById('tech-stack')?.scrollIntoView({ behavior: 'smooth' }); }} className="hover:text-white transition-colors">Tech Stack</a>
-        </div>
-
-        <Link 
-          to="/login"
-          className="px-6 py-2 bg-[#f97316] text-white rounded-md font-medium text-sm flex items-center gap-2 hover:bg-[#ea580c] transition-colors"
-        >
-          Login <span>&rarr;</span>
-        </Link>
-      </nav>
 
       {/* Hero Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 flex-1 flex items-center w-full">
@@ -71,25 +48,25 @@ function Hero() {
           <div className="grid grid-cols-2 gap-4 lg:gap-6 mt-12 lg:mt-0">
             {/* Card 1 */}
             <div className="bg-white/[0.02] border border-white/5 p-8 rounded-xl backdrop-blur-sm">
-              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4">10</h3>
+              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4 lining-nums">16</h3>
               <p className="text-gray-500 text-[10px] tracking-widest uppercase font-mono">System Modules</p>
             </div>
             
             {/* Card 2 */}
             <div className="bg-white/[0.02] border border-white/5 p-8 rounded-xl backdrop-blur-sm">
-              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4">2</h3>
+              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4 lining-nums">5</h3>
               <p className="text-gray-500 text-[10px] tracking-widest uppercase font-mono">User Roles</p>
             </div>
             
             {/* Card 3 */}
             <div className="bg-white/[0.02] border border-white/5 p-8 rounded-xl backdrop-blur-sm">
-              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4">7.5K<span className="text-3xl font-sans">+</span></h3>
+              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4 lining-nums">10K<span className="text-3xl font-sans">+</span></h3>
               <p className="text-gray-500 text-[10px] tracking-widest uppercase font-mono">Students Supported</p>
             </div>
             
             {/* Card 4 */}
             <div className="bg-white/[0.02] border border-white/5 p-8 rounded-xl backdrop-blur-sm">
-              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4">80<span className="text-3xl font-sans">%</span></h3>
+              <h3 className="text-5xl font-serif font-bold text-[#f97316] mb-4 lining-nums">100<span className="text-3xl font-sans">%</span></h3>
               <p className="text-gray-500 text-[10px] tracking-widest uppercase font-mono">Paperless Workflow</p>
             </div>
           </div>

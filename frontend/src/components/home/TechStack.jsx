@@ -59,7 +59,6 @@ function TechStackRow({ category, technologies }) {
     </div>
   );
 }
-
 function TechStackTable() {
   return (
     <section
