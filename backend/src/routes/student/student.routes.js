@@ -83,6 +83,8 @@ import express from "express";
 
 import profileController from "../../controllers/student/profile.controller.js";
 import attendanceController from "../../controllers/student/attendance.controller.js";
+import leaveController from "../../controllers/student/leave.controller.js";
+import taskController from "../../controllers/student/task.controller.js";
 
 import authMiddleware from "../../middleware/auth.middleware.js";
 
@@ -110,5 +112,19 @@ router.get(
   authMiddleware,
   attendanceController.getAttendance
 );
+
+
+// Student Leave
+router.post( "/leave", authMiddleware, leaveController.applyLeave );
+router.get( "/leave", authMiddleware, leaveController.getMyLeaves );
+router.get( "/leave/:leaveId", authMiddleware, leaveController.getLeaveById );
+router.put( "/leave/:leaveId/cancel", authMiddleware, leaveController.cancelLeave );
+
+
+// Student Task
+router.get("/tasks", authMiddleware, taskController.getMyTasks);
+router.get("/tasks/:id", authMiddleware, taskController.getTaskById);
+router.post("/tasks/:id/start", authMiddleware, taskController.startTask);
+router.post("/tasks/:id/submit", authMiddleware, taskController.submitTask);  
 
 export default router;

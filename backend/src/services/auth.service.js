@@ -51,6 +51,7 @@ export const registerUser = async ({
 // =========================
 // LOGIN
 // =========================
+
 export const loginUser = async ({ email, password }) => {
   // Find user
   const user = await User.findOne({
