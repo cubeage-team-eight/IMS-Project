@@ -14,12 +14,13 @@ import {
   CheckCircle,
   Trophy,
   BarChart3,
+  Menu,
 } from "lucide-react";
 
 const hrAdminMenu = [
   {
     label: "Overview",
-    path: "/hradmin",
+    path: "/hradmin/dashboard",
     icon: LayoutDashboard,
   },
   {
