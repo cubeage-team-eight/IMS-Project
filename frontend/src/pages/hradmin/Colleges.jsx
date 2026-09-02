@@ -186,77 +186,122 @@ function AddCollegeForm({ onSubmit, onCancle}) {
 }
 function CollegeTable() {
   return (
-    
-  <div className="mx-auto mt-6 max-w-6xl overflow-hidden rounded-xl bg-white shadow-sm ">
-  <div className="overflow-x-auto">
-    <table className="w-full min-w-[720px] border-collapse text-left ">
-      <thead>
-        <tr className="border-b border-slate-100">
-          <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-slate-400">
-            College
-          </th>
-          <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-slate-400">
-            Code
-          </th>
-          <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-slate-400">
-            Location
-          </th>
-          <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-slate-400">
-            Contact Person
-          </th>
-          <th className="px-6 py-4 text-right text-xs font-medium uppercase tracking-wider text-slate-400">
-            Interns
-          </th>
-          <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-slate-400">
-            Status
-          </th>
-          <th className="px-6 py-4 text-xs font-medium uppercase tracking-wider text-slate-400">
-            Actions
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {colleges.map((college, idx) => (
-          <tr
-            key={college.code}
-            className={`${
-              idx % 2 === 1 ? "bg-slate-50/60" : "bg-white"
-            } border-b border-slate-50 last:border-0`}
-          >
-            <td className="px-6 py-4 text-sm font-semibold text-slate-800">
-              {college.name}
-            </td>
-            <td className="px-6 py-4 font-mono text-sm text-slate-400">
-              {college.code}
-            </td>
-            <td className="px-6 py-4 text-sm text-slate-500">
-              {college.location}
-            </td>
-            <td className="px-6 py-4 text-sm text-slate-500">
-              {college.contact}
-            </td>
-            <td className="px-6 py-4 text-right text-sm font-semibold text-slate-800">
-              {college.interns}
-            </td>
-            <td className="px-6 py-4">
-              <StatusBadge status={college.status} />
-            </td>
-            <td className="px-6 py-4">
-              <div className="flex items-center gap-4 text-sm font-medium">
-                <button className="text-blue-500 hover:text-blue-700">
-                  Edit
-                </button>
-                <button className="text-slate-500 hover:text-slate-700">
-                  View
-                </button>
+    <div className="mx-auto mt-6 w-full max-w-6xl overflow-hidden rounded-xl bg-white shadow-sm">
+      {/* Mobile / small screens: stacked cards */}
+      <div className="divide-y divide-slate-50 sm:hidden">
+        {colleges.map((college) => (
+          <div key={college.code} className="p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-slate-800">
+                  {college.name}
+                </p>
+                <p className="mt-0.5 font-mono text-xs text-slate-400">
+                  {college.code}
+                </p>
               </div>
-            </td>
-          </tr>
+              <StatusBadge status={college.status} />
+            </div>
+ 
+            <dl className="mt-3 grid grid-cols-2 gap-y-2 text-sm">
+              <dt className="text-slate-400">Location</dt>
+              <dd className="text-right text-slate-600">
+                {college.location}
+              </dd>
+ 
+              <dt className="text-slate-400">Contact</dt>
+              <dd className="text-right text-slate-600">
+                {college.contact}
+              </dd>
+ 
+              <dt className="text-slate-400">Interns</dt>
+              <dd className="text-right font-semibold text-slate-800">
+                {college.interns}
+              </dd>
+            </dl>
+ 
+            <div className="mt-3 flex items-center gap-4 border-t border-slate-50 pt-3 text-sm font-medium">
+              <button className="text-blue-500 hover:text-blue-700">
+                Edit
+              </button>
+              <button className="text-slate-500 hover:text-slate-700">
+                View
+              </button>
+            </div>
+          </div>
         ))}
-      </tbody>
-    </table>
-  </div>
-</div>
+      </div>
+ 
+      {/* Tablet / desktop: table */}
+      <div className="hidden overflow-x-auto sm:block">
+        <table className="w-full min-w-[720px] border-collapse text-left">
+          <thead>
+            <tr className="border-b border-slate-100">
+              <th className="px-4 py-4 text-xs font-medium uppercase tracking-wider text-slate-400 lg:px-6">
+                College
+              </th>
+              <th className="px-4 py-4 text-xs font-medium uppercase tracking-wider text-slate-400 lg:px-6">
+                Code
+              </th>
+              <th className="px-4 py-4 text-xs font-medium uppercase tracking-wider text-slate-400 lg:px-6">
+                Location
+              </th>
+              <th className="px-4 py-4 text-xs font-medium uppercase tracking-wider text-slate-400 lg:px-6">
+                Contact Person
+              </th>
+              <th className="px-4 py-4 text-right text-xs font-medium uppercase tracking-wider text-slate-400 lg:px-6">
+                Interns
+              </th>
+              <th className="px-4 py-4 text-xs font-medium uppercase tracking-wider text-slate-400 lg:px-6">
+                Status
+              </th>
+              <th className="px-4 py-4 text-xs font-medium uppercase tracking-wider text-slate-400 lg:px-6">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {colleges.map((college, idx) => (
+              <tr
+                key={college.code}
+                className={`${
+                  idx % 2 === 1 ? "bg-slate-50/60" : "bg-white"
+                } border-b border-slate-50 last:border-0`}
+              >
+                <td className="px-4 py-4 text-sm font-semibold text-slate-800 lg:px-6">
+                  {college.name}
+                </td>
+                <td className="px-4 py-4 font-mono text-sm text-slate-400 lg:px-6">
+                  {college.code}
+                </td>
+                <td className="px-4 py-4 text-sm text-slate-500 lg:px-6">
+                  {college.location}
+                </td>
+                <td className="px-4 py-4 text-sm text-slate-500 lg:px-6">
+                  {college.contact}
+                </td>
+                <td className="px-4 py-4 text-right text-sm font-semibold text-slate-800 lg:px-6">
+                  {college.interns}
+                </td>
+                <td className="px-4 py-4 lg:px-6">
+                  <StatusBadge status={college.status} />
+                </td>
+                <td className="px-4 py-4 lg:px-6">
+                  <div className="flex items-center gap-4 text-sm font-medium">
+                    <button className="text-blue-500 hover:text-blue-700">
+                      Edit
+                    </button>
+                    <button className="text-slate-500 hover:text-slate-700">
+                      View
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 
@@ -272,7 +317,7 @@ function Colleges() {
         console.log(formData)
       }
   return (
-    <div className="p-6 min-h-screen">
+    <div className="sm:p-6 min-h-screen">
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4">
             <div>
             <h2 className="text-lg font-semibold text-slate-800 font-[Open_Sans]">College Management</h2>

@@ -221,7 +221,7 @@ function Batches() {
       console.log(formData)
     }
   return (
-    <div className="p-6 min-h-screen">
+    <div className="sm:p-6 min-h-screen">
          <div className='flex flex-col sm:flex-row gap-4 justify-between items-center'>
             <div>
                 <h1 className='text-xl font-medium'>Internship Batches</h1>

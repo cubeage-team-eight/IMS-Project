@@ -261,7 +261,7 @@ function Mentors() {
   };
     return (
         
-        <div className=" p-6 min-h-screen">
+        <div className=" sm:p-6 min-h-screen">
             <div className='flex flex-col sm:flex-row gap-4 justify-between items-center '>
               <div>
                 <h1 className='text-xl font-semibold '>Mentor Management</h1>

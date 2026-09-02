@@ -78,7 +78,7 @@ function HrReports() {
   };
  
   return (
-    <div className="min-h-screen w-full  p-4 sm:p-6">
+    <div className="min-h-screen w-full sm:p-6">
       <div className="mx-auto max-w-6xl">
         <h1 className="text-2xl font-bold text-slate-900">
           Reports &amp; Analytics
