@@ -222,12 +222,12 @@ function Batches() {
     }
   return (
     <div className="p-6 min-h-screen">
-         <div className='flex justify-between items-center'>
+         <div className='flex flex-col sm:flex-row gap-4 justify-between items-center'>
             <div>
                 <h1 className='text-xl font-medium'>Internship Batches</h1>
                 <p className='text-slate-400'>Manage batch cycles, capacity, and mentor assignmentsManage batch cycles, capacity, and mentor assignments</p>
             </div>    
-                <button className='bg-blue-500 text-white px-4 py-2 rounded-md' onClick={()=>setIsOpen(true)}> + Create Batch</button>
+                <button className='w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-md text-sm  hover:bg-blue-600 transition-colors' onClick={()=>setIsOpen(true)}> + Create Batch</button>
             </div>
             <div className="mt-6 grid grid-cols-1 gap-6 ">
                 {batches.map((batch) => (

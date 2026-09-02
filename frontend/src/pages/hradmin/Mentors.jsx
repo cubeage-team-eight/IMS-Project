@@ -231,7 +231,7 @@ function MentorCards({ initial, name, role, empId, skills, internCount }) {
 function Mentorlist() {
     return (
         
-        <div className='grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 '>
+        <div className='grid grid-cols-1 gap-4 mt-4  md:grid-cols-2'>
             {mentors.map((mentor) => (
                 <MentorCards
                     key={mentor.empId}
@@ -262,7 +262,7 @@ function Mentors() {
     return (
         
         <div className=" p-6 min-h-screen">
-            <div className='flex justify-between items-center '>
+            <div className='flex flex-col sm:flex-row gap-4 justify-between items-center '>
               <div>
                 <h1 className='text-xl font-semibold '>Mentor Management</h1>
                 <p className='text-slate-400'>Manage employee mentors and their intern assignments</p>

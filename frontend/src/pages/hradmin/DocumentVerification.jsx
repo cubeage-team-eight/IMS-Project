@@ -55,7 +55,7 @@ function PendingDocuments() {
 
   return (
     <div className="min-h-screen w-full mt-4">
-      <div className="mx-auto overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div className=" mx-auto overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         {/* Header */}
         <div className="flex flex-wrap items-center gap-3 border-b border-slate-200  px-4 py-4 sm:px-6">
           <span className="text-xs font-semibold tracking-wider text-slate-400">
@@ -67,13 +67,13 @@ function PendingDocuments() {
         </div>
 
         {/* Rows */}
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-slate-100 ">
           {documents.map((doc, idx) => {
             const decision = decisions[doc.id];
             return (
               <div
                 key={doc.id}
-                className="flex flex-col gap-3 px-4 py-4 transition-colors sm:flex-row sm:items-center sm:gap-4 sm:px-6 bg-white"
+                className="flex flex-col gap-3 px-4 py-6 transition-colors sm:flex-row sm:items-center sm:gap-4 sm:px-6 bg-white"
                 
               >
                 {/* Identity row */}
@@ -164,16 +164,12 @@ const StatCard = ({
 
 function DocumentVerification() {
   return (
-    <div className="p-6 min-h-screen">
+    <div className=" xl:p-6 min-h-screen">
         <div className='flex justify-between items-center'>
                 <h1 className='text-xl font-medium'>Document Verification</h1>
                 
             </div>
-<<<<<<< HEAD
-        <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-6'>
-=======
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6'>
->>>>>>> afd108c472f7f0d30f09652d1f195f2767e392a9
+        <div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6'>
             <StatCard
                 title="Pending Review"
                 value= "7"

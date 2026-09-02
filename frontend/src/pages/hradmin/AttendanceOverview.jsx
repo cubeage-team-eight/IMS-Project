@@ -90,11 +90,7 @@ function AttendanceOverview() {
                 <h1 className='text-xl font-medium'>Attendance Management</h1>
                 <p className='text-slate-700/50'>Monitor and manage daily attendance across all batches</p>
             </div>
-<<<<<<< HEAD
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-=======
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
->>>>>>> afd108c472f7f0d30f09652d1f195f2767e392a9
             <StatCard 
                 title="Present Today"
                 current="731"
