@@ -62,7 +62,7 @@ function RoleSelection() {
                 {key === 'hr-admin' && 'Manage colleges, mentors, batches, students, documents, attendance, reports, and certificates.'}
                 {key === 'college-coordinator' && 'Upload student lists, track progress, view attendance records, and download completion certificates.'}
                 {key === 'mentor' && 'Assign tasks, review daily reports, evaluate intern performance, and approve leave requests.'}
-                {key === 'student/dashboard' && 'Mark attendance, submit daily reports, view tasks, apply leave, and download your certificate.'}
+                {key === 'student-intern' && 'Mark attendance, submit daily reports, view tasks, apply leave, and download your certificate.'}
               </p>
 
               {/* Bottom Tags */}
@@ -71,7 +71,7 @@ function RoleSelection() {
                 {key === 'hr-admin' && <><span className="text-[10px] px-2 py-1 rounded bg-blue-500/10 text-blue-400">Batch Management</span></>}
                 {key === 'college-coordinator' && <><span className="text-[10px] px-2 py-1 rounded bg-green-500/10 text-green-400">Student Tracking</span></>}
                 {key === 'mentor' && <><span className="text-[10px] px-2 py-1 rounded bg-red-500/10 text-red-400">Task Assignment</span></>}
-                {key === 'student/dashboard' && <><span className="text-[10px] px-2 py-1 rounded bg-purple-500/10 text-purple-400">Attendance</span></>}
+                {key === 'student-intern' && <><span className="text-[10px] px-2 py-1 rounded bg-purple-500/10 text-purple-400">Attendance</span></>}
               </div>
             </div>
           ))}
