@@ -51,6 +51,7 @@ import DocumentVerification from "../pages/hradmin/DocumentVerification";
 import AttendanceOverview from "../pages/hradmin/AttendanceOverview";
 import HRCertificates from "../pages/hradmin/Certificates";
 import HRReports from "../pages/hradmin/Reports";
+
 const AppRoutes = () => {
   return (
     <Routes>

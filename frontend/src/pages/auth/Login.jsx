@@ -141,6 +141,8 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { validateLogin } from "../../utils/validators";
 import { useAuth } from "../../context/AuthContext";
 import { roleConfig } from "../../utils/constants";
+import { roleRouteMap } from "../../utils/constants";
+ import { roleConfig } from '../../utils/constants'
 
 import {
   MailIcon,
@@ -240,8 +242,15 @@ function Login() {
        * }
        */
 
-      // Navigate after successful login
-      navigate(`/${role}/dashboard`);
+      // Navigate after successful login, based on ACTUAL role from backend
+      const actualRole = response.data.user.role;
+      const routeKey = roleRouteMap[actualRole];
+
+      if (!routeKey) {
+        throw new Error("Unknown role, cannot redirect");
+      }
+
+      navigate(`/${routeKey}/dashboard`);
     } catch (error) {
       console.error("Login error:", error);
 

@@ -85,6 +85,7 @@ import profileController from "../../controllers/student/profile.controller.js";
 import attendanceController from "../../controllers/student/attendance.controller.js";
 import leaveController from "../../controllers/student/leave.controller.js";
 import taskController from "../../controllers/student/task.controller.js";
+import certificateController from "../../controllers/student/certificate.controller.js";
 
 import authMiddleware from "../../middleware/auth.middleware.js";
 
@@ -126,5 +127,9 @@ router.get("/tasks", authMiddleware, taskController.getMyTasks);
 router.get("/tasks/:id", authMiddleware, taskController.getTaskById);
 router.post("/tasks/:id/start", authMiddleware, taskController.startTask);
 router.post("/tasks/:id/submit", authMiddleware, taskController.submitTask);  
+// Student Certificate
+
+router.get("/certificates", authMiddleware, certificateController.getMyCertificates);
+router.get("/certificates/:certificateId/download", authMiddleware, certificateController.downloadMyCertificate);
 
 export default router;
