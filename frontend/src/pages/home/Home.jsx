@@ -2,7 +2,7 @@ import React from 'react'
 import Hero from '../../components/home/Hero.jsx'
 import Objective from '../../components/home/Objective.jsx'
 import User from '../../components/home/User.jsx'
-import Modules from '../../components/home/Modules.jsx'
+import Module from '../../components/home/Module.jsx'
 import ProjectWorkflow from '../../components/home/ProjectWorkflow.jsx'
 import TechStack from '../../components/home/TechStack.jsx'
 import Footer from '../../components/home/Footer.jsx'
@@ -16,7 +16,7 @@ function Home() {
       <Hero /> 
       <Objective />
       <User />
-      <Modules />
+      <Module />
       <ProjectWorkflow/>
       <TechStack />
       <Footer />
