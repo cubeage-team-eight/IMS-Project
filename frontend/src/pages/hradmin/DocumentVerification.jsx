@@ -55,7 +55,7 @@ function PendingDocuments() {
 
   return (
     <div className="min-h-screen w-full mt-4">
-      <div className="mx-auto overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div className=" mx-auto overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         {/* Header */}
         <div className="flex flex-wrap items-center gap-3 border-b border-slate-200  px-4 py-4 sm:px-6">
           <span className="text-xs font-semibold tracking-wider text-slate-400">
@@ -67,13 +67,13 @@ function PendingDocuments() {
         </div>
 
         {/* Rows */}
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-slate-100 ">
           {documents.map((doc, idx) => {
             const decision = decisions[doc.id];
             return (
               <div
                 key={doc.id}
-                className="flex flex-col gap-3 px-4 py-4 transition-colors sm:flex-row sm:items-center sm:gap-4 sm:px-6 bg-white"
+                className="flex flex-col gap-3 px-4 py-6 transition-colors sm:flex-row sm:items-center sm:gap-4 sm:px-6 bg-white"
                 
               >
                 {/* Identity row */}
@@ -103,11 +103,11 @@ function PendingDocuments() {
                     {doc.date}
                   </span>
 
-                  <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex shrink-0 flex-wrap items-center gap-2">
                     <button
                       onClick={() => handleDecision(doc.id, "approved")}
                       disabled={!!decision}
-                      className={`inline-flex items-center gap-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                      className={`inline-flex items-center gap-1 rounded-md px-3 py-2 sm:py-1.5 text-xs font-medium transition-colors ${
                         decision === "approved"
                           ? "bg-emerald-500 text-white"
                           : decision === "rejected"
@@ -121,7 +121,7 @@ function PendingDocuments() {
                     <button
                       onClick={() => handleDecision(doc.id, "rejected")}
                       disabled={!!decision}
-                      className={`inline-flex items-center gap-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                      className={`inline-flex items-center gap-1 rounded-md px-3 py-2 sm:py-1.5 text-xs font-medium transition-colors ${
                         decision === "rejected"
                           ? "bg-red-500 text-white"
                           : decision === "approved"
@@ -164,12 +164,12 @@ const StatCard = ({
 
 function DocumentVerification() {
   return (
-    <div className="p-6 min-h-screen">
+    <div className=" xl:p-6 min-h-screen">
         <div className='flex justify-between items-center'>
                 <h1 className='text-xl font-medium'>Document Verification</h1>
                 
             </div>
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6'>
+        <div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6'>
             <StatCard
                 title="Pending Review"
                 value= "7"

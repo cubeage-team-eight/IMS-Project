@@ -85,15 +85,15 @@ const UploadStudentList = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-84px)] bg-[#f1f5f9] p-8">
+    <div className="min-h-[calc(100vh-84px)] bg-[#f1f5f9] p-4 sm:p-6 lg:p-8">
 
       {/* ================= PAGE HEADER ================= */}
       <div className="mb-8">
-        <h1 className="text-[24px] font-semibold text-[#071627]">
+        <h1 className="text-xl sm:text-2xl font-semibold text-[#071627]">
           Upload Student List
         </h1>
 
-        <p className="mt-1 text-[17px] text-[#8b9ab0]">
+        <p className="mt-1 text-sm sm:text-base text-[#8b9ab0]">
           Bulk upload student records using Excel template
         </p>
       </div>
@@ -102,11 +102,11 @@ const UploadStudentList = () => {
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className="bg-white border-2 border-dashed border-[#d9e2eb] rounded-2xl min-h-[280px] flex flex-col items-center justify-center"
+        className="bg-white border-2 border-dashed border-[#d9e2eb] rounded-2xl min-h-[240px] sm:min-h-[280px] flex flex-col items-center justify-center px-4 py-8"
       >
 
         {/* Upload Icon */}
-        <div className="w-[68px] h-[68px] rounded-full bg-[#d5f8e9] flex items-center justify-center">
+        <div className="w-16 h-16 sm:w-[68px] sm:h-[68px] rounded-full bg-[#d5f8e9] flex items-center justify-center">
 
           <Upload
             size={32}
@@ -138,11 +138,11 @@ const UploadStudentList = () => {
           </>
         ) : (
           <>
-            <h2 className="text-[18px] font-medium text-[#071627] mt-5">
+            <h2 className="text-base sm:text-lg font-medium text-[#071627] mt-5 text-center">
               Drop your Excel file here
             </h2>
 
-            <p className="text-[#8b9ab0] text-[15px] mt-1">
+            <p className="text-[#8b9ab0] text-sm sm:text-[15px] mt-1 text-center">
               Supports .xlsx and .csv · Max 5MB
             </p>
           </>
@@ -152,7 +152,7 @@ const UploadStudentList = () => {
         <button
           type="button"
           onClick={handleBrowse}
-          className="mt-5 bg-[#0dbb8a] hover:bg-[#08a97d] text-white px-6 py-3 rounded-xl font-semibold transition"
+          className="mt-5 w-full sm:w-auto bg-[#0dbb8a] hover:bg-[#08a97d] text-white px-6 py-3 rounded-xl font-semibold transition"
         >
           Browse Files
         </button>
@@ -176,14 +176,14 @@ const UploadStudentList = () => {
       </div>
 
       {/* ================= REQUIRED COLUMNS ================= */}
-      <div className="bg-white border border-[#dce3eb] rounded-2xl p-6 mt-8">
+       <div className="bg-white border border-[#dce3eb] rounded-2xl p-4 sm:p-6 mt-6 sm:mt-8">
 
         <h2 className="text-[18px] font-semibold text-[#071627] mb-4">
           Required Columns in Excel
         </h2>
 
         {/* Columns */}
-        <div className="grid grid-cols-4 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
 
           {[
             "Full Name",

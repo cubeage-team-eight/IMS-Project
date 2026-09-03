@@ -86,7 +86,7 @@ const NominatedStudents = () => {
     <div className="p-8 bg-[#f1f5f9] min-h-[calc(100vh-84px)]">
 
       {/* ================= PAGE HEADER ================= */}
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 sm:mb-8">
 
         <div>
           <h1 className="text-[24px] font-semibold text-[#071627]">
@@ -113,9 +113,9 @@ const NominatedStudents = () => {
       <div className="bg-white border border-[#dce3eb] rounded-2xl overflow-hidden">
 
         {/* ================= SEARCH ================= */}
-        <div className="px-5 py-4 border-b border-[#e5eaf0] flex justify-between items-center">
+        <div className="px-4 sm:px-5 py-4 border-b border-[#e5eaf0] flex flex-col sm:flex-row gap-3 sm:justify-between sm:items-center">
 
-          <div className="relative w-80">
+          <div className="relative w-full sm:w-80">
 
             <Search
               size={18}
@@ -141,7 +141,7 @@ const NominatedStudents = () => {
         {/* ================= TABLE ================= */}
         <div className="overflow-x-auto">
 
-          <table className="w-full">
+          <table className="w-full min-w-[900px]">
 
             {/* TABLE HEADER */}
             <thead>

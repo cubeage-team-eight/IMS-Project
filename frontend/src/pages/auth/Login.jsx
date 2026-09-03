@@ -141,6 +141,9 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { validateLogin } from "../../utils/validators";
 import { useAuth } from "../../context/AuthContext";
 import { roleConfig } from "../../utils/constants";
+import { roleRouteMap } from "../../utils/constants";
+
+
 
 import {
   MailIcon,
@@ -150,9 +153,7 @@ import {
 } from "../../components/common/Icons";
 
 import AuthBrandingPanel from "../../components/common/AuthBrandingPanel";
-
 import AuthInput from "../../components/common/AuthInput";
-
 import AuthSubmitButton from "../../components/common/AuthSubmitButton";
 
 function Login() {
@@ -240,8 +241,18 @@ function Login() {
        * }
        */
 
-      // Navigate after successful login
-      navigate(`/${role}/dashboard`);
+
+           // Navigate after successful login, based on ACTUAL role from backend
+      const actualRole = response.data.user.role;
+      console.log("Actual role received:", actualRole);
+      const routeKey = roleRouteMap[actualRole];
+
+      if (!routeKey) {
+        throw new Error("Unknown role, cannot redirect");
+      }
+
+      navigate(`/${routeKey}/dashboard`);
+
     } catch (error) {
       console.error("Login error:", error);
 
