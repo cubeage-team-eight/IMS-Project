@@ -40,6 +40,12 @@ import MyPerformance from "../pages/student/MyPerformance";
 import Certificate from "../pages/student/Certificate";
 import FeedbackForm from "../pages/student/FeedbackForm";
 import MentorDashboard from "../pages/mentor/Dashboard";
+import MyStudents from "../pages/mentor/MyStudents";
+import AssignTask from "../pages/mentor/AssignTask";
+import LeaveApprovals from "../pages/mentor/LeaveApprovals";
+import MentorFeedbackForm from "../pages/mentor/FeedbackForm";
+import ReviewDailyReports from "../pages/mentor/ReviewDailyReports";
+import PerformanceEvaluation from "../pages/mentor/PerformanceEvaluation";
 import Attendance from "../pages/college/Attendance";
 import CollegeCertificates from "../pages/college/Certificates";
 import UploadStudentList from "../pages/college/UploadStudentList";
@@ -247,12 +253,44 @@ const AppRoutes = () => {
       
 
       {/* ================= MENTOR ================= */}
-      <Route element={<MentorLayout />}>
-        <Route
-          path={ROUTES.MENTOR.DASHBOARD}
-          element={<MentorDashboard />}
-        />
-      </Route>
+  <Route element={<MentorLayout />}>
+
+    <Route
+      path={ROUTES.MENTOR.DASHBOARD}
+      element={<MentorDashboard />}
+    />
+
+    <Route
+      path={ROUTES.MENTOR.MYSTUDENTS}
+      element={<MyStudents />}
+    />
+
+    <Route
+      path={ROUTES.MENTOR.ASSIGNTASK}
+      element={<AssignTask />}
+    />
+
+    <Route
+      path={ROUTES.MENTOR.REVIEWDAILYREPORTS}
+      element={<ReviewDailyReports />}
+    />
+
+    <Route
+      path={ROUTES.MENTOR.LEAVEAPPROVALS}
+      element={<LeaveApprovals />}
+    />
+
+    <Route
+      path={ROUTES.MENTOR.PERFORMANCEEVALUATIONS}
+      element={<PerformanceEvaluation />}
+    />
+
+    <Route
+      path={ROUTES.MENTOR.FEEDBACKFORM}
+      element={<MentorFeedbackForm />}
+    />
+
+  </Route>
 
     </Routes>
   );
@@ -261,3 +299,4 @@ const AppRoutes = () => {
 
 
 export default AppRoutes;
+
