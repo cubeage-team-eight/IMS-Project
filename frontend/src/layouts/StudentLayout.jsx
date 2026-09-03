@@ -19,7 +19,7 @@ import {
 const studentMenu = [
   {
     label: "My Dashboard",
-    path: "/student",
+   path: "/student/dashboard",
     icon: LayoutDashboard,
   },
   {
