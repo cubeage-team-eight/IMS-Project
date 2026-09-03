@@ -65,15 +65,15 @@ const ProgressTracking = () => {
   ];
 
   return (
-    <div className="min-h-[calc(100vh-84px)] bg-[#f1f5f9] p-8">
+    <div className="min-h-[calc(100vh-84px)] bg-[#f1f5f9] p-4 sm:p-6 lg:p-8">
 
       {/* ================= PAGE HEADER ================= */}
       <div className="mb-8">
-        <h1 className="text-[24px] font-semibold text-[#071627]">
+        <h1 className="text-xl sm:text-2xl font-semibold text-[#071627]">
           Student Progress Tracker
         </h1>
 
-        <p className="mt-1 text-[17px] text-[#8b9ab0]">
+        <p className="mt-1 text-sm sm:text-base text-[#8b9ab0]">
           Track internship completion and skill development
         </p>
       </div>
@@ -84,11 +84,11 @@ const ProgressTracking = () => {
         {students.map((student) => (
           <div
             key={student.id}
-            className="bg-white border border-[#dce3eb] rounded-2xl p-6"
+            className="bg-white border border-[#dce3eb] rounded-2xl p-4 sm:p-6"
           >
 
             {/* ================= STUDENT HEADER ================= */}
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
 
               {/* Left */}
               <div className="flex items-center gap-4">
@@ -106,7 +106,7 @@ const ProgressTracking = () => {
                     {student.name}
                   </h2>
 
-                  <p className="text-[#8b9ab0] text-[15px] mt-0.5">
+                  <p className="text-[#8b9ab0] text-sm sm:text-[15px] mt-0.5">
                     {student.branch}
                     <span className="mx-1">·</span>
                     Mentor: {student.mentor}

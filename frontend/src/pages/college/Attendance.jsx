@@ -40,15 +40,15 @@ const Attendance = () => {
   ];
 
   return (
-    <div className="min-h-[calc(100vh-84px)] bg-[#f1f5f9] p-8">
+    <div className="min-h-[calc(100vh-84px)] bg-[#f1f5f9] p-4 sm:p-6 lg:p-8">
 
       {/* ================= PAGE HEADER ================= */}
       <div className="mb-8">
-        <h1 className="text-[24px] font-semibold text-[#071627]">
+        <h1 className="text-xl sm:text-2xl font-semibold text-[#071627]">
           Attendance Records
         </h1>
 
-        <p className="mt-1 text-[17px] text-[#8b9ab0]">
+        <p className="mt-1 text-sm sm:text-base text-[#8b9ab0]">
           View attendance details for all your students
         </p>
       </div>
@@ -62,11 +62,11 @@ const Attendance = () => {
           return (
             <div
               key={student.id}
-              className="bg-white border border-[#dce3eb] rounded-2xl px-5 py-5 min-h-[88px] flex items-center justify-between"
+              className="bg-white border border-[#dce3eb] rounded-2xl px-4 sm:px-5 py-5 min-h-[88px] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5"
             >
 
               {/* ================= STUDENT INFO ================= */}
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-4 sm:gap-5">
 
                 {/* Avatar */}
                 <div className="w-12 h-12 rounded-full bg-[#d2f8e8] flex items-center justify-center flex-shrink-0">
@@ -91,7 +91,7 @@ const Attendance = () => {
               </div>
 
               {/* ================= ATTENDANCE ================= */}
-              <div className="w-[235px]">
+              <div className="w-full sm:w-[235px]">
 
                 {/* Label + Percentage */}
                 <div className="flex items-center justify-between mb-1">

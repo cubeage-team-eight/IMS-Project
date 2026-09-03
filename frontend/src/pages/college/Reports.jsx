@@ -59,15 +59,15 @@ const Reports = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-84px)] bg-[#f1f5f9] p-8">
+    <div className="min-h-[calc(100vh-84px)] bg-[#f1f5f9] p-4 sm:p-6 lg:p-8">
 
       {/* ================= PAGE HEADER ================= */}
       <div className="mb-8">
-        <h1 className="text-[24px] font-semibold text-[#071627]">
+        <h1 className="text-xl sm:text-2xl font-semibold text-[#071627]">
           Available Reports
         </h1>
 
-        <p className="mt-1 text-[17px] text-[#8b9ab0]">
+        <p className="mt-1 text-sm sm:text-base text-[#8b9ab0]">
           Download reports for your college's internship program
         </p>
       </div>
@@ -85,19 +85,19 @@ const Reports = () => {
             <div>
               <div className="flex items-center gap-2">
 
-                <h2 className="text-[18px] font-semibold text-[#071627]">
+                <h2 className="text-base sm:text-lg font-semibold text-[#071627]">
                   {report.title}
                 </h2>
 
               </div>
 
-              <p className="text-[#8b9ab0] text-[15px] mt-1">
+              <p className="text-[#8b9ab0] text-sm sm:text-[15px] mt-1">
                 {report.description}
               </p>
             </div>
 
             {/* ================= BOTTOM SECTION ================= */}
-            <div className="flex items-center justify-between mt-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-6">
 
               {/* Updated Date */}
               <p className="text-[#c0cad6] font-mono text-[14px]">
@@ -105,12 +105,12 @@ const Reports = () => {
               </p>
 
               {/* Buttons */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
 
                 {/* Excel */}
                 <button
                   onClick={() => handleExcelDownload(report)}
-                  className="flex items-center gap-1.5 px-3 py-2 bg-[#d5f7e9] hover:bg-[#c4f1df] text-[#008c68] rounded-md text-sm font-medium transition"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 bg-[#d5f7e9] hover:bg-[#c4f1df] text-[#008c68] rounded-md text-sm font-medium transition"
                 >
                   <Download size={15} />
 
@@ -120,7 +120,7 @@ const Reports = () => {
                 {/* PDF */}
                 <button
                   onClick={() => handlePdfDownload(report)}
-                  className="flex items-center gap-1.5 px-3 py-2 bg-[#edf3fc] hover:bg-[#e4ecf9] text-[#2563eb] rounded-md text-sm font-medium transition"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 bg-[#edf3fc] hover:bg-[#e4ecf9] text-[#2563eb] rounded-md text-sm font-medium transition"
                 >
                   <Download size={15} />
 

@@ -40,17 +40,17 @@ const Certificates = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#eef3f8] p-7">
-      <h2 className="text-[23px] font-semibold text-[#07172b]">
+    <div className="min-h-screen bg-[#eef3f8] p-4 sm:p-6 lg:p-7">
+      <h2 className="text-xl sm:text-[23px] font-semibold text-[#07172b]">
         Student Certificates
       </h2>
 
-      <p className="mt-1 mb-7 text-[16px] text-[#91a5c1]">
+      <p className="mt-1 mb-6 sm:mb-7 text-sm sm:text-[16px] text-[#91a5c1]">
         Download completion certificates for eligible students
       </p>
 
-      <div className="overflow-hidden rounded-[16px] border border-[#dce4ec] bg-white">
-        <table className="w-full border-collapse">
+      <div className="overflow-x-auto rounded-[16px] border border-[#dce4ec] bg-white">
+        <table className="w-full min-w-[850px] border-collapse">
           <thead>
             <tr className="h-[49px] border-b border-[#dce4ec]">
               {["STUDENT", "CERTIFICATE NO.", "BATCH", "ISSUE DATE", "STATUS", "ACTION"].map(
