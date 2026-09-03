@@ -16,7 +16,7 @@ import {
 const mentorMenu = [
   {
     label: "Overview",
-    path: "/mentor",
+    path: "/mentor/dashboard",
     icon: LayoutDashboard,
   },
   {
@@ -26,12 +26,12 @@ const mentorMenu = [
   },
   {
     label: "Task Assignment",
-    path: "/mentor/tasks",
+    path: "/mentor/assign-task",
     icon: ClipboardList,
   },
   {
     label: "Daily Reports",
-    path: "/mentor/reports",
+    path: "/mentor/daily-reports",
     icon: FileText,
     badge: 5,
   },
@@ -42,7 +42,7 @@ const mentorMenu = [
   },
   {
     label: "Leave Requests",
-    path: "/mentor/leave",
+    path: "/mentor/leave-approvals",
     icon: CalendarDays,
     badge: 2,
   },

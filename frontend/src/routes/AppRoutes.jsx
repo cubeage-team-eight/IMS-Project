@@ -22,6 +22,14 @@ import CollegeDashboard from "../pages/college/Dashboard";
 import StudentDashboard from "../pages/student/Dashboard";
 import MentorDashboard from "../pages/mentor/Dashboard";
 
+// ================= MENTOR PAGES =================
+import MyStudents from "../pages/mentor/MyStudents";
+import AssignTask from "../pages/mentor/AssignTask";
+import ReviewDailyReports from "../pages/mentor/ReviewDailyReports";
+import PerformanceEvaluation from "../pages/mentor/PerformanceEvaluation";
+import LeaveApprovals from "../pages/mentor/LeaveApprovals";
+import FeedbackForm from "../pages/mentor/FeedbackForm";
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -87,10 +95,34 @@ const AppRoutes = () => {
           path={ROUTES.MENTOR.DASHBOARD}
           element={<MentorDashboard />}
         />
+        <Route
+          path={ROUTES.MENTOR.STUDENTS}
+          element={<MyStudents />}
+        />
+        <Route
+          path={ROUTES.MENTOR.ASSIGN_TASK}
+          element={<AssignTask />}
+        />
+        <Route
+          path={ROUTES.MENTOR.DAILY_REPORTS}
+          element={<ReviewDailyReports />}
+        />
+        <Route
+          path={ROUTES.MENTOR.PERFORMANCE}
+          element={<PerformanceEvaluation />}
+        />
+        <Route
+          path={ROUTES.MENTOR.LEAVE_APPROVALS}
+          element={<LeaveApprovals />}
+        />
+        <Route
+          path={ROUTES.MENTOR.FEEDBACK}
+          element={<FeedbackForm />}
+        />
       </Route>
 
     </Routes>
   );
 };
 
-export default AppRoutes;
+export default AppRoutes;

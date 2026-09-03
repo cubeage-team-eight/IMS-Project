@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 const Dashboard = () => {
+  const navigate = useNavigate();
   return (
     <div className="space-y-6">
 
@@ -49,18 +52,21 @@ const Dashboard = () => {
             initial="A"
             name="Aditi Verma"
             detail="JWT middleware implementation · 6h · Node.js, JWT"
+            onReview={() => navigate("/mentor/daily-reports")}
           />
 
           <ReviewRow
             initial="R"
             name="Rahul Das"
             detail="MongoDB query optimization · 5h · MongoDB, Mongoose"
+            onReview={() => navigate("/mentor/daily-reports")}
           />
 
           <ReviewRow
             initial="M"
             name="Meera Pillai"
             detail="Jest test suite setup · 4h · Jest, Supertest"
+            onReview={() => navigate("/mentor/daily-reports")}
           />
 
         </div>
@@ -136,6 +142,7 @@ const ReviewRow = ({
   initial,
   name,
   detail,
+  onReview,
 }) => (
   <div className="flex items-center gap-4 py-4 border-b border-slate-100">
 
@@ -155,7 +162,10 @@ const ReviewRow = ({
 
     </div>
 
-    <button className="bg-orange-100 text-orange-600 px-3 py-1.5 rounded-md text-xs">
+    <button
+      className="bg-orange-100 text-orange-600 px-3 py-1.5 rounded-md text-xs cursor-pointer hover:bg-orange-200 transition-colors"
+      onClick={onReview}
+    >
       Review
     </button>
 
