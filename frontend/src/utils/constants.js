@@ -5,13 +5,12 @@ export const roleConfig = {
   'mentor':              { label: 'Mentor',              abbr: 'ME', color: '#ef4444' },
   'student-intern':      { label: 'Student / Intern',    abbr: 'IN', color: '#8b5cf6' },
 }
-
 export const roleRouteMap = {
-  'super-admin': 'super-admin',
-  'hr-admin': 'hr-admin',
-  'college-coordinator': 'college-coordinator',
-  'mentor': 'mentor',
-  'student-intern': 'student-intern',
+  SUPER_ADMIN: 'superadmin',
+  HR_ADMIN: 'hradmin',
+  COLLEGE_COORDINATOR: 'college',
+  MENTOR: 'mentor',
+  STUDENT: 'student',
 };
 
 export const BASE_URL = import.meta.env.VITE_API_URL;
