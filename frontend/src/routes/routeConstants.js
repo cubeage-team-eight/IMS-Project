@@ -5,7 +5,7 @@ export const ROUTES = {
 
   AUTH: {
     LOGIN: "/login",
-    SIGN_UP: "/signup",
+    SIGNUP: "/signup",
     FORGOT_PASSWORD: "/forgot-password",
     RESET_PASSWORD: "/reset-password",
   },
@@ -17,7 +17,7 @@ export const ROUTES = {
     ANALYTICS: "/superadmin/analytics",
   },
 
-  HR_ADMIN: {
+  HR_ADMIN: {  
     DASHBOARD: "/hradmin/dashboard",
     COLLEGES: "/hradmin/colleges",
     MENTORS: "/hradmin/mentors",
@@ -46,7 +46,7 @@ export const ROUTES = {
     DOCUMENTS: "/student/documents",
     ATTENDANCE: "/student/attendance",
     TASKS: "/student/tasks",
-    DAILY_REPORT: "/student/daily-report",
+    DAILY_REPORT: "/student/reports",
     LEAVE: "/student/leave",
     PERFORMANCE: "/student/performance",
     CERTIFICATE: "/student/certificate",
@@ -58,5 +58,9 @@ export const ROUTES = {
     NOMINATED_STUDENTS: "/college/nominated-students",
     PROGRESS: "/college/progress",
     REPORTS: "/college/reports",
+    CERTIFICATES: "/college/certificates",
+    UPLOAD_STUDENT_LIST: "/college/upload-student-list",
+    ATTENDANCE: "/college/attendance",
+    STUDENTS: "/college/students",
   },
 };

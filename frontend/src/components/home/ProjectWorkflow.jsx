@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 function ProjectWorkflow() {
 
@@ -24,17 +25,18 @@ function ProjectWorkflow() {
   ];
 
   return (
-    <div className="bg-slate-900 text-white w-full pl-0 md:pl-8 lg:pl-24 cdoverflow-hidden">
-        <div className="font-serif px-4 sm:px-6 md:px-10 py-6 md:py-10">
+    <div id="workflow" className="bg-slate-900 text-white w-full cdoverflow-hidden relative pb-10">
+
+        <div className="font-serif px-4 sm:px-6 md:px-10 py-6 md:py-10 pl-0 md:pl-8 lg:pl-24">
         <span className=" text-lg text-orange-400 font-mono text-sm">
-          08-PROJECT WORKFLOW</span>
+          05-PROJECT WORKFLOW</span>
         <h1 className="mt-2 text-3xl sm:text-4xl md:text-5xl leading-tight ">
           End-to-End <br/>
         <i>internship lifecycle</i> </h1>
         </div>
-      <div className="flex flex-col min-w-0 gap-2 relative pl-8 sm:pl-10 pr-4 sm:pr-6 pb-8">
+      <div className="flex flex-col min-w-0 gap-2 relative pl-8 sm:pl-10 pr-4 sm:pr-6 pb-8 md:pl-16 lg:pl-32">
        
-        <div className="absolute left-[49px] sm:left-[65.5px] w-[0.5px] h-full bg-orange-400/20"/>
+        <div className="absolute left-[49px] sm:left-[65.5px] md:left-[89.5px] lg:left-[153.5px] w-[0.5px] h-full bg-orange-400/20"/>
 
 
         {Items.map((item, index) => (
