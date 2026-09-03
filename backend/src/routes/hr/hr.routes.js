@@ -53,6 +53,16 @@ import {
   deleteAssignment,
 } from "../../controllers/hr/assignment.controller.js";
 
+import { createMentor, 
+  getAllMentors,
+   getMentorById, 
+    updateMentor} from "../../controllers/hr/mentor.controller.js";
+
+import certificateController from "../../controllers/hr/certificate.controller.js";
+import upload from "../../config/multer.js";
+
+
+
 const router = express.Router();
 
 // HR/Admin authentication and authorization
@@ -116,12 +126,24 @@ router.get("/assignments/:id", getAssignmentById);
 router.put("/assignments/:id", updateAssignment);
 router.delete("/assignments/:id", deleteAssignment);
 
+// =========================
+// MENTOR ROUTES
+// =========================
+
+router.post("/mentors", createMentor);
+router.get("/mentors", getAllMentors);
+router.get("/mentors/:id", getMentorById);
+router.put("/mentors/:id", updateMentor);
 router.put(
   "/students/:id",
   validationMiddleware(updateStudentValidation),
   updateStudent
 );
-
 router.delete("/students/:id", deleteStudent);
+
+// cetificate routes
+router.get("/certificates", certificateController.getAllCertificates);
+router.get("/certificates/:certificateId/download", certificateController.downloadCertificate);
+router.post("/certificates/upload", upload.single("certificateFile"), certificateController.uploadCertificate);
 
 export default router;
