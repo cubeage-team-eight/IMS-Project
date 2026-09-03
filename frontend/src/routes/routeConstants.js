@@ -32,12 +32,12 @@ export const ROUTES = {
 
   MENTOR: {
     DASHBOARD: "/mentor/dashboard",
-    STUDENTS: "/mentor/students",
-    ASSIGN_TASK: "/mentor/assign-task",
-    DAILY_REPORTS: "/mentor/daily-reports",
-    LEAVE_APPROVALS: "/mentor/leave-approvals",
-    PERFORMANCE: "/mentor/performance",
-    FEEDBACK: "/mentor/feedback",
+    MYSTUDENTS: "/mentor/students",
+    ASSIGNTASK: "/mentor/assign-task",
+    REVIEWDAILYREPORTS: "/mentor/daily-reports",
+    LEAVEAPPROVALS: "/mentor/leave-approvals",
+    PERFORMANCEEVALUATIONS: "/mentor/performance",
+    FEEDBACKFORM: "/mentor/feedback",
   },
 
   STUDENT: {

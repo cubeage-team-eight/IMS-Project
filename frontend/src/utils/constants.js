@@ -3,15 +3,17 @@ export const roleConfig = {
   'hr-admin':            { label: 'HR / Admin',          abbr: 'HR', color: '#3b82f6' },
   'college-coordinator': { label: 'College Coordinator', abbr: 'CC', color: '#f59e0b' },
   'mentor':              { label: 'Mentor',              abbr: 'ME', color: '#ef4444' },
-  'student/dashboard':      { label: 'Student / Intern',    abbr: 'IN', color: '#8b5cf6' },
+  'student-intern':      { label: 'Student / Intern',    abbr: 'IN', color: '#8b5cf6' },
 }
+
 export const roleRouteMap = {
-  SUPER_ADMIN: "super-admin",
-  HR_ADMIN: "hr-admin",
-  COLLEGE_COORDINATOR: "college-coordinator",
-  MENTOR: "mentor",
-  STUDENT: "student-intern",
+  'super-admin': 'super-admin',
+  'hr-admin': 'hr-admin',
+  'college-coordinator': 'college-coordinator',
+  'mentor': 'mentor',
+  'student-intern': 'student-intern',
 };
+
 export const BASE_URL = import.meta.env.VITE_API_URL;
 
 export const API_ENDPOINTS = {
@@ -47,5 +49,5 @@ export const API_ENDPOINTS = {
     LEAVE: "/student/leave",
     CERTIFICATES: "/student/certificates",
   },
-
+  
 };
