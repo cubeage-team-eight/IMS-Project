@@ -1,4 +1,7 @@
-const tasks = [
+import { useState } from "react";
+import TaskForm from "../../components/forms/TaskForm";
+
+const initialTasks = [
   { title: "Build REST API for user authentication", priority: "High",   student: "Aditi Verma",  due: "02 Aug 2025", status: "In Progress" },
   { title: "Design responsive dashboard UI",         priority: "Medium", student: "Sneha Joshi",  due: "05 Aug 2025", status: "Completed" },
   { title: "Implement MongoDB aggregation pipeline", priority: "High",   student: "Rahul Das",    due: "31 Jul 2025", status: "Pending" },
@@ -19,7 +22,22 @@ const statusStyle = {
 };
 
 const AssignTask = () => {
-  return (
+  const [tasks, setTasks] = useState(initialTasks);
+  const [showForm, setShowForm] = useState(false);
+  
+  const handleTaskSubmit = (data) => {
+  const newTask = {
+    title: data.title,
+    priority: data.priority,
+    student: data.student,
+    due: data.dueDate,
+    status: "Pending",
+  };
+  setTasks((prevTasks) => [newTask, ...prevTasks]);
+  setShowForm(false);
+};
+  
+return (
     <div className="space-y-6">
 
       {/* ================= HEADER ================= */}
@@ -34,21 +52,30 @@ const AssignTask = () => {
           </p>
         </div>
 
-        <button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold text-sm px-6 py-3 rounded-lg transition-colors">
-          + Assign Task
-        </button>
+        <button
+  onClick={() => setShowForm(true)}
+  className="bg-orange-600 hover:bg-orange-700 text-white font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
+>
+  + Assign Task
+</button>
 
       </div>
 
 
-      {/* ================= TASK LIST ================= */}
-      <div className="space-y-4">
-        {tasks.map((task) => (
-          <TaskRow key={task.title} {...task} />
-        ))}
-      </div>
+    {/* ================= TASK LIST ================= */}
+<div className="space-y-4">
+  {tasks.map((task) => (
+    <TaskRow key={task.title} {...task} />
+  ))}
+</div>
+{showForm && (
+  <TaskForm
+    onClose={() => setShowForm(false)}
+    onSubmit={handleTaskSubmit}
+  />
+)}
 
-    </div>
+</div>
   );
 };
 
@@ -87,3 +114,5 @@ const TaskRow = ({ title, priority, student, due, status }) => (
 );
 
 export default AssignTask;
+
+
