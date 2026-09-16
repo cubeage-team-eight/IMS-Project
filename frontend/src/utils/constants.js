@@ -90,5 +90,6 @@ SUPER_ADMIN: {
 
   DASHBOARD: "/super-admin/dashboard",
   HEALTH: "/super-admin/health",
+  SETTINGS: "/super-admin/settings",
 },
 };

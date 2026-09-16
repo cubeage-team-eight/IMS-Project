@@ -47,4 +47,12 @@ export const superAdminService = {
     const response = await axiosInstance.get(API_ENDPOINTS.SUPER_ADMIN.HEALTH);
     return response.data;
   },
+  getSettings: async () => {
+  const response = await axiosInstance.get(API_ENDPOINTS.SUPER_ADMIN.SETTINGS);
+  return response.data;
+},
+updateSettings: async (data) => {
+  const response = await axiosInstance.put(API_ENDPOINTS.SUPER_ADMIN.SETTINGS, data);
+  return response.data;
+},
 };

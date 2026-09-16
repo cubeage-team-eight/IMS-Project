@@ -75,318 +75,260 @@ import React, { useEffect, useState } from "react";
 import { studentService } from "../../services/student.service";
 
 const Certificate = () => {
-  const [profile, setProfile] = useState(null);
   const [certificates, setCertificates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [downloading, setDownloading] = useState(false);
+  const [downloadingId, setDownloadingId] = useState(null);
 
-  useEffect(() => {
-    loadCertificateData();
-  }, []);
-
-  const loadCertificateData = async () => {
+  const fetchCertificates = async () => {
     try {
       setLoading(true);
       setError("");
 
-      const profileResponse =
-        await studentService.getProfile();
+      const res = await studentService.getMyCertificates();
 
-      const certificateResponse =
-        await studentService.getMyCertificates();
-
-      setProfile(profileResponse?.data || null);
-      setCertificates(
-        certificateResponse?.data || []
-      );
-    } catch (error) {
-      console.error(error);
+      setCertificates(res.data || []);
+    } catch (err) {
+      console.error("Load certificates error:", err);
 
       setError(
-        error?.response?.data?.message ||
-          "Unable to load certificate"
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to load certificates"
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const getStudentName = () => {
-    if (!profile) {
-      return "Student";
+  useEffect(() => {
+    fetchCertificates();
+  }, []);
+
+  const handleDownload = async (certificateId) => {
+    try {
+      setDownloadingId(certificateId);
+      setError("");
+
+      await studentService.downloadMyCertificate(certificateId);
+    } catch (err) {
+      console.error("Download certificate error:", err);
+
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to download certificate"
+      );
+    } finally {
+      setDownloadingId(null);
     }
-
-    const firstName = profile.firstName || "";
-    const lastName = profile.lastName || "";
-
-    const fullName =
-      `${firstName} ${lastName}`.trim();
-
-    return (
-      fullName ||
-      profile.name ||
-      "Student"
-    );
   };
 
   const formatDate = (date) => {
-    if (!date) {
-      return "-";
-    }
+    if (!date) return "-";
 
-    return new Date(date).toLocaleDateString(
-      "en-GB",
-      {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }
-    );
+    return new Date(date).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   };
-
-  const handleDownload = async (certificate) => {
-    try {
-      setDownloading(true);
-      setError("");
-
-      const response =
-        await studentService.downloadMyCertificate(
-          certificate.id
-        );
-
-      const blob = new Blob(
-        [response.data],
-        {
-          type: "application/pdf",
-        }
-      );
-
-      const url =
-        window.URL.createObjectURL(blob);
-
-      const link =
-        document.createElement("a");
-
-      link.href = url;
-
-      link.download =
-        `${certificate.certificateNumber}.pdf`;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error(error);
-
-      setError(
-        error?.response?.data?.message ||
-          "Unable to download certificate"
-      );
-    } finally {
-      setDownloading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="space-y-6 max-w-6xl">
-        <div>
-          <h1 className="text-xl font-semibold">
-            My Certificate
-          </h1>
-
-          <p className="text-slate-400 text-sm mt-1">
-            Download your internship completion
-            certificate
-          </p>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center">
-          <p className="text-slate-400 text-sm">
-            Loading certificate...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-6 max-w-6xl">
-        <div>
-          <h1 className="text-xl font-semibold">
-            My Certificate
-          </h1>
-
-          <p className="text-slate-400 text-sm mt-1">
-            Download your internship completion
-            certificate
-          </p>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center">
-          <p className="text-red-500 text-sm">
-            {error}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (certificates.length === 0) {
-    return (
-      <div className="space-y-6 max-w-6xl">
-        <div>
-          <h1 className="text-xl font-semibold">
-            My Certificate
-          </h1>
-
-          <p className="text-slate-400 text-sm mt-1">
-            Download your internship completion
-            certificate
-          </p>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 p-16 text-center">
-          <h3 className="text-slate-700 font-semibold">
-            Certificate Not Available
-          </h3>
-
-          <p className="text-slate-400 text-sm mt-2">
-            Your certificate will be available after
-            successful completion of the internship.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6 max-w-6xl">
+
+      {/* Header */}
       <div>
         <h1 className="text-xl font-semibold">
           My Certificate
         </h1>
 
         <p className="text-slate-400 text-sm mt-1">
-          Download your internship completion
-          certificate
+          Download your internship completion certificate
         </p>
       </div>
 
-      {certificates.map((certificate) => (
-        <div
-          key={certificate.id}
-          className="bg-white rounded-2xl border border-slate-200 p-8 flex flex-col items-center justify-center py-16"
-        >
-          <div className="bg-[#0f172a] rounded-xl border border-orange-500/30 p-6 sm:p-10 w-full max-w-2xl text-center relative overflow-hidden shadow-2xl">
-            <h2 className="text-orange-500 text-[10px] tracking-[0.3em] uppercase font-mono mb-8 font-semibold">
-              Certificate of Completion
-            </h2>
+      {/* Loading */}
+      {loading && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center">
+          <p className="text-slate-400 text-sm">
+            Loading certificate...
+          </p>
+        </div>
+      )}
 
-            <p className="text-slate-400 text-sm mb-4">
-              This is to certify that
-            </p>
+      {/* Error */}
+      {!loading && error && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+          <p className="text-red-500 text-sm">
+            {error}
+          </p>
+        </div>
+      )}
 
-            <h1 className="text-2xl sm:text-4xl font-serif font-bold text-white mb-4">
-              {getStudentName()}
-            </h1>
+      {/* No Certificate */}
+      {!loading && !error && certificates.length === 0 && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center">
 
-            {profile?.course && (
-              <p className="text-slate-400 text-sm mb-2">
-                {profile.course}
+          <h3 className="font-semibold text-slate-700">
+            Certificate Not Available
+          </h3>
+
+          <p className="text-slate-400 text-sm mt-2">
+            Your certificate will be available after successful
+            completion of the internship.
+          </p>
+
+        </div>
+      )}
+
+      {/* Certificates */}
+      {!loading &&
+        certificates.map((certificate) => (
+          <div
+            key={certificate.id}
+            className="bg-white rounded-2xl border border-slate-200 p-8 flex flex-col items-center justify-center py-16"
+          >
+
+            {/* Certificate Card */}
+            <div className="bg-[#0f172a] rounded-xl border border-orange-500/30 p-6 sm:p-10 w-full max-w-2xl text-center relative overflow-hidden shadow-2xl">
+
+              <h2 className="text-orange-500 text-[10px] tracking-[0.3em] uppercase font-mono mb-8 font-semibold">
+                Certificate of Completion
+              </h2>
+
+              <p className="text-slate-400 text-sm mb-4">
+                This is to certify that
               </p>
-            )}
 
-            {profile?.enrollmentNumber && (
-              <p className="text-slate-400 text-sm mb-6">
-                Enrollment No:{" "}
-                <span className="text-slate-200 font-medium">
-                  {profile.enrollmentNumber}
+              {/* Student */}
+              <h1 className="text-2xl sm:text-4xl font-serif font-bold text-white mb-4">
+                {certificate.student?.firstName ||
+                  certificate.student?.name ||
+                  "Student"}
+
+                {certificate.student?.lastName
+                  ? ` ${certificate.student.lastName}`
+                  : ""}
+              </h1>
+
+              {/* Student Information */}
+              {certificate.student && (
+                <p className="text-slate-400 text-sm mb-6">
+                  {certificate.student.college?.name || ""}
+
+                  {certificate.student.enrollmentNumber && (
+                    <>
+                      {" · "}
+                      {certificate.student.enrollmentNumber}
+                    </>
+                  )}
+                </p>
+              )}
+
+              {/* Completion Message */}
+              <p className="text-slate-400 text-sm max-w-md mx-auto leading-relaxed mb-6">
+                has successfully completed the internship program.
+              </p>
+
+              {/* Mentor */}
+              {certificate.mentor && (
+                <p className="text-slate-400 text-sm mb-6">
+                  Under the guidance of{" "}
+                  <span className="text-slate-200 font-medium">
+                    {certificate.mentor.firstName ||
+                      certificate.mentor.name ||
+                      "Mentor"}
+
+                    {certificate.mentor.lastName
+                      ? ` ${certificate.mentor.lastName}`
+                      : ""}
+                  </span>
+                </p>
+              )}
+
+              {/* Issue Date */}
+              <p className="text-slate-400 text-sm mb-10">
+                Issue Date:{" "}
+                <span className="text-slate-200">
+                  {formatDate(certificate.issueDate)}
                 </span>
               </p>
-            )}
 
-            <p className="text-slate-400 text-sm max-w-md mx-auto leading-relaxed mb-8">
-              has successfully completed the
-              internship program.
-            </p>
+              {/* Certificate Number */}
+              <div className="inline-block border border-orange-500/50 rounded-full px-4 py-1.5 text-orange-500 text-xs font-mono font-medium">
+                Certificate No: {certificate.certificateNumber}
+              </div>
 
-            <div className="mb-6">
-              <p className="text-slate-500 text-xs uppercase tracking-wider">
-                Certificate Number
+              {/* Status */}
+              <div className="mt-4">
+                <span
+                  className={`inline-block text-xs px-3 py-1 rounded-full ${
+                    certificate.status === "ISSUED"
+                      ? "bg-emerald-500/10 text-emerald-400"
+                      : "bg-red-500/10 text-red-400"
+                  }`}
+                >
+                  {certificate.status}
+                </span>
+              </div>
+
+              {/* Source */}
+              <p className="text-slate-500 text-xs mt-4">
+                Source: {certificate.source}
               </p>
+            </div>
 
-              <p className="text-white font-mono text-lg mt-2">
+            {/* Download */}
+            <div className="mt-10 flex flex-col items-center">
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleDownload(certificate.id)
+                }
+                disabled={
+                  certificate.status !== "ISSUED" ||
+                  downloadingId === certificate.id
+                }
+                className="bg-violet-500 hover:bg-violet-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-8 py-3 rounded-lg transition-colors flex items-center gap-2 shadow-sm"
+              >
+
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+
+                {downloadingId === certificate.id
+                  ? "Downloading..."
+                  : "Download Certificate (PDF)"}
+
+              </button>
+
+              <p className="text-slate-400 text-xs mt-3">
+                Certificate No:{" "}
                 {certificate.certificateNumber}
               </p>
+
             </div>
-
-            <div className="mb-8">
-              <p className="text-slate-500 text-xs uppercase tracking-wider">
-                Issue Date
-              </p>
-
-              <p className="text-slate-200 text-sm mt-2">
-                {formatDate(certificate.issueDate)}
-              </p>
-            </div>
-
-            <span
-              className={`inline-block px-4 py-1.5 rounded-full text-xs font-medium ${
-                certificate.status === "ISSUED"
-                  ? "bg-green-500/10 text-green-400"
-                  : "bg-red-500/10 text-red-400"
-              }`}
-            >
-              {certificate.status}
-            </span>
           </div>
-
-          <div className="mt-10 flex flex-col items-center">
-            <button
-              type="button"
-              onClick={() =>
-                handleDownload(certificate)
-              }
-              disabled={
-                certificate.status !== "ISSUED" ||
-                downloading
-              }
-              className="bg-violet-500 hover:bg-violet-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-8 py-3 rounded-lg transition-colors flex items-center gap-2 shadow-sm"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-
-              {downloading
-                ? "Downloading..."
-                : "Download Certificate (PDF)"}
-            </button>
-
-            <p className="text-slate-400 text-xs mt-3">
-              Certificate No:{" "}
-              {certificate.certificateNumber}
-            </p>
-          </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 };
 
 export default Certificate;
+
+
+
+
