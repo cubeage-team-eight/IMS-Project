@@ -165,15 +165,16 @@ const Sidebar = ({ role = "", userName = "", menuItems = [], isOpen, onClose }) 
 
       {/* ================= SWITCH ROLE ================= */}
       <div className="border-t border-white/10 px-3 py-2">
-        <button
-          type="button"
-          className="flex w-full items-center gap-3 px-3 py-2 text-slate-500 transition hover:text-white"
-        >
-          <LogOut size={18} strokeWidth={1.6} />
+  <NavLink
+    to="/login"
+    onClick={closeNow}
+    className="flex w-full items-center gap-3 px-3 py-2 text-slate-500 transition hover:text-white"
+  >
+    <LogOut size={18} strokeWidth={1.6} />
 
-          <span className="text-[14px]">Switch Role</span>
-        </button>
-      </div>
+    <span className="text-[14px]">Switch Role</span>
+  </NavLink>
+</div>
     </aside>
   );
 };
