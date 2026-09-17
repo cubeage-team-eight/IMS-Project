@@ -25,7 +25,7 @@ function ProjectWorkflow() {
   ];
 
   return (
-    <div id="workflow" className="bg-slate-900 text-white w-full cdoverflow-hidden relative pb-10">
+    <div id="workflow" className="bg-slate-900 text-white w-full overflow-hidden relative pb-10">
 
         <div className="font-serif px-4 sm:px-6 md:px-10 py-6 md:py-10 pl-0 md:pl-8 lg:pl-24">
         <span className=" text-lg text-orange-400 font-mono text-sm">
@@ -55,7 +55,7 @@ function ProjectWorkflow() {
             <span className="min-w-0 flex-1 text-xs sm:text-sm text-slate-400 transition-transform duration-150 group-hover:translate-x-2 break-words">
               <span className="text-slate-500/50 font-mono">{item.id}</span> 
               <span className="mx-2 text-mono">{item.label}</span>
-              <div class=" absolute my-6 w-3xs md:w-xl lg:w-7xl h-px bg-slate-700/50"/>
+              <div className=" absolute my-6 w-3xs md:w-xl lg:w-7xl h-px bg-slate-700/50"/>
             </span>
 
             
