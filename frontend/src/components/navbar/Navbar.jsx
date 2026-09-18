@@ -2,18 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import {
   Bell,
   Menu,
-  X,
   ChevronDown,
-  User,
-  Mail,
-  Shield,
 } from "lucide-react";
+
+import { useAuth } from "../../context/AuthContext";
+
+import NotificationPanel from "./NotificationPanel";
+import ProfilePanel from "./ProfilePanel";
 
 const Navbar = ({
   title = "Overview",
   role = "User",
   onMenuClick,
 }) => {
+  const { user: loggedInUser } = useAuth();
+
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
@@ -21,6 +24,7 @@ const Navbar = ({
   const profileRef = useRef(null);
 
   // ================= DATE =================
+
   const today = new Date();
 
   const formattedDate = today.toLocaleDateString("en-US", {
@@ -30,8 +34,28 @@ const Navbar = ({
     year: "numeric",
   });
 
+  // ================= ACTUAL LOGGED-IN USER =================
+
+  const user = loggedInUser;
+
+  // Backend role name can be different from UI role name
+
+  const roleMap = {
+    SUPER_ADMIN: "Super Admin",
+    HR_ADMIN: "HR / Admin",
+    COLLEGE_COORDINATOR: "College Coordinator",
+    MENTOR: "Mentor",
+    STUDENT: "Student / Intern",
+  };
+
+  const actualRole =
+    roleMap[user?.role?.name] ||
+    user?.role?.name ||
+    role;
+
   // ================= ROLE INITIAL =================
-  const roleInitial = role
+
+  const roleInitial = actualRole
     .split(/\s+/)
     .filter((word) => word !== "/")
     .map((word) => word[0])
@@ -40,8 +64,9 @@ const Navbar = ({
     .toUpperCase();
 
   // ================= ROLE COLORS =================
+
   const getRoleStyles = () => {
-    switch (role) {
+    switch (actualRole) {
       case "Super Admin":
         return {
           avatar: "bg-orange-50 text-orange-500",
@@ -82,50 +107,8 @@ const Navbar = ({
 
   const roleStyles = getRoleStyles();
 
-  // ================= USER DETAILS =================
-  const getUserDetails = () => {
-    switch (role) {
-      case "Super Admin":
-        return {
-          name: "Suresh Kumar",
-          email: "suresh.kumar@ims.com",
-        };
-
-      case "HR / Admin":
-        return {
-          name: "HR Admin",
-          email: "hr.admin@ims.com",
-        };
-
-      case "Student / Intern":
-        return {
-          name: "Student",
-          email: "student@ims.com",
-        };
-
-      case "Mentor":
-        return {
-          name: "Mentor",
-          email: "mentor@ims.com",
-        };
-
-      case "College Coordinator":
-        return {
-          name: "College Coordinator",
-          email: "coordinator@ims.com",
-        };
-
-      default:
-        return {
-          name: "User",
-          email: "user@ims.com",
-        };
-    }
-  };
-
-  const user = getUserDetails();
-
   // ================= NOTIFICATIONS =================
+
   const notifications = [
     {
       id: 1,
@@ -151,9 +134,9 @@ const Navbar = ({
   ];
 
   // ================= CLOSE ON OUTSIDE CLICK =================
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Close notification if clicked outside notification area
       if (
         notificationRef.current &&
         !notificationRef.current.contains(event.target)
@@ -161,7 +144,6 @@ const Navbar = ({
         setNotificationOpen(false);
       }
 
-      // Close profile if clicked outside profile area
       if (
         profileRef.current &&
         !profileRef.current.contains(event.target)
@@ -170,26 +152,36 @@ const Navbar = ({
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
     };
   }, []);
 
   // ================= NOTIFICATION TOGGLE =================
+
   const handleNotificationClick = () => {
     setNotificationOpen((prev) => !prev);
 
     // Close profile when notification opens
+
     setProfileOpen(false);
   };
 
   // ================= PROFILE TOGGLE =================
+
   const handleProfileClick = () => {
     setProfileOpen((prev) => !prev);
 
     // Close notification when profile opens
+
     setNotificationOpen(false);
   };
 
@@ -212,13 +204,10 @@ const Navbar = ({
         z-40
       "
     >
-      {/* =====================================================
-          LEFT SIDE
-      ====================================================== */}
-
-      <div className="flex items-center gap-4">
+ <div className="flex items-center gap-4">
 
         {/* Hamburger Menu */}
+
         <button
           onClick={onMenuClick}
           className="
@@ -239,6 +228,7 @@ const Navbar = ({
         </button>
 
         {/* Page Title + Date */}
+
         <div>
           <h1
             className="
@@ -262,6 +252,7 @@ const Navbar = ({
             {formattedDate}
           </p>
         </div>
+
       </div>
 
       {/* =====================================================
@@ -296,6 +287,7 @@ const Navbar = ({
             />
 
             {/* Notification Dot */}
+
             <span
               className={`
                 absolute
@@ -309,204 +301,17 @@ const Navbar = ({
             />
           </button>
 
-          {/* =================================================
-              NOTIFICATION PANEL
-          ================================================== */}
+          {/* Notification Panel */}
 
           {notificationOpen && (
-            <div
-              className="
-                absolute
-                right-0
-                top-12
-                w-[360px]
-                bg-white
-                border
-                border-slate-200
-                rounded-xl
-                shadow-xl
-                overflow-hidden
-                z-50
-              "
-            >
-
-              {/* Notification Header */}
-              <div
-                className="
-                  flex
-                  items-center
-                  justify-between
-                  px-5
-                  py-4
-                  border-b
-                  border-slate-200
-                "
-              >
-                <div>
-                  <h3
-                    className="
-                      text-[15px]
-                      font-semibold
-                      text-slate-900
-                    "
-                  >
-                    Notifications
-                  </h3>
-
-                  <p
-                    className="
-                      text-[12px]
-                      text-slate-400
-                      mt-0.5
-                    "
-                  >
-                    You have new notifications
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => setNotificationOpen(false)}
-                  className="
-                    p-1.5
-                    rounded-lg
-                    text-slate-400
-                    hover:text-slate-700
-                    hover:bg-slate-100
-                    transition
-                  "
-                >
-                  <X size={17} />
-                </button>
-              </div>
-
-              {/* Notification List */}
-              <div className="max-h-[350px] overflow-y-auto">
-
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className="
-                      flex
-                      gap-3
-                      px-5
-                      py-4
-                      border-b
-                      border-slate-100
-                      hover:bg-slate-50
-                      cursor-pointer
-                      transition
-                    "
-                  >
-
-                    {/* Unread Indicator */}
-                    <div className="pt-1.5">
-                      <div
-                        className={`
-                          w-2
-                          h-2
-                          rounded-full
-                          ${
-                            notification.unread
-                              ? "bg-blue-500"
-                              : "bg-slate-300"
-                          }
-                        `}
-                      />
-                    </div>
-
-                    {/* Notification Content */}
-                    <div className="flex-1 min-w-0">
-
-                      <div
-                        className="
-                          flex
-                          items-start
-                          justify-between
-                          gap-2
-                        "
-                      >
-                        <h4
-                          className="
-                            text-[13px]
-                            font-medium
-                            text-slate-800
-                          "
-                        >
-                          {notification.title}
-                        </h4>
-
-                        {notification.unread && (
-                          <span
-                            className="
-                              text-[10px]
-                              text-blue-500
-                              font-medium
-                              shrink-0
-                            "
-                          >
-                            NEW
-                          </span>
-                        )}
-                      </div>
-
-                      <p
-                        className="
-                          text-[12px]
-                          text-slate-500
-                          mt-1
-                          leading-relaxed
-                        "
-                      >
-                        {notification.message}
-                      </p>
-
-                      <p
-                        className="
-                          text-[11px]
-                          text-slate-400
-                          mt-2
-                        "
-                      >
-                        {notification.time}
-                      </p>
-
-                    </div>
-                  </div>
-                ))}
-
-              </div>
-
-              {/* Notification Footer */}
-              <div
-                className="
-                  px-5
-                  py-3
-                  border-t
-                  border-slate-200
-                "
-              >
-                <button
-                  className="
-                    w-full
-                    text-center
-                    text-[12px]
-                    font-medium
-                    text-slate-600
-                    hover:text-slate-900
-                    transition
-                  "
-                >
-                  View all notifications
-                </button>
-              </div>
-
-            </div>
+            <NotificationPanel
+              notifications={notifications}
+              onClose={() =>
+                setNotificationOpen(false)
+              }
+            />
           )}
         </div>
-
-        {/* ===================================================
-            PROFILE
-        ==================================================== */}
 
         <div
           className="relative"
@@ -524,8 +329,8 @@ const Navbar = ({
               transition
             "
           >
-
             {/* Avatar */}
+
             <div
               className={`
                 w-9
@@ -543,6 +348,7 @@ const Navbar = ({
             </div>
 
             {/* Arrow */}
+
             <ChevronDown
               size={16}
               strokeWidth={1.8}
@@ -554,222 +360,18 @@ const Navbar = ({
             />
           </button>
 
-          {/* =================================================
-              PROFILE INFORMATION BAR
-          ================================================== */}
+          {/* Profile Panel */}
 
           {profileOpen && (
-            <div
-              className="
-                absolute
-                right-0
-                top-12
-                w-[320px]
-                bg-white
-                border
-                border-slate-200
-                rounded-xl
-                shadow-xl
-                overflow-hidden
-                z-50
-              "
-            >
-
-              {/* Profile Header */}
-              <div
-                className="
-                  px-5
-                  py-4
-                  border-b
-                  border-slate-200
-                  flex
-                  items-center
-                  gap-3
-                "
-              >
-
-                <div
-                  className={`
-                    w-11
-                    h-11
-                    rounded-full
-                    flex
-                    items-center
-                    justify-center
-                    text-[13px]
-                    font-medium
-                    ${roleStyles.avatar}
-                  `}
-                >
-                  {roleInitial}
-                </div>
-
-                <div className="min-w-0">
-                  <h3
-                    className="
-                      text-[14px]
-                      font-semibold
-                      text-slate-900
-                    "
-                  >
-                    {user.name}
-                  </h3>
-
-                  <p
-                    className="
-                      text-[11px]
-                      text-slate-400
-                      mt-0.5
-                    "
-                  >
-                    {role}
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => setProfileOpen(false)}
-                  className="
-                    ml-auto
-                    p-1.5
-                    rounded-lg
-                    text-slate-400
-                    hover:text-slate-700
-                    hover:bg-slate-100
-                  "
-                >
-                  <X size={16} />
-                </button>
-
-              </div>
-
-              {/* User Information */}
-              <div className="px-5 py-4 space-y-4">
-
-                {/* Email */}
-                <div className="flex items-start gap-3">
-                  <Mail
-                    size={16}
-                    className="text-slate-400 mt-0.5"
-                    strokeWidth={1.8}
-                  />
-
-                  <div>
-                    <p
-                      className="
-                        text-[10px]
-                        uppercase
-                        tracking-wide
-                        text-slate-400
-                      "
-                    >
-                      Email
-                    </p>
-
-                    <p
-                      className="
-                        text-[12px]
-                        text-slate-700
-                        mt-0.5
-                        break-all
-                      "
-                    >
-                      {user.email}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Role */}
-                <div className="flex items-start gap-3">
-                  <Shield
-                    size={16}
-                    className="text-slate-400 mt-0.5"
-                    strokeWidth={1.8}
-                  />
-
-                  <div>
-                    <p
-                      className="
-                        text-[10px]
-                        uppercase
-                        tracking-wide
-                        text-slate-400
-                      "
-                    >
-                      Role
-                    </p>
-
-                    <p
-                      className="
-                        text-[12px]
-                        text-slate-700
-                        mt-0.5
-                      "
-                    >
-                      {role}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Status */}
-                <div className="flex items-start gap-3">
-                  <User
-                    size={16}
-                    className="text-slate-400 mt-0.5"
-                    strokeWidth={1.8}
-                  />
-
-                  <div>
-                    <p
-                      className="
-                        text-[10px]
-                        uppercase
-                        tracking-wide
-                        text-slate-400
-                      "
-                    >
-                      Account Status
-                    </p>
-
-                    <div className="flex items-center gap-2 mt-1">
-
-                      <span
-                        className="
-                          w-1.5
-                          h-1.5
-                          rounded-full
-                          bg-emerald-500
-                        "
-                      />
-
-                      <p
-                        className="
-                          text-[12px]
-                          text-emerald-600
-                          font-medium
-                        "
-                      >
-                        Active
-                      </p>
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-
-              {/* Profile Footer */}
-              <div
-                className="
-                  px-5
-                  py-3
-                  border-t
-                  border-slate-200
-                "
-              >
-              
-              </div>
-
-            </div>
+            <ProfilePanel
+              user={user}
+              actualRole={actualRole}
+              roleInitial={roleInitial}
+              roleStyles={roleStyles}
+              onClose={() =>
+                setProfileOpen(false)
+              }
+            />
           )}
         </div>
 
