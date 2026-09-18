@@ -19,14 +19,14 @@ const modules = [
 
 function Module() {
   return (
-    <section className="bg-[#faf9f7] px-6 sm:px-10 lg:px-24 py-16 sm:py-20 lg:py-24">
+    <section id="modules" className="scroll-mt-14 bg-[#faf9f7] px-6 sm:px-10 lg:px-24 py-16 sm:py-20 lg:py-24">
       {/* ---------- HEADER ---------- */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-end">
         <div>
           <p className="font-mono text-[12px] font-semibold tracking-[0.18em] text-[#d9773f] m-0">
             07 &mdash; SYSTEM MODULES
           </p>
-          <h2 className="mt-5 m-0 font-['Playfair_Display',Georgia,serif] font-bold tracking-[-0.01em] leading-[1.06] text-[clamp(38px,5.5vw,64px)] text-[#131c2e]">
+          <h2 className="mt-5 m-0 font-serif font-bold tracking-[-0.01em] leading-[1.06] text-[clamp(38px,5.5vw,64px)] text-[#131c2e]">
             16 integrated
             <span className="block italic font-medium">modules</span>
           </h2>

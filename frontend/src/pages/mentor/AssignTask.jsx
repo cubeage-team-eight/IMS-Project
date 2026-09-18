@@ -362,7 +362,7 @@ const AssignTask = () => {
         </div>
       )}
 
-    </div>
+</div>
   );
 };
 

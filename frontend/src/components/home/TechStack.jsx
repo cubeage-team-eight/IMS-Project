@@ -109,44 +109,20 @@ function TechStackCTA() {
 }
 
 /* ================================================================= */
-/*                             FOOTER                                */
-/* ================================================================= */
-
-function TechStackFooter() {
-  return (
-    <footer
-      className={`flex flex-col items-start justify-between gap-5 bg-[#0b0f1c] ${PAGE_PAD} py-[26px] sm:flex-row sm:flex-wrap sm:items-center`}
-    >
-      <div className="flex items-center gap-3 text-[13.5px] tracking-[0.06em] text-[#6e7f96]">
-        <span
-          aria-hidden="true"
-          className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md bg-[#cb5f20] text-[10px] font-bold tracking-[0.02em] text-white"
-        >
-          IMS
-        </span>
-
-        <span>Internship Management System</span>
-      </div>
-
-      <div className="text-[13.5px] text-[#6e7f96]">
-        MERN Stack · JWT · MongoDB Atlas · Vercel
-      </div>
-    </footer>
-  );
-}
-
-/* ================================================================= */
 /*                              PAGE                                 */
 /* ================================================================= */
 
 // Route: /tech-stack
 export default function TechStack() {
   return (
-    <div className="min-h-screen bg-[#0e121f] font-['JetBrains_Mono',ui-monospace,monospace] text-[#f6f5f2]">
+     <div
+      id="tech-stack"
+      className="scroll-mt-14 min-h-screen bg-[#0e121f] font-['JetBrains_Mono',ui-monospace,monospace] text-[#f6f5f2]"
+    >
       <TechStackHero />
       <TechStackTable />
       <TechStackCTA />
-      <TechStackFooter />
+      
     </div>
   );
 }
