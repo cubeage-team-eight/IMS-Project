@@ -22,6 +22,11 @@ import {
   getSystemHealth,
 } from "../controllers/superAdmin/system.controller.js";
 
+import {
+  get as getSettings,
+  update as updateSettings,
+} from "../controllers/superAdmin/systemSettings.controller.js";
+
 import authMiddleware from "../middleware/auth.middleware.js";
 import roleMiddleware from "../middleware/role.middleware.js";
 
@@ -58,5 +63,8 @@ router.delete("/roles/:id", removeRole);
 
 router.get("/dashboard", getDashboard);
 router.get("/health", getSystemHealth);
+
+router.get("/settings", getSettings);
+router.put("/settings", updateSettings);
 
 export default router;
