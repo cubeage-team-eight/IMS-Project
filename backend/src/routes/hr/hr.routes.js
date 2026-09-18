@@ -67,7 +67,7 @@ const router = express.Router();
 
 // HR/Admin authentication and authorization
 router.use(authMiddleware);
-router.use(roleMiddleware("HR_ADMIN"));
+router.use(roleMiddleware("HR_ADMIN","SUPER_ADMIN"));
 
 // =========================
 // COLLEGE ROUTES
