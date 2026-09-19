@@ -447,7 +447,6 @@
 
 // export default ManageHRAdmins;
 
-
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import SupView from "../../components/forms/superadmin/SupView";
