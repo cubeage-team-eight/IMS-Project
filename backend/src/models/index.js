@@ -41,6 +41,17 @@ import College from "./College.js";
 import Student from "./student/Student.js";
 import Mentor from "./mentor/Mentor.js";
 import MentorStudent from "./mentor/MentorStudent.js";
+import CollegeCoordinator from "./coordinator/CollegeCoordinator.js";
+
+College.hasMany(CollegeCoordinator, {
+  foreignKey: "collegeId",
+  as: "coordinators",
+});
+
+CollegeCoordinator.belongsTo(College, {
+  foreignKey: "collegeId",
+  as: "college",
+});
 
 // User → Role
 Role.hasMany(User, {

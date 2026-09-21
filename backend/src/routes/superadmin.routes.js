@@ -26,6 +26,12 @@ import {
   get as getSettings,
   update as updateSettings,
 } from "../controllers/superAdmin/systemSettings.controller.js";
+import {
+  createCoordinator,
+  getAllCoordinators,
+  getCoordinatorById,
+  updateCoordinator,
+} from "../controllers/superadmin/coordinator.controller.js";
 
 import authMiddleware from "../middleware/auth.middleware.js";
 import roleMiddleware from "../middleware/role.middleware.js";
@@ -66,5 +72,9 @@ router.get("/health", getSystemHealth);
 
 router.get("/settings", getSettings);
 router.put("/settings", updateSettings);
+router.post("/coordinators", createCoordinator);
+router.get("/coordinators", getAllCoordinators);
+router.get("/coordinators/:id", getCoordinatorById);
+router.put("/coordinators/:id", updateCoordinator);
 
 export default router;
