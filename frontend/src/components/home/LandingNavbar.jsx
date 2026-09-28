@@ -66,7 +66,7 @@ function LandingNavbar() {
   return (
     <>
       {/* ===== FIXED NAVBAR ===== */}
-      <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between gap-6 px-6 lg:px-10 py-3.5 bg-[#0b0f1c] border-b border-white/[0.09]">
+      <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between gap-6 px-6 lg:px-10 py-3.5 bg-[#0B1D2A] border-b border-white/[0.09]">
 
         {/* — Brand — */}
         <a href="/" className="flex items-center gap-2.5 flex-shrink-0 no-underline">
