@@ -163,6 +163,14 @@ function Login() {
 
   const currentRole =
     roleConfig[role] || roleConfig["student-intern"];
+  
+  const expectedRoleMap = {
+  "super-admin": "SUPER_ADMIN",
+  "hr-admin": "HR_ADMIN",
+  "college-coordinator": "COLLEGE_COORDINATOR",
+  mentor: "MENTOR",
+  "student-intern": "STUDENT",
+};
 
   const [formData, setFormData] = useState({
     email: "",
@@ -239,17 +247,27 @@ function Login() {
        * }
        */
 
+ const actualRole = response.data.user.role;
+const expectedRole = expectedRoleMap[role];
 
-           // Navigate after successful login, based on ACTUAL role from backend
-      const actualRole = response.data.user.role;
-      console.log("Actual role received:", actualRole);
-      const routeKey = roleRouteMap[actualRole];
+console.log("Selected role:", role);
+console.log("Expected role:", expectedRole);
+console.log("Actual role:", actualRole);
 
-      if (!routeKey) {
-        throw new Error("Unknown role, cannot redirect");
-      }
+if (actualRole !== expectedRole) {
+  setErrors({
+    general: "These credentials are not valid for the selected role.",
+  });
+  return;
+}
 
-      navigate(`/${routeKey}/dashboard`);
+const routeKey = roleRouteMap[actualRole];
+
+if (!routeKey) {
+  throw new Error("Unknown role, cannot redirect");
+}
+
+navigate(`/${routeKey}/dashboard`);
 
     } catch (error) {
       console.error("Login error:", error);
