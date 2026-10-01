@@ -3,7 +3,13 @@ import studentService from "../../services/coordinator/student.service.js";
 // Get all students in the coordinator's own college
 const getMyCollegeStudents = async (req, res) => {
   try {
-    const students = await studentService.getMyCollegeStudents(req.user.id);
+    const { search, branch, status } = req.query;
+
+    const students = await studentService.getMyCollegeStudents(req.user.id, {
+      search,
+      branch,
+      status,
+    });
 
     return res.status(200).json({
       success: true,

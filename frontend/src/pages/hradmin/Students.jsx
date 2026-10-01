@@ -168,10 +168,6 @@
 // }
 
 // export default Students
-
-
-
-
 import React, { useEffect, useState } from 'react'
 import { hrService } from '../../services/hr.service';
 
@@ -185,6 +181,7 @@ const initialState = {
   branch: "",
   course: "",
   batchId: "",
+  mentorId: "",
   joiningDate: "",
 };
 
@@ -197,7 +194,7 @@ const FieldLabel = ({ children }) => (
 const inputClasses =
   "w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition";
 
-function StudentRegistrationForm({ onSubmit, colleges, batches, submitting, formError }) {
+function StudentRegistrationForm({ onSubmit, colleges, batches, mentors, submitting, formError }) {
   const [form, setForm] = useState(initialState);
 
   const handleChange = (field) => (e) =>
@@ -326,6 +323,37 @@ function StudentRegistrationForm({ onSubmit, colleges, batches, submitting, form
           </div>
 
           <div>
+            <FieldLabel>Assign Mentor (optional)</FieldLabel>
+            <select
+              value={form.mentorId}
+              onChange={handleChange("mentorId")}
+              className={`${inputClasses} appearance-none text-slate-700`}
+            >
+              <option value="">No mentor</option>
+              {mentors.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.firstName} {m.lastName || ""}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <FieldLabel>Assign Project (optional)</FieldLabel>
+            <select
+              value={form.mentorId}
+              onChange={handleChange("mentorId")}
+              className={`${inputClasses} appearance-none text-slate-700`}
+            >
+              <option value="">No mentor</option>
+              {mentors.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.firstName} {m.lastName || ""}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
             <FieldLabel>Joining Date</FieldLabel>
             <input
               type="date"
@@ -360,6 +388,7 @@ function StudentRegistrationForm({ onSubmit, colleges, batches, submitting, form
 function Students() {
   const [colleges, setColleges] = useState([]);
   const [batches, setBatches] = useState([]);
+  const [mentors, setMentors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -369,15 +398,17 @@ function Students() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [collegesRes, batchesRes] = await Promise.all([
+      const [collegesRes, batchesRes, mentorsRes] = await Promise.all([
         hrService.getAllColleges(),
         hrService.getAllBatches(),
+        hrService.getAllMentors(),
       ]);
       setColleges(collegesRes.data || []);
       setBatches(batchesRes.data || []);
+      setMentors(mentorsRes.data || []);
     } catch (err) {
       console.error("Load data error:", err);
-      setError("Failed to load colleges/batches");
+      setError("Failed to load colleges/batches/mentors");
     } finally {
       setLoading(false);
     }
@@ -422,6 +453,10 @@ function Students() {
         await hrService.assignStudentToBatch(form.batchId, newStudent.id);
       }
 
+      if (form.mentorId && newStudent?.id) {
+        await hrService.assignStudentToMentor(form.mentorId, newStudent.id);
+      }
+
       setSuccessMsg("Student registered successfully!");
       resetForm();
     } catch (err) {
@@ -453,6 +488,7 @@ function Students() {
           onSubmit={handleRegister}
           colleges={colleges}
           batches={batches}
+          mentors={mentors}
           submitting={submitting}
           formError={formError}
         />
