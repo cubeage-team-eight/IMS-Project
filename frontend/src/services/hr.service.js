@@ -104,4 +104,11 @@ export const hrService = {
     });
     return response.data;
   },
+  assignStudentToMentor: async (mentorId, studentId) => {
+  const response = await axiosInstance.post(API_ENDPOINTS.HR.MENTOR_ASSIGN_STUDENT, {
+    mentorId,
+    studentId,
+  });
+  return response.data;
+},
 };
