@@ -92,4 +92,8 @@ SUPER_ADMIN: {
   HEALTH: "/super-admin/health",
   SETTINGS: "/super-admin/settings",
 },
+COORDINATOR: {
+  STUDENTS: "/coordinator/students",
+  STUDENT_BY_ID: (id) => `/coordinator/students/${id}`,
+},
 };
