@@ -53,10 +53,29 @@ import {
   deleteAssignment,
 } from "../../controllers/hr/assignment.controller.js";
 
-import { createMentor, 
+import {
+  createMentor,
   getAllMentors,
-   getMentorById, 
-    updateMentor} from "../../controllers/hr/mentor.controller.js";
+  getMentorById,
+  updateMentor,
+  assignStudentToMentor,
+} from "../../controllers/hr/mentor.controller.js";
+
+import {
+  createProject,
+  getAllProjects,
+  getProjectById,
+  updateProject,
+  deleteProject,
+  assignToProject,
+  unassignFromProject,
+} from "../../controllers/hr/project.controller.js";
+
+import {
+  createProjectValidation,
+  updateProjectValidation,
+  assignProjectValidation,
+} from "../../validations/project.validation.js";
 
 import certificateController from "../../controllers/hr/certificate.controller.js";
 import upload from "../../config/multer.js";
@@ -140,10 +159,24 @@ router.put(
   updateStudent
 );
 router.delete("/students/:id", deleteStudent);
+router.post("/mentors/assign-student", assignStudentToMentor);
 
 // cetificate routes
 router.get("/certificates", certificateController.getAllCertificates);
 router.get("/certificates/:certificateId/download", certificateController.downloadCertificate);
 router.post("/certificates/upload", upload.single("certificateFile"), certificateController.uploadCertificate);
 
+
+// =========================
+// PROJECT ROUTES
+// =========================
+
+router.post("/projects/assign", validationMiddleware(assignProjectValidation), assignToProject);
+router.post("/projects/unassign", validationMiddleware(assignProjectValidation), unassignFromProject);
+
+router.post("/projects", validationMiddleware(createProjectValidation), createProject);
+router.get("/projects", getAllProjects);
+router.get("/projects/:id", getProjectById);
+router.put("/projects/:id", validationMiddleware(updateProjectValidation), updateProject);
+router.delete("/projects/:id", deleteProject);
 export default router;
