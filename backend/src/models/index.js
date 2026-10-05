@@ -42,6 +42,9 @@ import Student from "./student/Student.js";
 import Mentor from "./mentor/mentor.js";
 import MentorStudent from "./mentor/MentorStudent.js";
 import CollegeCoordinator from "./coordinator/CollegeCoordinator.js";
+import Project from "../models/project/Project.js";
+import ProjectStudent from "../models/project/ProjectStudent.js";
+import ProjectMentor from "../models/project/ProjectMentor.js"
 
 College.hasMany(CollegeCoordinator, {
   foreignKey: "collegeId",
@@ -101,6 +104,35 @@ MentorStudent.belongsTo(Mentor, {
   as: "mentor",
 });
 
+// Project ↔ Student (through ProjectStudent)
+Project.belongsToMany(Student, {
+  through: ProjectStudent,
+  foreignKey: "projectId",
+  otherKey: "studentId",
+  as: "students",
+});
+
+Student.belongsToMany(Project, {
+  through: ProjectStudent,
+  foreignKey: "studentId",
+  otherKey: "projectId",
+  as: "projects",
+});
+
+// Project ↔ Mentor (through ProjectMentor)
+Project.belongsToMany(Mentor, {
+  through: ProjectMentor,
+  foreignKey: "projectId",
+  otherKey: "mentorId",
+  as: "mentors",
+});
+
+Mentor.belongsToMany(Project, {
+  through: ProjectMentor,
+  foreignKey: "mentorId",
+  otherKey: "projectId",
+  as: "projects",
+});
 export {
   User,
   Role,
@@ -108,4 +140,8 @@ export {
   Student,
   Mentor,
   MentorStudent,
+  CollegeCoordinator,
+  Project,
+  ProjectStudent,
+  ProjectMentor,
 };
