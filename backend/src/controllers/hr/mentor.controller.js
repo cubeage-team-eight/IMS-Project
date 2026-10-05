@@ -1,10 +1,10 @@
-  import {
+import {
   createMentor as createMentorService,
   getAllMentors as getAllMentorsService,
   getMentorById as getMentorByIdService,
-updateMentor as updateMentorService,
+  updateMentor as updateMentorService,
+  assignStudentToMentor as assignStudentToMentorService,
 } from "../../services/hr/mentor.service.js";
-
 export const createMentor = async (req, res) => {
   try {
     const mentor = await createMentorService(req.body);
@@ -62,6 +62,32 @@ export const updateMentor = async (req, res) => {
       success: true,
       message: "Mentor updated successfully",
       data: mentor,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const assignStudentToMentor = async (req, res) => {
+  try {
+    const { mentorId, studentId } = req.body;
+
+    if (!mentorId || !studentId) {
+      return res.status(400).json({
+        success: false,
+        message: "mentorId and studentId are required",
+      });
+    }
+
+    const result = await assignStudentToMentorService(mentorId, studentId);
+
+    return res.status(201).json({
+      success: true,
+      message: "Student assigned to mentor successfully",
+      data: result,
     });
   } catch (error) {
     return res.status(400).json({
