@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { LogOut } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
-
+import { useAuth } from "../../context/AuthContext";
 
 const ROLE_THEMES = {
   "Super Admin": {
@@ -45,6 +45,12 @@ const initialsOf = (name = "") =>
 
 
 const Sidebar = ({ role = "", userName = "", menuItems = [], isOpen, onClose }) => {
+  const { user: loggedInUser } = useAuth();
+
+  const displayName =
+    loggedInUser?.name ||
+    loggedInUser?.fullName ||
+    userName;
   const theme = ROLE_THEMES[role] ?? FALLBACK_THEME;
 
   const { pathname } = useLocation();
@@ -119,11 +125,11 @@ const Sidebar = ({ role = "", userName = "", menuItems = [], isOpen, onClose }) 
       <div className="border-b border-white/10 px-3 py-3">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-700 text-xs font-semibold">
-            {initialsOf(userName)}
-          </div>
+             {initialsOf(displayName)}
+</div>
 
           <div className="min-w-0">
-            <h3 className="truncate text-[15px] font-semibold">{userName}</h3>
+            <h3 className="truncate text-[15px] font-semibold">{displayName}</h3>
 
             <p className="mt-0.5 text-[11px] text-slate-500">{role}</p>
           </div>
@@ -140,7 +146,10 @@ const Sidebar = ({ role = "", userName = "", menuItems = [], isOpen, onClose }) 
               key={item.path}
               to={item.path}
               end={item.end}
-              onClick={closeNow}
+              onClick={() => {
+                 sessionStorage.setItem("currentPageTitle", item.label);
+                 closeNow();
+            }}
               className={({ isActive }) =>
                 `mb-0.5 flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all ${
                   isActive
