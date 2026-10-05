@@ -39,7 +39,7 @@ import User from "./User.js";
 import Role from "./Role.js";
 import College from "./College.js";
 import Student from "./student/Student.js";
-import Mentor from "./mentor/Mentor.js";
+import Mentor from "./mentor/mentor.js";
 import MentorStudent from "./mentor/MentorStudent.js";
 import CollegeCoordinator from "./coordinator/CollegeCoordinator.js";
 import Project from "../models/project/Project.js";

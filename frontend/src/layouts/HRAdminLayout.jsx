@@ -10,6 +10,7 @@ import {
   UsersRound,
   CalendarDays,
   GraduationCap,
+  FolderKanban,
   FileText,
   CheckCircle,
   Trophy,
@@ -44,6 +45,11 @@ const hrAdminMenu = [
     icon: GraduationCap,
   },
   {
+    label: "Projects",
+    path: "/hradmin/projects",
+    icon: FolderKanban,
+  },
+  {
     label: "Document Verification",
     path: "/hradmin/document-verification",
     icon: FileText,
@@ -71,9 +77,10 @@ const HRAdminLayout = () => {
 
   return (
     <div className="min-h-screen bg-[#EEF3F8]">
+
       {/* MOBILE OVERLAY */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
