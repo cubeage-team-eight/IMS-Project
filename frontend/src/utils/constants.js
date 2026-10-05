@@ -57,6 +57,8 @@ export const API_ENDPOINTS = {
     CERTIFICATES: "/hr/certificates",
     CERTIFICATE_UPLOAD: "/hr/certificates/upload",
     CERTIFICATE_DOWNLOAD: (id) => `/hr/certificates/${id}/download`,
+
+    MENTOR_ASSIGN_STUDENT: "/hr/mentors/assign-student",
   },
   STUDENT: {
     PROFILE: "/student/profile",
@@ -91,5 +93,11 @@ SUPER_ADMIN: {
   DASHBOARD: "/super-admin/dashboard",
   HEALTH: "/super-admin/health",
   SETTINGS: "/super-admin/settings",
+},
+COORDINATOR: {
+  STUDENTS: "/coordinator/students",
+  STUDENT_BY_ID: (id) => `/coordinator/students/${id}`,
+  ATTENDANCE: "/coordinator/attendance",
+  STUDENTS_BULK_UPLOAD: "/coordinator/students/bulk-upload",
 },
 };
