@@ -20,6 +20,17 @@ const Project = sequelize.define(
       allowNull: true,
     },
 
+    technology: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    type: {
+      type: DataTypes.ENUM("web", "mobile"),
+      allowNull: true,
+      defaultValue: "web",
+    },
+
     internshipId: {
       type: DataTypes.UUID,
       allowNull: true,
