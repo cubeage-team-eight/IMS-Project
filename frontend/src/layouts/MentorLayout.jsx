@@ -7,6 +7,7 @@ import Navbar from "../components/navbar/Navbar";
 import {
   LayoutDashboard,
   UsersRound,
+  FolderKanban,
   ClipboardList,
   FileText,
   Star,
@@ -24,6 +25,11 @@ const mentorMenu = [
     label: "My Students",
     path: "/mentor/students",
     icon: UsersRound,
+  },
+  {
+    label: "Projects",
+    path: "/mentor/projects",
+    icon: FolderKanban,
   },
   {
     label: "Task Assignment",
@@ -61,7 +67,7 @@ const MentorLayout = () => {
     <div className="min-h-screen bg-[#EEF3F8]">
       {/* MOBILE OVERLAY */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
@@ -77,7 +83,6 @@ const MentorLayout = () => {
 
       {/* RIGHT CONTENT */}
       <div className="lg:ml-[337px] transition-all duration-300 ease-in-out min-h-screen flex flex-col overflow-x-hidden">
-
         {/* FIXED NAVBAR */}
         <Navbar
           role="Mentor"
@@ -89,9 +94,7 @@ const MentorLayout = () => {
         <main className="pt-[88px] p-7">
           <Outlet />
         </main>
-
       </div>
-
     </div>
   );
 };

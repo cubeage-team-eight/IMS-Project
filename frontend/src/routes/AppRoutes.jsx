@@ -40,6 +40,7 @@ import Certificate from "../pages/student/Certificate";
 import FeedbackForm from "../pages/student/FeedbackForm";
 import MentorDashboard from "../pages/mentor/Dashboard";
 import MyStudents from "../pages/mentor/MyStudents";
+import MentorProjects from "../pages/mentor/Projects";
 import AssignTask from "../pages/mentor/AssignTask";
 import LeaveApprovals from "../pages/mentor/LeaveApprovals";
 import MentorFeedbackForm from "../pages/mentor/FeedbackForm";
@@ -286,6 +287,11 @@ const AppRoutes = () => {
         <Route
           path={ROUTES.MENTOR.MYSTUDENTS}
           element={<MyStudents />}
+        />
+
+        <Route
+          path="/mentor/projects"
+          element={<MentorProjects />}
         />
 
         <Route
