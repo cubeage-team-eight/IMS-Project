@@ -59,6 +59,11 @@ export const API_ENDPOINTS = {
     CERTIFICATE_DOWNLOAD: (id) => `/hr/certificates/${id}/download`,
 
     MENTOR_ASSIGN_STUDENT: "/hr/mentors/assign-student",
+    
+    PROJECTS: "/hr/projects",
+    PROJECT_BY_ID: (id) => `/hr/projects/${id}`,
+    PROJECT_ASSIGN: "/hr/projects/assign",
+    PROJECT_UNASSIGN: "/hr/projects/unassign",
   },
   STUDENT: {
     PROFILE: "/student/profile",

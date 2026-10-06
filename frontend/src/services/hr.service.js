@@ -104,11 +104,50 @@ export const hrService = {
     });
     return response.data;
   },
-  assignStudentToMentor: async (mentorId, studentId) => {
+  
+assignStudentToMentor: async (mentorId, studentId) => {
   const response = await axiosInstance.post(API_ENDPOINTS.HR.MENTOR_ASSIGN_STUDENT, {
     mentorId,
     studentId,
   });
+  return response.data;
+},
+
+  // Projects
+  createProject: async (data) => {
+    const response = await axiosInstance.post(API_ENDPOINTS.HR.PROJECTS, data);
+    return response.data;
+  },
+  getAllProjects: async () => {
+    const response = await axiosInstance.get(API_ENDPOINTS.HR.PROJECTS);
+    return response.data;
+  },
+  getProjectById: async (id) => {
+    const response = await axiosInstance.get(API_ENDPOINTS.HR.PROJECT_BY_ID(id));
+    return response.data;
+  },
+  updateProject: async (id, data) => {
+    const response = await axiosInstance.put(API_ENDPOINTS.HR.PROJECT_BY_ID(id), data);
+    return response.data;
+  },
+  deleteProject: async (id) => {
+    const response = await axiosInstance.delete(API_ENDPOINTS.HR.PROJECT_BY_ID(id));
+    return response.data;
+  },
+  assignToProject: async (projectId, students = [], mentors = []) => {
+    const response = await axiosInstance.post(API_ENDPOINTS.HR.PROJECT_ASSIGN, {
+      projectId,
+      students,
+      mentors,
+    });
+    return response.data;
+  },
+  unassignFromProject: async (projectId, students = [], mentors = []) => {
+    const response = await axiosInstance.post(API_ENDPOINTS.HR.PROJECT_UNASSIGN, {
+      projectId,
+      students,
+      mentors,
+    });
   return response.data;
 },
 };
