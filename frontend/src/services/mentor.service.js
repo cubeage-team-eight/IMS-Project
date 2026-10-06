@@ -76,4 +76,8 @@ export const mentorService = {
     const response = await axiosInstance.get(API_ENDPOINTS.MENTOR.CERTIFICATES);
     return response.data;
   },
+  getMyProjects: async () => {
+  const response = await axiosInstance.get(API_ENDPOINTS.MENTOR.PROJECTS); // STUDENT.PROJECTS in the student service
+  return response.data;
+},
 };

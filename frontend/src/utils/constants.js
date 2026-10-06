@@ -34,6 +34,7 @@ export const API_ENDPOINTS = {
     EVALUATIONS: "/mentor/evaluations",
     EVALUATION_BY_ID: (id) => `/mentor/evaluations/${id}`,
     CERTIFICATES: "/mentor/certificates",
+    PROJECTS: "/mentor/projects" ,
   },
   HR: {
     // Colleges
@@ -59,6 +60,11 @@ export const API_ENDPOINTS = {
     CERTIFICATE_DOWNLOAD: (id) => `/hr/certificates/${id}/download`,
 
     MENTOR_ASSIGN_STUDENT: "/hr/mentors/assign-student",
+    
+    PROJECTS: "/hr/projects",
+    PROJECT_BY_ID: (id) => `/hr/projects/${id}`,
+    PROJECT_ASSIGN: "/hr/projects/assign",
+    PROJECT_UNASSIGN: "/hr/projects/unassign",
   },
   STUDENT: {
     PROFILE: "/student/profile",
@@ -81,6 +87,8 @@ export const API_ENDPOINTS = {
 
     CERTIFICATES: "/student/certificates",
     CERTIFICATE_DOWNLOAD: (id) => `/student/certificates/${id}/download`,
+
+    PROJECTS: "/student/projects",
   },
 SUPER_ADMIN: {
   USERS: "/super-admin/users",

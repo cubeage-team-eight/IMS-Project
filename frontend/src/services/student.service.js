@@ -110,4 +110,9 @@ export const studentService = {
 
     return response;
   },
+
+  getMyProjects: async () => {
+  const response = await axiosInstance.get(API_ENDPOINTS.MENTOR.PROJECTS); // STUDENT.PROJECTS in the student service
+  return response.data;
+},
 };
