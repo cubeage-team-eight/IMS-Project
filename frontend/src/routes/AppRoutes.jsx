@@ -38,6 +38,8 @@ import ApplyLeave from "../pages/student/ApplyLeave";
 import MyPerformance from "../pages/student/MyPerformance";
 import Certificate from "../pages/student/Certificate";
 import FeedbackForm from "../pages/student/FeedbackForm";
+import StudentProjects from "../pages/student/Projects";
+
 import MentorDashboard from "../pages/mentor/Dashboard";
 import MyStudents from "../pages/mentor/MyStudents";
 import MentorProjects from "../pages/mentor/Projects";
@@ -46,9 +48,11 @@ import LeaveApprovals from "../pages/mentor/LeaveApprovals";
 import MentorFeedbackForm from "../pages/mentor/FeedbackForm";
 import ReviewDailyReports from "../pages/mentor/ReviewDailyReports";
 import PerformanceEvaluation from "../pages/mentor/PerformanceEvaluation";
+
 import Attendance from "../pages/college/Attendance";
 import CollegeCertificates from "../pages/college/Certificates";
 import UploadStudentList from "../pages/college/UploadStudentList";
+
 import Colleges from "../pages/hradmin/Colleges";
 import Mentors from "../pages/hradmin/Mentors";
 import Batches from "../pages/hradmin/Batches";
@@ -172,7 +176,6 @@ const AppRoutes = () => {
         />
       </Route>
 
-
       {/* ================= COLLEGE COORDINATOR ================= */}
 
       <Route element={<CollegeCoordinatorLayout />}>
@@ -221,9 +224,9 @@ const AppRoutes = () => {
 
       </Route>
 
-
       {/* ================= STUDENT / INTERN ================= */}
       <Route element={<StudentLayout />}>
+
         <Route
           path={ROUTES.STUDENT.DASHBOARD}
           element={<StudentDashboard />}
@@ -232,6 +235,11 @@ const AppRoutes = () => {
         <Route
           path={ROUTES.STUDENT.PROFILE}
           element={<Profile />}
+        />
+
+        <Route
+          path="/student/projects"
+          element={<StudentProjects />}
         />
 
         <Route
@@ -273,8 +281,8 @@ const AppRoutes = () => {
           path={ROUTES.STUDENT.FEEDBACK}
           element={<FeedbackForm />}
         />
-      </Route>
 
+      </Route>
 
       {/* ================= MENTOR ================= */}
       <Route element={<MentorLayout />}>

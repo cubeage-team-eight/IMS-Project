@@ -7,6 +7,7 @@ import Navbar from "../components/navbar/Navbar";
 import {
   LayoutDashboard,
   User,
+  FolderKanban,
   CheckCircle,
   FileText,
   ClipboardList,
@@ -19,7 +20,7 @@ import {
 const studentMenu = [
   {
     label: "My Dashboard",
-   path: "/student/dashboard",
+    path: "/student/dashboard",
     icon: LayoutDashboard,
   },
   {
@@ -31,6 +32,11 @@ const studentMenu = [
     label: "Mark Attendance",
     path: "/student/attendance",
     icon: CheckCircle,
+  },
+  {
+    label: "My Project",
+    path: "/student/projects",
+    icon: FolderKanban,
   },
   {
     label: "Daily Report",
@@ -78,7 +84,7 @@ const StudentLayout = () => {
 
       {/* MOBILE OVERLAY */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
