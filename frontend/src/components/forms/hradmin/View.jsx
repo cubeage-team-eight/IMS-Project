@@ -167,17 +167,15 @@ function View({ project, onClose }) {
             <p className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-3">
               Assigned Students
             </p>
-
             <div className="flex flex-wrap gap-2">
-              {project.students.map((student) => (
+               {project.students.map((student) => (
                 <span
-                  key={student}
-                  className="px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-600"
-                >
-                  {student}
-                </span>
-              ))}
-            </div>
+                   key={student.id}
+                   className="px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-600">
+                      {student.firstName} {student.lastName}
+                 </span>
+             ))}
+          </div>
           </div>
 
           {/* PROJECT STATUS */}
