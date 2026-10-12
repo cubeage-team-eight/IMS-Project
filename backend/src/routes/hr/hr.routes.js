@@ -61,6 +61,8 @@ import {
   assignStudentToMentor,
 } from "../../controllers/hr/mentor.controller.js";
 
+import * as documentController from "../../controllers/hr/document.controller.js";
+
 import {
   createProject,
   getAllProjects,
@@ -179,4 +181,12 @@ router.get("/projects", getAllProjects);
 router.get("/projects/:id", getProjectById);
 router.put("/projects/:id", validationMiddleware(updateProjectValidation), updateProject);
 router.delete("/projects/:id", deleteProject);
+
+router.get("/documents/stats", documentController.getDocumentStats);
+router.get("/documents", documentController.getDocuments);
+router.patch(
+  "/documents/:id/review",
+  documentController.reviewStudentDocument
+);
+
 export default router;
