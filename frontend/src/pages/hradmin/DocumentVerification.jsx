@@ -1,38 +1,5 @@
-import React from 'react'
-
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Check, X } from "lucide-react";
-
-const initialDocuments = [
-  {
-    id: 1,
-    name: "Aditi Verma",
-    college: "VIT Vellore",
-    docType: "NOC Letter",
-    date: "28 Jul 2025",
-  },
-  {
-    id: 2,
-    name: "Vikram Singh",
-    college: "NIT Trichy",
-    docType: "Bonafide Certificate",
-    date: "27 Jul 2025",
-  },
-  {
-    id: 3,
-    name: "Sneha Joshi",
-    college: "BITS Pilani",
-    docType: "PAN Card",
-    date: "27 Jul 2025",
-  },
-  {
-    id: 4,
-    name: "Rahul Das",
-    college: "Manipal Institute",
-    docType: "College ID",
-    date: "26 Jul 2025",
-  },
-];
 
 function Avatar({ name }) {
   const initial = name.charAt(0).toUpperCase();
@@ -43,21 +10,91 @@ function Avatar({ name }) {
   );
 }
 
+
 function PendingDocuments() {
-  const [documents, setDocuments] = useState(initialDocuments);
-  const [decisions, setDecisions] = useState({});
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const remaining = documents.filter((doc) => !decisions[doc.id]).length;
+  const fetchDocuments = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-  const handleDecision = (id, decision) => {
-    setDecisions((prev) => ({ ...prev, [id]: decision }));
+      const response = await fetch(
+        "http://localhost:5000/api/hr/documents?status=PENDING",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to load documents");
+      }
+
+      setDocuments(result.data || []);
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchDocuments();
+  }, []);
+
+  const handleDecision = async (id, decision) => {
+    try {
+      const token = localStorage.getItem("token");
+      let reviewReason = "";
+
+      if (decision === "REJECTED") {
+        reviewReason = window.prompt("Enter rejection reason:");
+        if (!reviewReason?.trim()) return;
+      }
+
+      const response = await fetch(
+        `http://localhost:5000/api/hr/documents/${id}/review`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: decision,
+            reviewReason,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Review failed");
+      }
+
+      await fetchDocuments();
+      alert(`Document ${decision.toLowerCase()} successfully`);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const remaining = documents.length;
+
+  if (loading) return <p className="mt-6">Loading documents...</p>;
+  if (error) return <p className="mt-6 text-red-500">{error}</p>;
 
   return (
     <div className="min-h-screen w-full mt-4">
-      <div className=" mx-auto overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        {/* Header */}
-        <div className="flex flex-wrap items-center gap-3 border-b border-slate-200  px-4 py-4 sm:px-6">
+      <div className="mx-auto overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="flex items-center gap-3 border-b border-slate-200 px-4 py-4 sm:px-6">
           <span className="text-xs font-semibold tracking-wider text-slate-400">
             PENDING DOCUMENTS
           </span>
@@ -66,82 +103,71 @@ function PendingDocuments() {
           </span>
         </div>
 
-        {/* Rows */}
-        <div className="divide-y divide-slate-100 ">
-          {documents.map((doc, idx) => {
-            const decision = decisions[doc.id];
-            return (
-              <div
-                key={doc.id}
-                className="flex flex-col gap-3 px-4 py-6 transition-colors sm:flex-row sm:items-center sm:gap-4 sm:px-6 bg-white"
-                
-              >
-                {/* Identity row */}
-                <div className="flex min-w-0 flex-1 items-center gap-3">
-                  <Avatar name={doc.name} />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-slate-800">
-                      {doc.name}
-                    </p>
-                    <p className="truncate text-sm text-slate-400">
-                      {doc.college}
-                    </p>
+        {documents.length === 0 ? (
+          <p className="p-6 text-sm text-slate-500">
+            No pending documents.
+          </p>
+        ) : (
+          <div className="divide-y divide-slate-100">
+            {documents.map((doc) => {
+              const studentName =
+                [doc.student?.firstName, doc.student?.lastName]
+                  .filter(Boolean)
+                  .join(" ") || doc.student?.email || "Student";
+
+              return (
+                <div
+                  key={doc.id}
+                  className="flex flex-col gap-3 px-4 py-6 sm:flex-row sm:items-center sm:gap-4 sm:px-6"
+                >
+                  <div className="flex min-w-0 flex-1 items-center gap-3">
+                    <Avatar name={studentName} />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-slate-800">
+                        {studentName}
+                      </p>
+                      <p className="truncate text-sm text-slate-400">
+                        {doc.student?.college?.name || "College not available"}
+                      </p>
+                      <p className="truncate text-xs text-slate-500">
+                        {doc.originalName}
+                      </p>
+                    </div>
                   </div>
-                  {/* Doc badge stays inline on mobile, next to name block */}
-                  <span className="shrink-0 rounded-md bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700 sm:hidden">
-                    {doc.docType}
-                  </span>
-                </div>
 
-                {/* Meta row (desktop only inline, mobile shown separately) */}
-                <span className="hidden shrink-0 rounded-md bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 sm:inline-block">
-                  {doc.docType}
-                </span>
-
-                <div className="flex items-center justify-between gap-3 sm:contents">
-                  <span className="text-xs text-slate-400 sm:w-24 sm:shrink-0 sm:text-right">
-                    {doc.date}
+                  <span className="rounded-md bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700">
+                    {doc.documentType}
                   </span>
 
-                  <div className="flex shrink-0 flex-wrap items-center gap-2">
+                  <span className="text-xs text-slate-400 sm:w-24 sm:text-right">
+                    {new Date(doc.createdAt).toLocaleDateString("en-IN")}
+                  </span>
+
+                  <div className="flex gap-2">
                     <button
-                      onClick={() => handleDecision(doc.id, "approved")}
-                      disabled={!!decision}
-                      className={`inline-flex items-center gap-1 rounded-md px-3 py-2 sm:py-1.5 text-xs font-medium transition-colors ${
-                        decision === "approved"
-                          ? "bg-emerald-500 text-white"
-                          : decision === "rejected"
-                          ? "cursor-not-allowed bg-slate-100 text-slate-300"
-                          : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
-                      }`}
+                      onClick={() => handleDecision(doc.id, "VERIFIED")}
+                      className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-600 hover:bg-emerald-100"
                     >
-                      <Check size={14} strokeWidth={2.5} />
-                      Approve
+                      <Check size={14} /> Approve
                     </button>
+
                     <button
-                      onClick={() => handleDecision(doc.id, "rejected")}
-                      disabled={!!decision}
-                      className={`inline-flex items-center gap-1 rounded-md px-3 py-2 sm:py-1.5 text-xs font-medium transition-colors ${
-                        decision === "rejected"
-                          ? "bg-red-500 text-white"
-                          : decision === "approved"
-                          ? "cursor-not-allowed bg-slate-100 text-slate-300"
-                          : "bg-red-50 text-red-500 hover:bg-red-100"
-                      }`}
+                      onClick={() => handleDecision(doc.id, "REJECTED")}
+                      className="inline-flex items-center gap-1 rounded-md bg-red-50 px-3 py-2 text-xs font-medium text-red-500 hover:bg-red-100"
                     >
-                      <X size={14} strokeWidth={2.5} />
-                      Reject
+                      <X size={14} /> Reject
                     </button>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
 }
+
 const StatCard = ({
   title,
   value,
@@ -163,36 +189,87 @@ const StatCard = ({
 );
 
 function DocumentVerification() {
+  const [stats, setStats] = useState({
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+    total: 0,
+  });
+
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          "http://localhost:5000/api/hr/documents/stats",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || "Failed to fetch document stats");
+        }
+
+        // Adjust these field names if your backend returns a different shape.
+        const data = result.data || result;
+
+        setStats({
+          pending: data.pending ?? data.pendingCount ?? 0,
+          approved: data.approved ?? data.verified ?? data.approvedCount ?? 0,
+          rejected: data.rejected ?? data.rejectedCount ?? 0,
+          total: data.total ?? data.totalCount ?? 0,
+        });
+      } catch (error) {
+        console.error("Document stats error:", error.message);
+      } finally {
+        setLoadingStats(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   return (
-    <div className=" xl:p-6 min-h-screen">
-        <div className='flex justify-between items-center'>
-                <h1 className='text-xl font-medium'>Document Verification</h1>
-                
-            </div>
-        <div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6'>
-            <StatCard
-                title="Pending Review"
-                value= "7"
-            />
-             <StatCard
-                title="Approved"
-                value= "312"
-                valueColor='text-green-500'
-            />
-             <StatCard
-                title="Rejected"
-                value= "4"
-                valueColor='text-red-400'
-            />
-             <StatCard
-                title="Total docs"
-                value= "323"
-                
-            />
-        </div>
-        <PendingDocuments/>
+    <div className="xl:p-6 min-h-screen">
+      <div className="flex justify-between items-center">
+        <h1 className="text-xl font-medium">Document Verification</h1>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <StatCard
+          title="Pending Review"
+          value={loadingStats ? "..." : stats.pending}
+        />
+
+        <StatCard
+          title="Approved"
+          value={loadingStats ? "..." : stats.approved}
+          valueColor="text-green-500"
+        />
+
+        <StatCard
+          title="Rejected"
+          value={loadingStats ? "..." : stats.rejected}
+          valueColor="text-red-400"
+        />
+
+        <StatCard
+          title="Total docs"
+          value={loadingStats ? "..." : stats.total}
+        />
+      </div>
+
+      <PendingDocuments />
     </div>
-  )
+  );
 }
 
-export default DocumentVerification
+export default DocumentVerification;

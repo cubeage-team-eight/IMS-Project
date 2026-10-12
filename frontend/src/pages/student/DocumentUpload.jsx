@@ -133,70 +133,119 @@
 // export default DocumentUpload;
 
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const DocumentUpload = () => {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadedDocuments, setUploadedDocuments] = useState([]);
+const [loading, setLoading] = useState(true);
 
-  const documents = [
-    {
-      name: "Resume",
-      date: "10 Jun 2025",
-      status: "Verified",
-      statusStyle: "bg-emerald-100 text-emerald-600",
-      iconStyle: "bg-emerald-50 text-emerald-500",
-    },
-    {
-      name: "Aadhaar Card",
-      date: "10 Jun 2025",
-      status: "Verified",
-      statusStyle: "bg-emerald-100 text-emerald-600",
-      iconStyle: "bg-emerald-50 text-emerald-500",
-    },
-    {
-      name: "College ID",
-      date: "10 Jun 2025",
-      status: "Verified",
-      statusStyle: "bg-emerald-100 text-emerald-600",
-      iconStyle: "bg-emerald-50 text-emerald-500",
-    },
-    {
-      name: "NOC Letter",
-      date: "28 Jul 2025",
-      status: "Pending",
-      statusStyle: "bg-orange-100 text-orange-600",
-      iconStyle: "bg-orange-50 text-orange-500",
-    },
-    {
-      name: "Bonafide Certificate",
-      date: "-",
-      status: "Not Uploaded",
-      statusStyle:
-        "bg-slate-50 text-slate-400 border border-slate-100",
-      iconStyle: "bg-slate-100 text-slate-400",
-    },
-    {
-     name: "offer letter",
-      date: "-",
-      status: "Not Uploaded",
-      statusStyle:
-        "bg-slate-50 text-slate-400 border border-slate-100",
-      iconStyle: "bg-slate-100 text-slate-400",
-    },
-  ];
+const fetchDocuments = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
-  const handleUpload = () => {
-    if (!selectedFile) {
-      alert("Please select a file");
-      return;
+    const response = await fetch(
+      "http://localhost:5000/api/student/documents",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Failed to fetch documents");
     }
 
-    alert(`${selectedDocument} uploaded successfully`);
+    setUploadedDocuments(result.data || []);
+  } catch (error) {
+    console.error("Fetch documents error:", error.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  fetchDocuments();
+}, []);
+
+ const documents = [
+  "Resume",
+  "Aadhaar Card",
+  "College ID",
+  "NOC Letter",
+  "Bonafide Certificate",
+  "Offer Letter",
+  "PAN Card",
+  "Other",
+].map((name) => {
+  const uploaded = uploadedDocuments.find(
+    (doc) => doc.documentType === name
+  );
+
+  return {
+    name,
+    date: uploaded
+      ? new Date(uploaded.createdAt).toLocaleDateString("en-IN")
+      : "-",
+    status: uploaded ? uploaded.status : "Not Uploaded",
+    originalName: uploaded?.originalName,
+    reviewReason: uploaded?.reviewReason,
+    statusStyle: uploaded
+      ? uploaded.status === "VERIFIED"
+        ? "bg-emerald-100 text-emerald-600"
+        : uploaded.status === "REJECTED"
+        ? "bg-red-100 text-red-600"
+        : "bg-orange-100 text-orange-600"
+      : "bg-slate-50 text-slate-400 border border-slate-100",
+    iconStyle: "bg-violet-50 text-violet-500",
+  };
+});
+
+  
+const handleUpload = async () => {
+  if (!selectedFile || !selectedDocument) {
+    alert("Please select a file");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append("document", selectedFile);
+    formData.append("documentType", selectedDocument);
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+      "http://localhost:5000/api/student/documents",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Document upload failed");
+    }
+
+    alert(result.message || "Document uploaded successfully");
+    await fetchDocuments();
 
     setSelectedDocument(null);
     setSelectedFile(null);
-  };
+  } catch (error) {
+    alert(error.message || "Something went wrong");
+  }
+};
+
 
   return (
     <>

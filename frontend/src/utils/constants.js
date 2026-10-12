@@ -59,6 +59,11 @@ export const API_ENDPOINTS = {
     CERTIFICATE_UPLOAD: "/hr/certificates/upload",
     CERTIFICATE_DOWNLOAD: (id) => `/hr/certificates/${id}/download`,
 
+    // Student Document Verification
+    DOCUMENTS: "/hr/documents",
+    DOCUMENT_STATS: "/hr/documents/stats",
+    DOCUMENT_REVIEW: (id) => `/hr/documents/${id}/review`,
+
     MENTOR_ASSIGN_STUDENT: "/hr/mentors/assign-student",
     
     PROJECTS: "/hr/projects",
@@ -68,6 +73,10 @@ export const API_ENDPOINTS = {
   },
   STUDENT: {
     PROFILE: "/student/profile",
+     
+    // Student Document Upload & Status
+    DOCUMENTS: "/student/documents",
+    DOCUMENT_UPLOAD: "/student/documents",
 
     TASKS: "/student/tasks",
     TASK_BY_ID: (id) => `/student/tasks/${id}`,
