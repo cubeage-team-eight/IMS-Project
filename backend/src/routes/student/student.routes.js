@@ -86,6 +86,8 @@ import attendanceController from "../../controllers/student/attendance.controlle
 import leaveController from "../../controllers/student/leave.controller.js";
 import taskController from "../../controllers/student/task.controller.js";
 import certificateController from "../../controllers/student/certificate.controller.js";
+import * as documentController from "../../controllers/student/document.controller.js";
+import documentUpload from "../../config/documentUpload.js";
 
 import authMiddleware from "../../middleware/auth.middleware.js";
 
@@ -131,5 +133,19 @@ router.post("/tasks/:id/submit", authMiddleware, taskController.submitTask);
 
 router.get("/certificates", authMiddleware, certificateController.getMyCertificates);
 router.get("/certificates/:certificateId/download", authMiddleware, certificateController.downloadMyCertificate);
+console.log("STUDENT DOCUMENT ROUTE FILE LOADED");
 
+
+router.get(
+  "/documents",
+  authMiddleware,
+  documentController.getMyDocuments
+);
+
+router.post(
+  "/documents",
+  documentUpload.single("document"),
+  authMiddleware,
+  documentController.uploadDocument
+);
 export default router;
