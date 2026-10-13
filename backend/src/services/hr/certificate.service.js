@@ -97,12 +97,22 @@ import Mentor from "../../models/mentor/Mentor.js";
 import SystemSettings from "../../models/SystemSettings.js";
 import certificatePdfService from "../pdf/certificate-pdf.service.js";
 
-// Download certificate as PDF
+// Download certificate
 const downloadCertificate = async (certificateId, res) => {
   const certificate = await Certificate.findByPk(certificateId);
 
   if (!certificate) {
     throw new Error("Certificate not found");
+  }
+
+  if (certificate.source === "UPLOADED") {
+    const path = await import("path");
+    const filePath = path.join(
+      process.cwd(),
+      certificate.fileUrl.replace(/^\/+/, "")
+    );
+
+    return res.download(filePath);
   }
 
   const student = await Student.findByPk(certificate.studentId);
@@ -129,7 +139,7 @@ const downloadCertificate = async (certificateId, res) => {
     issueDate: certificate.issueDate,
   };
 
-  certificatePdfService.generateCertificatePDF(res, data);
+  return certificatePdfService.generateCertificatePDF(res, data);
 };
 
 // Get all certificates (HR view)

@@ -49,7 +49,7 @@
 import Student from "../models/student/Student.js";
 import { createUser } from "./user.service.js";
 
-const STUDENT_ROLE_ID = "fe6ae7fa-c2d5-4cfa-b97d-76b7417f811e";
+const STUDENT_ROLE_ID = "9faf25d3-8086-437d-b648-7c4ad0425949";
 
 const studentService = {
   // Create student
