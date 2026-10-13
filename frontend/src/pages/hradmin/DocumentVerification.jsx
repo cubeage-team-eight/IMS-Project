@@ -3,13 +3,13 @@ import { Check, X } from "lucide-react";
 
 function Avatar({ name }) {
   const initial = name.charAt(0).toUpperCase();
+
   return (
     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-sm font-semibold text-indigo-400">
       {initial}
     </div>
   );
 }
-
 
 function PendingDocuments() {
   const [documents, setDocuments] = useState([]);
@@ -55,6 +55,7 @@ function PendingDocuments() {
 
       if (decision === "REJECTED") {
         reviewReason = window.prompt("Enter rejection reason:");
+
         if (!reviewReason?.trim()) return;
       }
 
@@ -88,8 +89,13 @@ function PendingDocuments() {
 
   const remaining = documents.length;
 
-  if (loading) return <p className="mt-6">Loading documents...</p>;
-  if (error) return <p className="mt-6 text-red-500">{error}</p>;
+  if (loading) {
+    return <p className="mt-6">Loading documents...</p>;
+  }
+
+  if (error) {
+    return <p className="mt-6 text-red-500">{error}</p>;
+  }
 
   return (
     <div className="min-h-screen w-full mt-4">
@@ -98,6 +104,7 @@ function PendingDocuments() {
           <span className="text-xs font-semibold tracking-wider text-slate-400">
             PENDING DOCUMENTS
           </span>
+
           <span className="rounded-full bg-amber-200/70 px-2.5 py-0.5 text-xs font-medium text-amber-800">
             {remaining} remaining
           </span>
@@ -113,37 +120,63 @@ function PendingDocuments() {
               const studentName =
                 [doc.student?.firstName, doc.student?.lastName]
                   .filter(Boolean)
-                  .join(" ") || doc.student?.email || "Student";
+                  .join(" ") ||
+                doc.student?.email ||
+                "Student";
+
+              const documentUrl = doc.filePath
+                ? `http://localhost:5000/${doc.filePath
+                    .replace(/\\/g, "/")
+                    .replace(/^\/+/, "")}`
+                : null;
 
               return (
                 <div
                   key={doc.id}
-                  className="flex flex-col gap-3 px-4 py-6 sm:flex-row sm:items-center sm:gap-4 sm:px-6"
+                  className="flex flex-col gap-3 px-4 py-6 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6"
                 >
                   <div className="flex min-w-0 flex-1 items-center gap-3">
                     <Avatar name={studentName} />
+
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold text-slate-800">
                         {studentName}
                       </p>
+
                       <p className="truncate text-sm text-slate-400">
-                        {doc.student?.college?.name || "College not available"}
-                      </p>
-                      <p className="truncate text-xs text-slate-500">
-                        {doc.originalName}
+                        {doc.student?.college?.name ||
+                          "College not available"}
                       </p>
                     </div>
                   </div>
 
-                  <span className="rounded-md bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700">
-                    {doc.documentType}
-                  </span>
+                  <div className="flex justify-center sm:flex-1">
+                    <span className="rounded-md bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700">
+                      {doc.documentType}
+                    </span>
+                  </div>
 
-                  <span className="text-xs text-slate-400 sm:w-24 sm:text-right">
-                    {new Date(doc.createdAt).toLocaleDateString("en-IN")}
-                  </span>
+                  <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-end sm:flex-1">
+                    {documentUrl ? (
+                      <a
+                        href={documentUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center rounded-md border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-medium text-indigo-600 hover:bg-indigo-100"
+                        title={`View ${doc.documentType}`}
+                      >
+                        View
+                      </a>
+                    ) : (
+                      <span className="text-xs text-slate-400">
+                        File unavailable
+                      </span>
+                    )}
 
-                  <div className="flex gap-2">
+                    <span className="text-xs text-slate-400 sm:w-24 sm:text-right">
+                      {new Date(doc.createdAt).toLocaleDateString("en-IN")}
+                    </span>
+
                     <button
                       onClick={() => handleDecision(doc.id, "VERIFIED")}
                       className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-600 hover:bg-emerald-100"
@@ -174,17 +207,11 @@ const StatCard = ({
   valueColor = "text-slate-900",
 }) => (
   <div className="bg-white rounded-xl border border-slate-200 p-5">
-
-    <p className="text-[13px] text-slate-400">
-      {title}
-    </p>
+    <p className="text-[13px] text-slate-400">{title}</p>
 
     <h2 className={`text-3xl font-bold mt-3 ${valueColor}`}>
       {value}
     </h2>
-
-   
-
   </div>
 );
 
@@ -215,15 +242,17 @@ function DocumentVerification() {
         const result = await response.json();
 
         if (!response.ok) {
-          throw new Error(result.message || "Failed to fetch document stats");
+          throw new Error(
+            result.message || "Failed to fetch document stats"
+          );
         }
 
-        // Adjust these field names if your backend returns a different shape.
         const data = result.data || result;
 
         setStats({
           pending: data.pending ?? data.pendingCount ?? 0,
-          approved: data.approved ?? data.verified ?? data.approvedCount ?? 0,
+          approved:
+            data.approved ?? data.verified ?? data.approvedCount ?? 0,
           rejected: data.rejected ?? data.rejectedCount ?? 0,
           total: data.total ?? data.totalCount ?? 0,
         });
