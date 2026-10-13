@@ -221,12 +221,46 @@ function StudentCertificates() {
     }
   };
 
-  const handleDownload = (certId) => {
+
+
+const handleDownload = async (certId) => {
+  try {
     const token = localStorage.getItem("token");
-    const url = `${import.meta.env.VITE_API_URL}/hr/certificates/${certId}/download`;
-    window.open(`${url}?token=${token}`, "_blank");
-    // Note: if backend requires header-based auth only, use fetch+blob instead.
-  };
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/hr/certificates/${certId}/download`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to download certificate");
+    }
+
+    const blob = await response.blob();
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+
+    const contentDisposition = response.headers.get("content-disposition");
+    const match = contentDisposition?.match(/filename="?([^"]+)"?/i);
+    link.download = match?.[1] || "certificate";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(downloadUrl);
+  } catch (error) {
+    console.error("Download certificate error:", error);
+    alert(error.message || "Failed to download certificate");
+  }
+};
+
 
   if (loading) {
     return <div className="p-6 text-slate-500">Loading certificates...</div>;

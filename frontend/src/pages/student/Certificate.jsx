@@ -87,7 +87,11 @@ const Certificate = () => {
 
       const res = await studentService.getMyCertificates();
 
-      setCertificates(res.data || []);
+      setCertificates(
+        (res.data || []).filter(
+          (certificate) => certificate.source === "UPLOADED"
+        )
+      );
     } catch (err) {
       console.error("Load certificates error:", err);
 
@@ -105,24 +109,44 @@ const Certificate = () => {
     fetchCertificates();
   }, []);
 
-  const handleDownload = async (certificateId) => {
-    try {
-      setDownloadingId(certificateId);
-      setError("");
+const handleDownload = async (certificateId) => {
+  try {
+    setDownloadingId(certificateId);
+    setError("");
 
-      await studentService.downloadMyCertificate(certificateId);
-    } catch (err) {
-      console.error("Download certificate error:", err);
+    const response = await studentService.downloadMyCertificate(certificateId);
+    const blob = response.data;
 
-      setError(
-        err.response?.data?.message ||
-          err.message ||
-          "Failed to download certificate"
-      );
-    } finally {
-      setDownloadingId(null);
-    }
-  };
+    const certificate = certificates.find(
+      (item) => item.id === certificateId
+    );
+
+    const fileName = certificate?.fileUrl?.split("/").pop() || "certificate.pdf";
+
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = downloadUrl;
+    link.download = fileName;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(downloadUrl);
+  } catch (err) {
+    console.error("Download certificate error:", err);
+
+    setError(
+      err.response?.data?.message ||
+        err.message ||
+        "Failed to download certificate"
+    );
+  } finally {
+    setDownloadingId(null);
+  }
+};
+
 
   const formatDate = (date) => {
     if (!date) return "-";
@@ -134,21 +158,29 @@ const Certificate = () => {
     });
   };
 
+  const getCertificateUrl = (fileUrl) => {
+    if (!fileUrl) return "";
+
+    const apiUrl = import.meta.env.VITE_API_URL.replace(/\/api\/?$/, "");
+    const normalizedPath = fileUrl.replace(/\\/g, "/");
+
+    return `${apiUrl}/${normalizedPath.replace(/^\/+/, "")}`;
+  };
+
+  const getFileExtension = (fileUrl) => {
+    return fileUrl?.split("?")[0].split(".").pop()?.toLowerCase() || "";
+  };
+
   return (
     <div className="space-y-6 max-w-6xl">
-
-      {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold">
-          My Certificate
-        </h1>
+        <h1 className="text-xl font-semibold">My Certificate</h1>
 
         <p className="text-slate-400 text-sm mt-1">
           Download your internship completion certificate
         </p>
       </div>
 
-      {/* Loading */}
       {loading && (
         <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center">
           <p className="text-slate-400 text-sm">
@@ -157,19 +189,14 @@ const Certificate = () => {
         </div>
       )}
 
-      {/* Error */}
       {!loading && error && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-          <p className="text-red-500 text-sm">
-            {error}
-          </p>
+          <p className="text-red-500 text-sm">{error}</p>
         </div>
       )}
 
-      {/* No Certificate */}
       {!loading && !error && certificates.length === 0 && (
         <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center">
-
           <h3 className="font-semibold text-slate-700">
             Certificate Not Available
           </h3>
@@ -178,157 +205,103 @@ const Certificate = () => {
             Your certificate will be available after successful
             completion of the internship.
           </p>
-
         </div>
       )}
 
-      {/* Certificates */}
+      {/*
+      // <div className="bg-[#0f172a] rounded-xl border border-orange-500/30 p-6 sm:p-10 w-full max-w-2xl text-center relative overflow-hidden shadow-2xl">
+      //   <h2 className="text-orange-500 text-[10px] tracking-[0.3em] uppercase font-mono mb-8 font-semibold">
+      //     Certificate of Completion
+      //   </h2>
+      //   <p className="text-slate-400 text-sm mb-4">
+      //     This is to certify that
+      //   </p>
+      //   <h1 className="text-2xl sm:text-4xl font-serif font-bold text-white mb-4">
+      //     {certificate.student?.firstName || certificate.student?.name || "Student"}
+      //   </h1>
+      //   <p className="text-slate-400 text-sm max-w-md mx-auto leading-relaxed mb-6">
+      //     has successfully completed the internship program.
+      //   </p>
+      // </div>
+      */}
+
       {!loading &&
-        certificates.map((certificate) => (
-          <div
-            key={certificate.id}
-            className="bg-white rounded-2xl border border-slate-200 p-8 flex flex-col items-center justify-center py-16"
-          >
+        !error &&
+        certificates.map((certificate) => {
+          const fileUrl = getCertificateUrl(certificate.fileUrl);
+          const extension = getFileExtension(certificate.fileUrl);
+          const isImage = ["jpg", "jpeg", "png"].includes(extension);
+          const isPdf = extension === "pdf";
 
-            {/* Certificate Card */}
-            <div className="bg-[#0f172a] rounded-xl border border-orange-500/30 p-6 sm:p-10 w-full max-w-2xl text-center relative overflow-hidden shadow-2xl">
-
-              <h2 className="text-orange-500 text-[10px] tracking-[0.3em] uppercase font-mono mb-8 font-semibold">
-                Certificate of Completion
+          return (
+            <div
+              key={certificate.id}
+              className="bg-white rounded-2xl border border-slate-200 p-6"
+            >
+              <h2 className="font-semibold text-slate-800 mb-2">
+                My Certificate
               </h2>
 
               <p className="text-slate-400 text-sm mb-4">
-                This is to certify that
-              </p>
-
-              {/* Student */}
-              <h1 className="text-2xl sm:text-4xl font-serif font-bold text-white mb-4">
-                {certificate.student?.firstName ||
-                  certificate.student?.name ||
-                  "Student"}
-
-                {certificate.student?.lastName
-                  ? ` ${certificate.student.lastName}`
-                  : ""}
-              </h1>
-
-              {/* Student Information */}
-              {certificate.student && (
-                <p className="text-slate-400 text-sm mb-6">
-                  {certificate.student.college?.name || ""}
-
-                  {certificate.student.enrollmentNumber && (
-                    <>
-                      {" · "}
-                      {certificate.student.enrollmentNumber}
-                    </>
-                  )}
-                </p>
-              )}
-
-              {/* Completion Message */}
-              <p className="text-slate-400 text-sm max-w-md mx-auto leading-relaxed mb-6">
-                has successfully completed the internship program.
-              </p>
-
-              {/* Mentor */}
-              {certificate.mentor && (
-                <p className="text-slate-400 text-sm mb-6">
-                  Under the guidance of{" "}
-                  <span className="text-slate-200 font-medium">
-                    {certificate.mentor.firstName ||
-                      certificate.mentor.name ||
-                      "Mentor"}
-
-                    {certificate.mentor.lastName
-                      ? ` ${certificate.mentor.lastName}`
-                      : ""}
-                  </span>
-                </p>
-              )}
-
-              {/* Issue Date */}
-              <p className="text-slate-400 text-sm mb-10">
-                Issue Date:{" "}
-                <span className="text-slate-200">
-                  {formatDate(certificate.issueDate)}
-                </span>
-              </p>
-
-              {/* Certificate Number */}
-              <div className="inline-block border border-orange-500/50 rounded-full px-4 py-1.5 text-orange-500 text-xs font-mono font-medium">
                 Certificate No: {certificate.certificateNumber}
-              </div>
-
-              {/* Status */}
-              <div className="mt-4">
-                <span
-                  className={`inline-block text-xs px-3 py-1 rounded-full ${
-                    certificate.status === "ISSUED"
-                      ? "bg-emerald-500/10 text-emerald-400"
-                      : "bg-red-500/10 text-red-400"
-                  }`}
-                >
-                  {certificate.status}
-                </span>
-              </div>
-
-              {/* Source */}
-              <p className="text-slate-500 text-xs mt-4">
-                Source: {certificate.source}
-              </p>
-            </div>
-
-            {/* Download */}
-            <div className="mt-10 flex flex-col items-center">
-
-              <button
-                type="button"
-                onClick={() =>
-                  handleDownload(certificate.id)
-                }
-                disabled={
-                  certificate.status !== "ISSUED" ||
-                  downloadingId === certificate.id
-                }
-                className="bg-violet-500 hover:bg-violet-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-8 py-3 rounded-lg transition-colors flex items-center gap-2 shadow-sm"
-              >
-
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                  />
-                </svg>
-
-                {downloadingId === certificate.id
-                  ? "Downloading..."
-                  : "Download Certificate (PDF)"}
-
-              </button>
-
-              <p className="text-slate-400 text-xs mt-3">
-                Certificate No:{" "}
-                {certificate.certificateNumber}
               </p>
 
+              {fileUrl && isImage && (
+                <img
+                  src={fileUrl}
+                  alt="Uploaded certificate"
+                  className="block w-full max-w-4xl mx-auto rounded-lg border border-slate-200 object-contain"
+                />
+              )}
+
+              {fileUrl && isPdf && (
+                <iframe
+                  src={fileUrl}
+                  title={`Certificate ${certificate.certificateNumber}`}
+                  className="w-full h-[650px] border border-slate-200 rounded-lg"
+                />
+              )}
+
+              {fileUrl && !isImage && !isPdf && (
+                <p className="text-slate-500 text-sm">
+                  This certificate file cannot be previewed in the browser.
+                </p>
+              )}
+
+              {!fileUrl && (
+                <p className="text-red-500 text-sm">
+                  Certificate file path is unavailable.
+                </p>
+              )}
+
+              <p className="text-slate-400 text-sm mt-4">
+                Issue Date: {formatDate(certificate.issueDate)}
+              </p>
+
+              <p className="text-slate-400 text-sm mt-2">
+                Status: {certificate.status}
+              </p>
+
+              <div className="mt-6">
+                <button
+                  type="button"
+                  onClick={() => handleDownload(certificate.id)}
+                  disabled={
+                    certificate.status !== "ISSUED" ||
+                    downloadingId === certificate.id
+                  }
+                  className="bg-violet-500 hover:bg-violet-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-8 py-3 rounded-lg transition-colors flex items-center gap-2 shadow-sm"
+                >
+                  {downloadingId === certificate.id
+                    ? "Downloading..."
+                    : "Download Certificate (PDF)"}
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
     </div>
   );
 };
 
 export default Certificate;
-
-
-
-
