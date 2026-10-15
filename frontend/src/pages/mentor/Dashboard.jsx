@@ -272,7 +272,7 @@ const Dashboard = () => {
 
           progressMap[studentName].total += 1;
 
-          if (task.status === "COMPLETED") {
+          if (["SUBMITTED", "COMPLETED"].includes(task.status)) {
             progressMap[studentName].completed += 1;
           }
         });

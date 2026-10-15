@@ -264,8 +264,13 @@ const Dashboard = () => {
         )
       : 0;
 
-  const completedTasks = tasks.filter((t) => t.status === "COMPLETED").length;
-  const pendingTasks = tasks.filter((t) => t.status !== "COMPLETED");
+  const completedTasks = tasks.filter((t) =>
+    ["SUBMITTED", "COMPLETED"].includes(t.status)
+  ).length;
+
+  const pendingTasks = tasks.filter(
+    (t) => !["SUBMITTED", "COMPLETED"].includes(t.status)
+  );
 
   const handleMarkAttendance = () => {
     setCheckInError("");
