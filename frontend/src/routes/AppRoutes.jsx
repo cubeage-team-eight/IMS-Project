@@ -58,6 +58,7 @@ import Mentors from "../pages/hradmin/Mentors";
 import Batches from "../pages/hradmin/Batches";
 import Students from "../pages/hradmin/Students";
 import Projects from "../pages/hradmin/Projects";
+import StudentList from "../pages/hradmin/StudentList";
 import DocumentVerification from "../pages/hradmin/DocumentVerification";
 import AttendanceOverview from "../pages/hradmin/AttendanceOverview";
 import HRCertificates from "../pages/hradmin/Certificates";
@@ -148,6 +149,11 @@ const AppRoutes = () => {
         <Route
           path={ROUTES.HR_ADMIN.STUDENTS}
           element={<Students />}
+        />
+          
+           <Route
+          path="/hradmin/student-list"
+          element={<StudentList />}
         />
 
         <Route
