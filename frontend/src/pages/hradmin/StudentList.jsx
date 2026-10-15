@@ -1,32 +1,70 @@
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search,
   ChevronDown,
   Download,
   FileSpreadsheet,
 } from "lucide-react";
-
-const colleges = ["All Colleges", "Test College"];
-
-const students = [
-  {
-    id: 1,
-    name: "Aarav Patil",
-    rollNumber: "ENR2026001",
-    email: "aarav.patil@example.com",
-    mobile: "9876543210",
-    branch: "Computer Engineering",
-    semester: "6th",
-    cgpa: "8.7",
-    dob: "12/04/2004",
-    college: "Test College",
-  },
-];
+import { hrService } from "../../services/hr.service";
 
 export default function StudentList() {
   const [search, setSearch] = useState("");
   const [selectedCollege, setSelectedCollege] = useState("All Colleges");
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // Fetch students from the existing HR API
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await hrService.getAllStudents();
+        const studentData = response.data || [];
+
+        // Map backend fields to the table fields
+        const formattedStudents = studentData.map((student) => ({
+          id: student.id,
+          name:
+            `${student.firstName || ""} ${student.lastName || ""}`.trim() ||
+            student.user?.name ||
+            "N/A",
+          rollNumber: student.enrollmentNumber || "N/A",
+          email: student.email || "N/A",
+          mobile: student.phone || "N/A",
+          branch: student.branch || "N/A",
+          semester: student.semester
+            ? `${student.semester}`
+            : "N/A",
+          college:
+            student.college?.name ||
+            student.collegeName ||
+            "Unknown College",
+        }));
+
+        setStudents(formattedStudents);
+      } catch (err) {
+        console.error("Failed to fetch students:", err);
+        setError("Unable to load students. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+  // College filter options from fetched student records
+  const colleges = [
+    "All Colleges",
+    ...new Set(
+      students
+        .map((student) => student.college)
+        .filter((college) => college !== "Unknown College")
+    ),
+  ];
 
   const filteredStudents = students.filter((student) => {
     const matchesCollege =
@@ -43,6 +81,7 @@ export default function StudentList() {
     return matchesCollege && matchesSearch;
   });
 
+  // Download filtered students as CSV
   const downloadExcel = () => {
     const headers = [
       "Full Name",
@@ -51,8 +90,6 @@ export default function StudentList() {
       "Mobile",
       "Branch",
       "Semester",
-      "CGPA",
-      "DOB",
     ];
 
     const rows = filteredStudents.map((student) => [
@@ -62,13 +99,13 @@ export default function StudentList() {
       student.mobile,
       student.branch,
       student.semester,
-      student.cgpa,
-      student.dob,
     ]);
 
     const csv = [headers, ...rows]
       .map((row) =>
-        row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")
+        row
+          .map((value) => `"${String(value ?? "").replace(/"/g, '""')}"`)
+          .join(",")
       )
       .join("\r\n");
 
@@ -113,7 +150,8 @@ export default function StudentList() {
 
         <button
           onClick={downloadExcel}
-          className="flex shrink-0 items-center justify-center gap-3 rounded-lg border border-blue-300 bg-white px-5 py-3 font-medium text-blue-600 hover:bg-blue-50"
+          disabled={loading || filteredStudents.length === 0}
+          className="flex shrink-0 items-center justify-center gap-3 rounded-lg border border-blue-300 bg-white px-5 py-3 font-medium text-blue-600 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Download size={20} />
           Download Excel
@@ -155,7 +193,7 @@ export default function StudentList() {
       </div>
 
       <div className="overflow-x-auto rounded-2xl border border-blue-100 bg-white p-3">
-        <table className="w-full min-w-[1100px] border-collapse text-left">
+        <table className="w-full min-w-[900px] border-collapse text-left">
           <thead>
             <tr className="bg-[#EAF3FC] text-sm font-semibold text-[#203653]">
               {[
@@ -165,8 +203,6 @@ export default function StudentList() {
                 "Mobile",
                 "Branch",
                 "Semester",
-                "CGPA",
-                "DOB",
               ].map((heading) => (
                 <th
                   key={heading}
@@ -179,7 +215,25 @@ export default function StudentList() {
           </thead>
 
           <tbody>
-            {filteredStudents.length > 0 ? (
+            {loading ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-4 py-12 text-center text-slate-500"
+                >
+                  Loading students...
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-4 py-12 text-center text-red-600"
+                >
+                  {error}
+                </td>
+              </tr>
+            ) : filteredStudents.length > 0 ? (
               filteredStudents.map((student) => (
                 <tr
                   key={student.id}
@@ -203,18 +257,12 @@ export default function StudentList() {
                   <td className="whitespace-nowrap px-4 py-5">
                     {student.semester}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-5 font-semibold">
-                    {student.cgpa}
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-5">
-                    {student.dob}
-                  </td>
                 </tr>
               ))
             ) : (
               <tr>
                 <td
-                  colSpan={8}
+                  colSpan={6}
                   className="px-4 py-12 text-center text-slate-500"
                 >
                   No students found for this college.
