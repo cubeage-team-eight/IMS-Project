@@ -45,6 +45,11 @@ const hrAdminMenu = [
     icon: GraduationCap,
   },
   {
+  label: "Student List",
+  path: "/hradmin/student-list",
+  icon: FileText,
+  },
+  {
     label: "Projects",
     path: "/hradmin/projects",
     icon: FolderKanban,
