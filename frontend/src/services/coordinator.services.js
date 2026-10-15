@@ -34,44 +34,60 @@
 import axiosInstance from "./axiosInstance";
 import { API_ENDPOINTS } from "../utils/constants";
 
+// ================= GET COLLEGE STUDENTS =================
 const getMyCollegeStudents = async (params = {}) => {
   const response = await axiosInstance.get(
     API_ENDPOINTS.COORDINATOR.STUDENTS,
     { params }
   );
+
   return response.data;
 };
 
+// ================= GET STUDENT BY ID =================
 const getStudentById = async (id) => {
   const response = await axiosInstance.get(
     API_ENDPOINTS.COORDINATOR.STUDENT_BY_ID(id)
   );
+
   return response.data;
 };
 
+// ================= GET COLLEGE ATTENDANCE =================
 const getCollegeAttendance = async (params = {}) => {
   const response = await axiosInstance.get(
     API_ENDPOINTS.COORDINATOR.ATTENDANCE,
     { params }
   );
+
   return response.data;
 };
 
-const coordinatorStudentService = {
-  getMyCollegeStudents,
-  getStudentById,
-  getCollegeAttendance,
-};
+// ================= BULK UPLOAD STUDENTS =================
 const bulkUploadStudents = async (file) => {
   const formData = new FormData();
+
   formData.append("studentFile", file);
 
   const response = await axiosInstance.post(
     API_ENDPOINTS.COORDINATOR.STUDENTS_BULK_UPLOAD,
     formData,
-    { headers: { "Content-Type": "multipart/form-data" } }
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
+
   return response.data;
+};
+
+// ================= COORDINATOR STUDENT SERVICE =================
+const coordinatorStudentService = {
+  getMyCollegeStudents,
+  getStudentById,
+  getCollegeAttendance,
+  bulkUploadStudents,
 };
 
 export default coordinatorStudentService;
