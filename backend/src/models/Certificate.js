@@ -1,3 +1,4 @@
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
@@ -38,6 +39,11 @@ const Certificate = sequelize.define(
     },
 
     fileUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    type: {
       type: DataTypes.STRING,
       allowNull: true,
     },
