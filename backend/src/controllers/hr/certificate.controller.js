@@ -34,7 +34,7 @@ const getAllCertificates = async (req, res) => {
 // Upload a certificate manually
 const uploadCertificate = async (req, res) => {
   try {
-    const { studentId } = req.body;
+    const { studentId, type } = req.body;
 
     if (!req.file) {
       throw new Error("Certificate file is required");
@@ -42,7 +42,7 @@ const uploadCertificate = async (req, res) => {
 
     const fileUrl = `/uploads/certificates/${req.file.filename}`;
 
-    const certificate = await certificateService.uploadCertificate(studentId, fileUrl);
+    const certificate = await certificateService.uploadCertificate(studentId, fileUrl, type);
 
     return res.status(201).json({
       success: true,

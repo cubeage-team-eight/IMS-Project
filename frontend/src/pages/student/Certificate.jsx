@@ -239,7 +239,7 @@ const handleDownload = async (certificateId) => {
               className="bg-white rounded-2xl border border-slate-200 p-6"
             >
               <h2 className="font-semibold text-slate-800 mb-2">
-                My Certificate
+                {certificate.type || "My Certificate"}
               </h2>
 
               <p className="text-slate-400 text-sm mb-4">

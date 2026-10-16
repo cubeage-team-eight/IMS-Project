@@ -162,7 +162,7 @@ const generateCertificateNumber = async () => {
 };
 
 // Upload a certificate manually
-const uploadCertificate = async (studentId, fileUrl) => {
+const uploadCertificate = async (studentId, fileUrl, type) => {
   if (!studentId) {
     throw new Error("Student is required");
   }
@@ -182,6 +182,7 @@ const uploadCertificate = async (studentId, fileUrl) => {
     certificateNumber,
     issueDate: new Date(),
     fileUrl,
+    type,
     source: "UPLOADED",
     status: "ISSUED",
   });

@@ -76,17 +76,18 @@
 // export default StudentCertificates
 
 
-import React, { useEffect, useState } from 'react'
-import { X } from 'lucide-react'
+import React, { useEffect, useState } from 'react';
+import { X } from 'lucide-react';
 import { hrService } from '../../services/hr.service';
 
 function UploadCertificateModal({ onClose, onSubmit, students, submitting, formError }) {
   const [studentId, setStudentId] = useState("");
+  const [type, setType] = useState("");
   const [file, setFile] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(studentId, file);
+    onSubmit(studentId, file, type);
   };
 
   return (
@@ -105,9 +106,13 @@ function UploadCertificateModal({ onClose, onSubmit, students, submitting, formE
           <X size={16} />
         </button>
 
-        <h2 className="text-base font-semibold text-slate-900 mb-4">Upload Certificate</h2>
+        <h2 className="text-base font-semibold text-slate-900 mb-4">
+          Upload Certificate
+        </h2>
 
-        {formError && <p className="text-red-500 text-sm mb-3">{formError}</p>}
+        {formError && (
+          <p className="text-red-500 text-sm mb-3">{formError}</p>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -115,6 +120,7 @@ function UploadCertificateModal({ onClose, onSubmit, students, submitting, formE
               Student
             </label>
             <select
+              required
               value={studentId}
               onChange={(e) => setStudentId(e.target.value)}
               className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700"
@@ -130,12 +136,30 @@ function UploadCertificateModal({ onClose, onSubmit, students, submitting, formE
 
           <div>
             <label className="block text-[11px] font-medium tracking-wide text-slate-400 uppercase mb-2">
+              Type
+            </label>
+            <select
+              required
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700"
+            >
+              <option value="">Select type</option>
+              <option value="Certificate">Certificate</option>
+              <option value="Internship Letter">Internship Letter</option>
+              <option value="Offer Letter">Offer Letter</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-medium tracking-wide text-slate-400 uppercase mb-2">
               Certificate File (PDF/JPG/PNG)
             </label>
             <input
               type="file"
               accept=".pdf,.jpg,.jpeg,.png"
-              onChange={(e) => setFile(e.target.files[0])}
+              required
+              onChange={(e) => setFile(e.target.files[0] || null)}
               className="w-full text-sm"
             />
           </div>
@@ -171,6 +195,7 @@ function StudentCertificates() {
       ]);
       setCertificates(certsRes.data || []);
       setStudents(studentsRes.data || []);
+      setError("");
     } catch (err) {
       console.error("Load certificates error:", err);
       setError("Failed to load certificates");
@@ -191,15 +216,17 @@ function StudentCertificates() {
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
     return new Date(dateStr).toLocaleDateString("en-GB", {
-      day: "2-digit", month: "short", year: "numeric",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
     });
   };
 
-  const handleUpload = async (studentId, file) => {
+  const handleUpload = async (studentId, file, type) => {
     setFormError("");
 
-    if (!studentId || !file) {
-      setFormError("Please select a student and a file");
+    if (!studentId || !file || !type) {
+      setFormError("Please select a student, certificate type and file");
       return;
     }
 
@@ -207,6 +234,7 @@ function StudentCertificates() {
 
     const formData = new FormData();
     formData.append("studentId", studentId);
+    formData.append("type", type);
     formData.append("certificateFile", file);
 
     try {
@@ -215,52 +243,51 @@ function StudentCertificates() {
       await fetchData();
     } catch (err) {
       console.error("Upload certificate error:", err);
-      setFormError(err.response?.data?.message || err.message || "Failed to upload certificate");
+      setFormError(
+        err.response?.data?.message || err.message || "Failed to upload certificate"
+      );
     } finally {
       setSubmitting(false);
     }
   };
 
+  const handleDownload = async (certId) => {
+    try {
+      const token = localStorage.getItem("token");
 
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/hr/certificates/${certId}/download`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-const handleDownload = async (certId) => {
-  try {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/hr/certificates/${certId}/download`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      if (!response.ok) {
+        throw new Error("Failed to download certificate");
       }
-    );
 
-    if (!response.ok) {
-      throw new Error("Failed to download certificate");
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+
+      const contentDisposition = response.headers.get("content-disposition");
+      const match = contentDisposition?.match(/filename="?([^"]+)"?/i);
+      link.download = match?.[1] || "certificate";
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("Download certificate error:", error);
+      alert(error.message || "Failed to download certificate");
     }
-
-    const blob = await response.blob();
-    const downloadUrl = window.URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = downloadUrl;
-
-    const contentDisposition = response.headers.get("content-disposition");
-    const match = contentDisposition?.match(/filename="?([^"]+)"?/i);
-    link.download = match?.[1] || "certificate";
-
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
-    window.URL.revokeObjectURL(downloadUrl);
-  } catch (error) {
-    console.error("Download certificate error:", error);
-    alert(error.message || "Failed to download certificate");
-  }
-};
-
+  };
 
   if (loading) {
     return <div className="p-6 text-slate-500">Loading certificates...</div>;
@@ -271,29 +298,34 @@ const handleDownload = async (certId) => {
   }
 
   return (
-    <div className='lg:p-6 min-h-screen'>
-      <div className='flex flex-col gap-4 sm:flex-row justify-between items-center'>
+    <div className="lg:p-6 min-h-screen">
+      <div className="flex flex-col gap-4 sm:flex-row justify-between items-center">
         <div>
-          <h1 className='text-xl font-medium'>Certificate Management</h1>
-          <p className='text-slate-400'>Generate and manage internship completion certificates</p>
+          <h1 className="text-xl font-medium">Certificate Management</h1>
+          <p className="text-slate-400">
+            Generate and manage internship completion certificates
+          </p>
         </div>
         <button
           onClick={() => setIsOpen(true)}
-          className='bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors'
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
         >
           Upload Certificate
         </button>
       </div>
 
-      <div className="mt-6 bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="mt-6 bg-white rounded-xl border border-slate-200 overflow-x-auto">
         {certificates.length === 0 ? (
-          <p className="text-slate-400 text-sm p-6">No certificates issued yet.</p>
+          <p className="text-slate-400 text-sm p-6">
+            No certificates issued yet.
+          </p>
         ) : (
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-slate-100">
                 <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Student</th>
                 <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Cert No.</th>
+                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Type</th>
                 <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Source</th>
                 <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Issue Date</th>
                 <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Status</th>
@@ -308,6 +340,9 @@ const handleDownload = async (certId) => {
                   </td>
                   <td className="px-4 py-3 text-sm font-mono text-slate-500">
                     {cert.certificateNumber}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-slate-500">
+                    {cert.type || "—"}
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-500">
                     {cert.source}
@@ -337,7 +372,10 @@ const handleDownload = async (certId) => {
 
       {isOpen && (
         <UploadCertificateModal
-          onClose={() => { setIsOpen(false); setFormError(""); }}
+          onClose={() => {
+            setIsOpen(false);
+            setFormError("");
+          }}
           onSubmit={handleUpload}
           students={students}
           submitting={submitting}
@@ -345,7 +383,7 @@ const handleDownload = async (certId) => {
         />
       )}
     </div>
-  )
+  );
 }
 
-export default StudentCertificates
+export default StudentCertificates;
