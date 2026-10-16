@@ -1,39 +1,92 @@
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search,
   ChevronDown,
   Download,
   FileSpreadsheet,
 } from "lucide-react";
-
-const colleges = ["All Colleges", "Test College"];
-
-const students = [
-  {
-    id: 1,
-    name: "Aarav Patil",
-    rollNumber: "ENR2026001",
-    email: "aarav.patil@example.com",
-    mobile: "9876543210",
-    branch: "Computer Engineering",
-    semester: "6th",
-    cgpa: "8.7",
-    dob: "12/04/2004",
-    college: "Test College",
-  },
-];
+import { hrService } from "../../services/hr.service";
 
 export default function StudentList() {
   const [search, setSearch] = useState("");
   const [selectedCollege, setSelectedCollege] = useState("All Colleges");
+  const [students, setStudents] = useState([]);
+  const [collegeList, setCollegeList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
+  // Fetch students and colleges from the backend
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const [studentResponse, collegeResponse] = await Promise.all([
+          hrService.getAllStudents(),
+          hrService.getAllColleges(),
+        ]);
+
+        const studentData = Array.isArray(studentResponse.data)
+          ? studentResponse.data
+          : [];
+
+        const collegeData = Array.isArray(collegeResponse.data)
+          ? collegeResponse.data
+          : [];
+
+        const formattedStudents = studentData.map((student) => ({
+          id: student.id,
+          name:
+            `${student.firstName || ""} ${student.lastName || ""}`.trim() ||
+            student.user?.name ||
+            "N/A",
+          rollNumber: student.enrollmentNumber || "N/A",
+          email: student.email || student.user?.email || "N/A",
+          mobile: student.phone || "N/A",
+          branch: student.branch || "N/A",
+          semester: student.semester
+            ? String(student.semester)
+            : "N/A",
+          college:
+            student.college?.name ||
+            student.collegeName ||
+            "",
+          collegeId:
+            student.collegeId ?? student.college?.id ?? null,
+        }));
+
+        setStudents(formattedStudents);
+        setCollegeList(collegeData);
+      } catch (err) {
+        console.error("Failed to fetch student/college data:", err);
+        setError("Unable to load students or colleges. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Build dropdown options from colleges fetched from the database
+  const colleges = [
+    { id: "all", name: "All Colleges" },
+    ...collegeList
+      .filter((college) => college.id != null && college.name)
+      .map((college) => ({
+        id: String(college.id),
+        name: college.name,
+      })),
+  ];
+
+  // Search and college filters
   const filteredStudents = students.filter((student) => {
     const matchesCollege =
       selectedCollege === "All Colleges" ||
-      student.college === selectedCollege;
+      String(student.collegeId) === selectedCollege;
 
-    const searchValue = search.toLowerCase();
+    const searchValue = search.trim().toLowerCase();
 
     const matchesSearch =
       student.name.toLowerCase().includes(searchValue) ||
@@ -43,6 +96,7 @@ export default function StudentList() {
     return matchesCollege && matchesSearch;
   });
 
+  // Download filtered students as CSV
   const downloadExcel = () => {
     const headers = [
       "Full Name",
@@ -51,8 +105,6 @@ export default function StudentList() {
       "Mobile",
       "Branch",
       "Semester",
-      "CGPA",
-      "DOB",
     ];
 
     const rows = filteredStudents.map((student) => [
@@ -62,13 +114,13 @@ export default function StudentList() {
       student.mobile,
       student.branch,
       student.semester,
-      student.cgpa,
-      student.dob,
     ]);
 
     const csv = [headers, ...rows]
       .map((row) =>
-        row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")
+        row
+          .map((value) => `"${String(value ?? "").replace(/"/g, '""')}"`)
+          .join(",")
       )
       .join("\r\n");
 
@@ -78,9 +130,13 @@ export default function StudentList() {
 
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
+
     link.href = url;
     link.download = "student-list.csv";
+    document.body.appendChild(link);
     link.click();
+    link.remove();
+
     URL.revokeObjectURL(url);
   };
 
@@ -113,7 +169,8 @@ export default function StudentList() {
 
         <button
           onClick={downloadExcel}
-          className="flex shrink-0 items-center justify-center gap-3 rounded-lg border border-blue-300 bg-white px-5 py-3 font-medium text-blue-600 hover:bg-blue-50"
+          disabled={loading || filteredStudents.length === 0}
+          className="flex shrink-0 items-center justify-center gap-3 rounded-lg border border-blue-300 bg-white px-5 py-3 font-medium text-blue-600 hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Download size={20} />
           Download Excel
@@ -141,8 +198,15 @@ export default function StudentList() {
             className="w-full appearance-none rounded-xl border border-blue-100 bg-white px-5 py-4 pr-12 text-base text-slate-700 outline-none focus:border-blue-400"
           >
             {colleges.map((college) => (
-              <option key={college} value={college}>
-                {college}
+              <option
+                key={college.id}
+                value={
+                  college.id === "all"
+                    ? "All Colleges"
+                    : college.id
+                }
+              >
+                {college.name}
               </option>
             ))}
           </select>
@@ -155,7 +219,7 @@ export default function StudentList() {
       </div>
 
       <div className="overflow-x-auto rounded-2xl border border-blue-100 bg-white p-3">
-        <table className="w-full min-w-[1100px] border-collapse text-left">
+        <table className="w-full min-w-[900px] border-collapse text-left">
           <thead>
             <tr className="bg-[#EAF3FC] text-sm font-semibold text-[#203653]">
               {[
@@ -165,8 +229,6 @@ export default function StudentList() {
                 "Mobile",
                 "Branch",
                 "Semester",
-                "CGPA",
-                "DOB",
               ].map((heading) => (
                 <th
                   key={heading}
@@ -179,7 +241,25 @@ export default function StudentList() {
           </thead>
 
           <tbody>
-            {filteredStudents.length > 0 ? (
+            {loading ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-4 py-12 text-center text-slate-500"
+                >
+                  Loading students...
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="px-4 py-12 text-center text-red-600"
+                >
+                  {error}
+                </td>
+              </tr>
+            ) : filteredStudents.length > 0 ? (
               filteredStudents.map((student) => (
                 <tr
                   key={student.id}
@@ -203,18 +283,12 @@ export default function StudentList() {
                   <td className="whitespace-nowrap px-4 py-5">
                     {student.semester}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-5 font-semibold">
-                    {student.cgpa}
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-5">
-                    {student.dob}
-                  </td>
                 </tr>
               ))
             ) : (
               <tr>
                 <td
-                  colSpan={8}
+                  colSpan={6}
                   className="px-4 py-12 text-center text-slate-500"
                 >
                   No students found for this college.

@@ -22,9 +22,16 @@ const bulkUploadStudents = async (userId, fileBuffer) => {
     throw new Error("STUDENT role not found. Please create it first.");
   }
 
+console.log("Uploaded file buffer exists:", !!fileBuffer);
+console.log("Uploaded file buffer size:", fileBuffer?.length);
+
   const workbook = XLSX.read(fileBuffer, { type: "buffer" });
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
   const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+console.log("Workbook sheets:", workbook.SheetNames);
+console.log("Parsed row count:", rows.length);
+console.log("First parsed row:", rows[0]);
 
   const results = [];
   let created = 0;
