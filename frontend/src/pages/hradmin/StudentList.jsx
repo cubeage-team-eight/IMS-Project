@@ -11,20 +11,30 @@ export default function StudentList() {
   const [search, setSearch] = useState("");
   const [selectedCollege, setSelectedCollege] = useState("All Colleges");
   const [students, setStudents] = useState([]);
+  const [collegeList, setCollegeList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Fetch students from the existing HR API
+  // Fetch students and colleges from the backend
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError("");
 
-        const response = await hrService.getAllStudents();
-        const studentData = response.data || [];
+        const [studentResponse, collegeResponse] = await Promise.all([
+          hrService.getAllStudents(),
+          hrService.getAllColleges(),
+        ]);
 
-        // Map backend fields to the table fields
+        const studentData = Array.isArray(studentResponse.data)
+          ? studentResponse.data
+          : [];
+
+        const collegeData = Array.isArray(collegeResponse.data)
+          ? collegeResponse.data
+          : [];
+
         const formattedStudents = studentData.map((student) => ({
           id: student.id,
           name:
@@ -32,46 +42,51 @@ export default function StudentList() {
             student.user?.name ||
             "N/A",
           rollNumber: student.enrollmentNumber || "N/A",
-          email: student.email || "N/A",
+          email: student.email || student.user?.email || "N/A",
           mobile: student.phone || "N/A",
           branch: student.branch || "N/A",
           semester: student.semester
-            ? `${student.semester}`
+            ? String(student.semester)
             : "N/A",
           college:
             student.college?.name ||
             student.collegeName ||
-            "Unknown College",
+            "",
+          collegeId:
+            student.collegeId ?? student.college?.id ?? null,
         }));
 
         setStudents(formattedStudents);
+        setCollegeList(collegeData);
       } catch (err) {
-        console.error("Failed to fetch students:", err);
-        setError("Unable to load students. Please try again.");
+        console.error("Failed to fetch student/college data:", err);
+        setError("Unable to load students or colleges. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStudents();
+    fetchData();
   }, []);
 
-  // College filter options from fetched student records
+  // Build dropdown options from colleges fetched from the database
   const colleges = [
-    "All Colleges",
-    ...new Set(
-      students
-        .map((student) => student.college)
-        .filter((college) => college !== "Unknown College")
-    ),
+    { id: "all", name: "All Colleges" },
+    ...collegeList
+      .filter((college) => college.id != null && college.name)
+      .map((college) => ({
+        id: String(college.id),
+        name: college.name,
+      })),
   ];
 
+  // Search and college filters
   const filteredStudents = students.filter((student) => {
     const matchesCollege =
       selectedCollege === "All Colleges" ||
-      student.college === selectedCollege;
+      String(student.collegeId) === selectedCollege;
 
-    const searchValue = search.toLowerCase();
+    const searchValue = search.trim().toLowerCase();
 
     const matchesSearch =
       student.name.toLowerCase().includes(searchValue) ||
@@ -115,9 +130,13 @@ export default function StudentList() {
 
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
+
     link.href = url;
     link.download = "student-list.csv";
+    document.body.appendChild(link);
     link.click();
+    link.remove();
+
     URL.revokeObjectURL(url);
   };
 
@@ -179,8 +198,15 @@ export default function StudentList() {
             className="w-full appearance-none rounded-xl border border-blue-100 bg-white px-5 py-4 pr-12 text-base text-slate-700 outline-none focus:border-blue-400"
           >
             {colleges.map((college) => (
-              <option key={college} value={college}>
-                {college}
+              <option
+                key={college.id}
+                value={
+                  college.id === "all"
+                    ? "All Colleges"
+                    : college.id
+                }
+              >
+                {college.name}
               </option>
             ))}
           </select>
