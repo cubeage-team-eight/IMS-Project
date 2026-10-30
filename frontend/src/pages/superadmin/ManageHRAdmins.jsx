@@ -565,11 +565,17 @@ const ManageHRAdmins = () => {
           email: values.email,
         });
       } else {
-        if (!values.password) {
-          setFormError("Password is required for new accounts");
-          setSubmitting(false);
-          return;
-        }
+        
+          if (!values.password) {
+           setFormError("Password is required for new accounts");
+           return;
+          }
+
+          if (values.password.length < 8) {
+           setFormError("Password must be at least 8 characters long");
+           return;
+         }
+
 
         if (!hrRoleId) {
           setFormError("HR_ADMIN role not found in system");
