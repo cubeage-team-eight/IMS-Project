@@ -39,6 +39,8 @@ import User from "./User.js";
 import Role from "./Role.js";
 import College from "./College.js";
 import Student from "./student/Student.js";
+import Batch from "./Batch.js";
+import BatchStudent from "./BatchStudent.js";
 import Mentor from "./mentor/mentor.js";
 import MentorStudent from "./mentor/MentorStudent.js";
 import CollegeCoordinator from "./coordinator/CollegeCoordinator.js";
@@ -77,6 +79,38 @@ College.hasMany(Student, {
 Student.belongsTo(College, {
   foreignKey: "collegeId",
   as: "college",
+});
+
+// Batch -> Mentor
+Batch.belongsTo(Mentor, {
+  foreignKey: "mentorId",
+  as: "mentor",
+});
+
+Mentor.hasMany(Batch, {
+  foreignKey: "mentorId",
+  as: "batches",
+});
+
+// Batch -> BatchStudent
+Batch.hasMany(BatchStudent, {
+  foreignKey: "batchId",
+  as: "batchStudents",
+});
+
+BatchStudent.belongsTo(Batch, {
+  foreignKey: "batchId",
+  as: "batch",
+});
+
+BatchStudent.belongsTo(Student, {
+  foreignKey: "studentId",
+  as: "student",
+});
+
+Student.hasMany(BatchStudent, {
+  foreignKey: "studentId",
+  as: "batchAssignments",
 });
 
 // Student → Documents
@@ -168,4 +202,6 @@ export {
   ProjectStudent,
   ProjectMentor,
   Document,
+  Batch,
+  BatchStudent,
 };

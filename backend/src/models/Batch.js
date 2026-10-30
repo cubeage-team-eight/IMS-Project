@@ -1,3 +1,4 @@
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
@@ -15,9 +16,19 @@ const Batch = sequelize.define(
       allowNull: false,
     },
 
+    designation: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
     collegeId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
+    },
+
+    mentorId: {
+      type: DataTypes.UUID,
+      allowNull: true,
     },
 
     capacity: {
