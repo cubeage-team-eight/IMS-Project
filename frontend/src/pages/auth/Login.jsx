@@ -228,6 +228,12 @@ function Login() {
 
       console.log("Login successful:", response);
 
+      const token = response.data?.data?.token || response.data?.token;
+
+      if (token) {
+        localStorage.setItem("token", token);
+      }
+
       /*
        * Backend returns:
        *

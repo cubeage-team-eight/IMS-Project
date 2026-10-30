@@ -1,6 +1,7 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { hrService } from "../../../services/hr.service.js";
 
 const initialState = {
   title: "",
@@ -48,6 +49,28 @@ function Field({ label, children }) {
 
 function CreateBatchForm({ onSubmit, onCancel }) {
   const [form, setForm] = useState(initialState);
+  const [mentors, setMentors] = useState([]);
+  const [mentorError, setMentorError] = useState("");
+
+  useEffect(() => {
+    const loadMentors = async () => {
+      try {
+        const response = await hrService.getAllMentors();
+        setMentors(
+          Array.isArray(response?.data)
+            ? response.data
+            : Array.isArray(response)
+              ? response
+              : []
+        );
+      } catch (error) {
+        console.error("Failed to load mentors:", error);
+        setMentorError("Unable to load mentors. Please try again.");
+      }
+    };
+
+    loadMentors();
+  }, []);
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({
@@ -62,7 +85,12 @@ function CreateBatchForm({ onSubmit, onCancel }) {
     const designation = form.title.trim();
 
     if (!designation) {
-      alert("Please select or type an internship designation.");
+      alert("Please select or enter an internship designation.");
+      return;
+    }
+
+    if (!form.mentor) {
+      alert("Please select a mentor.");
       return;
     }
 
@@ -74,6 +102,7 @@ function CreateBatchForm({ onSubmit, onCancel }) {
     onSubmit({
       ...form,
       title: designation,
+      mentorId: form.mentor,
       capacity: Number(form.capacity),
     });
 
@@ -91,7 +120,6 @@ function CreateBatchForm({ onSubmit, onCancel }) {
           <h2 className="text-xl font-semibold text-slate-900">
             Create Batch
           </h2>
-
           <p className="mt-1 text-sm text-slate-500">
             Enter the internship batch details below.
           </p>
@@ -118,7 +146,6 @@ function CreateBatchForm({ onSubmit, onCancel }) {
             onChange={handleChange("title")}
             className={inputClasses}
           />
-
           <datalist id="internship-designations">
             {designations.map((designation) => (
               <option key={designation} value={designation} />
@@ -127,14 +154,23 @@ function CreateBatchForm({ onSubmit, onCancel }) {
         </Field>
 
         <Field label="Mentor">
-          <input
+          <select
             required
-            type="text"
-            placeholder="Enter mentor name"
             value={form.mentor}
             onChange={handleChange("mentor")}
             className={inputClasses}
-          />
+          >
+            <option value="">Select mentor</option>
+            {mentors.map((mentor) => (
+              <option key={mentor.id} value={mentor.id}>
+                {`${mentor.firstName || ""} ${mentor.lastName || ""}`.trim() ||
+                  mentor.email}
+              </option>
+            ))}
+          </select>
+          {mentorError && (
+            <p className="mt-1 text-sm text-red-600">{mentorError}</p>
+          )}
         </Field>
 
         <Field label="Start Date">
@@ -201,6 +237,3 @@ function CreateBatchForm({ onSubmit, onCancel }) {
 }
 
 export default CreateBatchForm;
-
-
-

@@ -1,50 +1,3 @@
-// import Student from "../models/student/Student.js";
-
-// const studentService = {
-//   // Create student
-//   async createStudent(data) {
-//     return await Student.create(data);
-//   },
-
-//   // Get all students
-//   async getAllStudents() {
-//     return await Student.findAll();
-//   },
-
-//   // Get student by ID
-//   async getStudentById(id) {
-//     return await Student.findByPk(id);
-//   },
-
-//   // Update student
-//   async updateStudent(id, data) {
-//     const student = await Student.findByPk(id);
-
-//     if (!student) {
-//       return null;
-//     }
-
-//     await student.update(data);
-
-//     return student;
-//   },
-
-//   // Delete student
-//   async deleteStudent(id) {
-//     const student = await Student.findByPk(id);
-
-//     if (!student) {
-//       return null;
-//     }
-
-//     await student.destroy();
-
-//     return student;
-//   },
-// };
-
-// export default studentService;
-
 
 import Student from "../models/student/Student.js";
 import { createUser } from "./user.service.js";
@@ -52,7 +5,7 @@ import { createUser } from "./user.service.js";
 const STUDENT_ROLE_ID = "9faf25d3-8086-437d-b648-7c4ad0425949";
 
 const studentService = {
-  // Create student
+  // Create Student
   async createStudent(data) {
     const {
       firstName,
@@ -68,6 +21,13 @@ const studentService = {
       joiningDate,
     } = data;
 
+    // Validate required fields
+    if (!firstName || !email || !password || !collegeId || !enrollmentNumber) {
+      throw new Error(
+        "First name, email, password, college and enrollment number are required."
+      );
+    }
+
     // Create login user
     const user = await createUser({
       name: `${firstName} ${lastName || ""}`.trim(),
@@ -76,35 +36,57 @@ const studentService = {
       roleId: STUDENT_ROLE_ID,
     });
 
-    // Create student profile
-    const student = await Student.create({
-      userId: user.id,
-      collegeId,
-      enrollmentNumber,
-      firstName,
-      lastName,
-      email,
-      phone,
-      course,
-      branch,
-      semester,
-      joiningDate,
-    });
+    try {
+      // Create student profile
+      const student = await Student.create({
+        userId: user.id,
+        collegeId,
+        enrollmentNumber,
+        firstName,
+        lastName,
+        email,
+        phone,
+        course,
+        branch,
+        semester,
+        joiningDate: joiningDate || null,
+      });
 
-    return student;
+      return student;
+    } catch (error) {
+      // Show the actual database error in backend terminal
+      console.error("STUDENT PROFILE CREATION FAILED");
+      console.error("Database error:", error.original?.message || error.message);
+      console.error("Database code:", error.original?.code);
+      console.error("Student data:", {
+        userId: user.id,
+        collegeId,
+        enrollmentNumber,
+        firstName,
+        lastName,
+        email,
+        phone,
+        course,
+        branch,
+        semester,
+        joiningDate,
+      });
+
+      throw error;
+    }
   },
 
-  // Get all students
+  // Get All Students
   async getAllStudents() {
     return await Student.findAll();
   },
 
-  // Get student by ID
+  // Get Student By ID
   async getStudentById(id) {
     return await Student.findByPk(id);
   },
 
-  // Update student
+  // Update Student
   async updateStudent(id, data) {
     const student = await Student.findByPk(id);
 
@@ -113,11 +95,10 @@ const studentService = {
     }
 
     await student.update(data);
-
     return student;
   },
 
-  // Delete student
+  // Delete Student
   async deleteStudent(id) {
     const student = await Student.findByPk(id);
 
@@ -126,7 +107,6 @@ const studentService = {
     }
 
     await student.destroy();
-
     return student;
   },
 };

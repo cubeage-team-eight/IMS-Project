@@ -447,7 +447,7 @@ function Students() {
         joiningDate: form.joiningDate || null,
       });
 
-      const newStudent = res.data;
+      const newStudent = res.data?.data || res.data;
 
       if (form.batchId && newStudent?.id) {
         await hrService.assignStudentToBatch(form.batchId, newStudent.id);

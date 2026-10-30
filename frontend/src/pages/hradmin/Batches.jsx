@@ -1,58 +1,8 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateBatchForm from "../../components/forms/hradmin/CreateBatchForm.jsx";
 import BatchModal from "../../components/forms/hradmin/BatchModal.jsx";
-
-const initialBatches = [
-  {
-    id: 1,
-    title: "Batch 2025-Q1",
-    startDate: "2026-01-01",
-    endDate: "2026-03-31",
-    mentor: "Dr. Arun Patel",
-    status: "Active",
-    enrolled: 45,
-    capacity: 50,
-    students: [
-      { id: 101, name: "Aarav Patil" },
-      { id: 102, name: "Varsha Zambare" },
-      { id: 103, name: "Komal Kadam" },
-    ],
-  },
-  {
-    id: 2,
-    title: "Batch 2025-Q2",
-    startDate: "2026-04-01",
-    endDate: "2026-06-30",
-    mentor: "Dr. Arun Patel",
-    status: "Active",
-    enrolled: 45,
-    capacity: 70,
-    students: [],
-  },
-  {
-    id: 3,
-    title: "Batch 2025-Q3",
-    startDate: "2026-07-01",
-    endDate: "2026-09-30",
-    mentor: "Dr. Arun Patel",
-    status: "Active",
-    enrolled: 20,
-    capacity: 50,
-    students: [],
-  },
-  {
-    id: 4,
-    title: "Batch 2025-Q4",
-    startDate: "2026-10-01",
-    endDate: "2026-12-31",
-    mentor: "Dr. Arun Patel",
-    status: "Completed",
-    enrolled: 10,
-    capacity: 50,
-    students: [],
-  },
-];
+import { hrService } from "../../services/hr.service.js";
 
 const formatDate = (date) => {
   if (!date) return "—";
@@ -65,29 +15,71 @@ const formatDate = (date) => {
 };
 
 function Batches() {
-  const [batches, setBatches] = useState(initialBatches);
+  const [batches, setBatches] = useState([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [viewLoading, setViewLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleCreate = (form) => {
-    const newBatch = {
-      id:
-        batches.reduce(
-          (max, batch) => Math.max(max, batch.id),
-          0
-        ) + 1,
-      title: form.title,
-      startDate: form.startDate,
-      endDate: form.endDate,
-      mentor: form.mentor,
-      status: "Upcoming",
-      enrolled: 0,
-      capacity: Number(form.capacity),
-      students: [],
-    };
+  const loadBatches = async () => {
+    try {
+      setError("");
+      const response = await hrService.getAllBatches();
+      setBatches(response.data || []);
+    } catch (err) {
+      console.error("Failed to load batches:", err);
+      setError("Failed to load batches. Please check the server connection.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    setBatches((prev) => [...prev, newBatch]);
-    setIsCreateOpen(false);
+  useEffect(() => {
+    loadBatches();
+  }, []);
+
+  const handleViewBatch = async (batch) => {
+    try {
+      setError("");
+      setViewLoading(true);
+
+      const response = await hrService.getBatchById(batch.id);
+      const detailedBatch = response.data?.data || response.data || response;
+
+      setSelectedBatch(detailedBatch);
+    } catch (err) {
+      console.error("Failed to load batch details:", err);
+      setError(
+        err.response?.data?.message || "Failed to load batch details."
+      );
+    } finally {
+      setViewLoading(false);
+    }
+  };
+
+  const handleCreate = async (form) => {
+    try {
+      setError("");
+
+      await hrService.createBatch({
+        name: form.title.trim(),
+        designation: form.title.trim(),
+        startDate: form.startDate,
+        endDate: form.endDate || null,
+        mentorId: form.mentorId || null,
+        capacity: Number(form.capacity),
+      });
+
+      await loadBatches();
+      setIsCreateOpen(false);
+    } catch (err) {
+      console.error("Failed to create batch:", err);
+      setError(
+        err.response?.data?.message ||
+          "Batch create zala nahi. Required fields check kara."
+      );
+    }
   };
 
   return (
@@ -97,7 +89,6 @@ function Batches() {
           <h1 className="text-xl font-semibold text-slate-900">
             Internship Batches
           </h1>
-
           <p className="mt-1 text-sm text-slate-400">
             Manage batch cycles, capacity, and mentor assignments
           </p>
@@ -111,6 +102,12 @@ function Batches() {
           + Create Batch
         </button>
       </div>
+
+      {error && (
+        <p className="mt-4 rounded-md bg-red-50 p-3 text-sm text-red-600">
+          {error}
+        </p>
+      )}
 
       <div className="mt-6 overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-100">
         <div className="overflow-x-auto">
@@ -127,52 +124,62 @@ function Batches() {
             </thead>
 
             <tbody className="divide-y divide-slate-100">
-              {batches.map((batch) => (
-                <tr
-                  key={batch.id}
-                  className="text-sm text-slate-600 transition hover:bg-slate-50"
-                >
-                  <td className="whitespace-nowrap px-5 py-4 font-mono text-slate-500">
-                    BATCH-{String(batch.id).padStart(3, "0")}
-                  </td>
-
-                  <td className="whitespace-nowrap px-5 py-4 font-medium text-slate-900">
-                    {batch.title}
-                  </td>
-
-                  <td className="whitespace-nowrap px-5 py-4">
-                    {formatDate(batch.startDate)}
-                  </td>
-
-                  <td className="whitespace-nowrap px-5 py-4">
-                    {formatDate(batch.endDate)}
-                  </td>
-
-                  <td className="whitespace-nowrap px-5 py-4">
-                    {batch.mentor || "Not assigned"}
-                  </td>
-
-                  <td className="px-5 py-4">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedBatch(batch)}
-                      className="rounded-md bg-white px-4 py-2 text-sm font-medium text-blue-600 transition hover:bg-blue-50"
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-              ))}
-
-              {batches.length === 0 && (
+              {loading ? (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="px-5 py-10 text-center text-slate-400"
-                  >
-                    No batches available.
+                  <td colSpan={6} className="px-5 py-10 text-center text-slate-400">
+                    Loading batches...
                   </td>
                 </tr>
+              ) : (
+                <>
+                  {batches.map((batch) => (
+                    <tr
+                      key={batch.id}
+                      className="text-sm text-slate-600 transition hover:bg-slate-50"
+                    >
+                      <td className="whitespace-nowrap px-5 py-4 font-mono text-slate-500">
+                        BATCH-{String(batch.id).slice(0, 8).toUpperCase()}
+                      </td>
+
+                      <td className="whitespace-nowrap px-5 py-4 font-medium text-slate-900">
+                        {batch.designation || batch.name}
+                      </td>
+
+                      <td className="whitespace-nowrap px-5 py-4">
+                        {formatDate(batch.startDate)}
+                      </td>
+
+                      <td className="whitespace-nowrap px-5 py-4">
+                        {formatDate(batch.endDate)}
+                      </td>
+
+                      <td className="whitespace-nowrap px-5 py-4">
+                        {batch.mentor?.firstName
+                          ? `${batch.mentor.firstName} ${batch.mentor.lastName || ""}`.trim()
+                          : "Not assigned"}
+                      </td>
+
+                      <td className="px-5 py-4">
+                        <button
+                          type="button"
+                          disabled={viewLoading}
+                          onClick={() => handleViewBatch(batch)}
+                          className="rounded-md bg-white px-4 py-2 text-sm font-medium text-blue-600 transition hover:bg-blue-50 disabled:opacity-50"
+                        >
+                          {viewLoading ? "Loading..." : "View"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+
+                  {batches.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="px-5 py-10 text-center text-slate-400">
+                        No batches available.
+                      </td>
+                    </tr>
+                  )}
+                </>
               )}
             </tbody>
           </table>

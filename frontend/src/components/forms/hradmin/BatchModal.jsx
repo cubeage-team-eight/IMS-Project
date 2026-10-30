@@ -1,10 +1,24 @@
+
 import React from "react";
 import { X } from "lucide-react";
 
 function BatchModal({ batch, onClose }) {
   if (!batch) return null;
 
-  const students = batch.students || [];
+  // Backend returns students inside batchStudents
+  const students = Array.isArray(batch.batchStudents)
+    ? batch.batchStudents
+        .map((item) => item.student)
+        .filter(Boolean)
+    : Array.isArray(batch.students)
+      ? batch.students
+      : [];
+
+  const mentorName =
+    batch.mentor && typeof batch.mentor === "object"
+      ? `${batch.mentor.firstName || ""} ${batch.mentor.lastName || ""}`.trim() ||
+        "Not assigned"
+      : batch.mentor || "Not assigned";
 
   return (
     <div
@@ -22,11 +36,11 @@ function BatchModal({ batch, onClose }) {
             </h2>
 
             <p className="mt-1 text-sm text-slate-500">
-              {batch.title}
+              {batch.designation || batch.name || batch.title || "Batch"}
             </p>
 
             <p className="mt-1 text-sm text-slate-500">
-              Mentor: {batch.mentor || "Not assigned"}
+              Mentor: {mentorName}
             </p>
           </div>
 
@@ -46,17 +60,23 @@ function BatchModal({ batch, onClose }) {
               <thead className="bg-slate-50">
                 <tr className="text-xs font-medium uppercase text-slate-400">
                   <th className="px-4 py-3">Student Name</th>
+                  <th className="px-4 py-3">Email</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-slate-100">
                 {students.map((student, index) => (
                   <tr
-                    key={student.id ?? index}
+                    key={student.id || index}
                     className="text-sm text-slate-600 transition hover:bg-slate-50"
                   >
                     <td className="px-4 py-3 font-medium text-slate-900">
-                      {student.name}
+                      {student.firstName || student.lastName
+                        ? `${student.firstName || ""} ${student.lastName || ""}`.trim()
+                        : student.name || "Unnamed Student"}
+                    </td>
+                    <td className="px-4 py-3">
+                      {student.email || "—"}
                     </td>
                   </tr>
                 ))}
@@ -68,7 +88,6 @@ function BatchModal({ batch, onClose }) {
             <p className="font-medium text-slate-700">
               No students assigned
             </p>
-
             <p className="mt-1 text-sm text-slate-400">
               No student records are available for this batch.
             </p>
