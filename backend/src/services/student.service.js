@@ -2,7 +2,8 @@
 import Student from "../models/student/Student.js";
 import { createUser } from "./user.service.js";
 
-const STUDENT_ROLE_ID = "9faf25d3-8086-437d-b648-7c4ad0425949";
+// const STUDENT_ROLE_ID = "9faf25d3-8086-437d-b648-7c4ad0425949";
+const STUDENT_ROLE_ID = "d263d975-a511-45fb-b6d0-f5bc12eae8c2";
 
 const studentService = {
   // Create Student
@@ -21,8 +22,20 @@ const studentService = {
       joiningDate,
     } = data;
 
+    // Normalize enrollment number
+    const normalizedEnrollmentNumber =
+      enrollmentNumber == null || String(enrollmentNumber).trim() === ""
+        ? null
+        : String(enrollmentNumber).trim();
+
     // Validate required fields
-    if (!firstName || !email || !password || !collegeId || !enrollmentNumber) {
+    if (
+      !firstName ||
+      !email ||
+      !password ||
+      !collegeId ||
+      !normalizedEnrollmentNumber
+    ) {
       throw new Error(
         "First name, email, password, college and enrollment number are required."
       );
@@ -41,7 +54,7 @@ const studentService = {
       const student = await Student.create({
         userId: user.id,
         collegeId,
-        enrollmentNumber,
+        enrollmentNumber: normalizedEnrollmentNumber,
         firstName,
         lastName,
         email,
@@ -56,12 +69,15 @@ const studentService = {
     } catch (error) {
       // Show the actual database error in backend terminal
       console.error("STUDENT PROFILE CREATION FAILED");
-      console.error("Database error:", error.original?.message || error.message);
+      console.error(
+        "Database error:",
+        error.original?.message || error.message
+      );
       console.error("Database code:", error.original?.code);
       console.error("Student data:", {
         userId: user.id,
         collegeId,
-        enrollmentNumber,
+        enrollmentNumber: normalizedEnrollmentNumber,
         firstName,
         lastName,
         email,

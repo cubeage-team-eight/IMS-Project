@@ -17,9 +17,10 @@ export const createStudentValidation = Joi.object({
   collegeId: Joi.string().uuid().required(),
 
   enrollmentNumber: Joi.string()
-    .trim()
-    .max(50)
-    .required(),
+  .trim()
+  .max(50)
+  .allow("", null)
+  .optional(),
 
   course: Joi.string().trim().max(100).allow("", null),
 

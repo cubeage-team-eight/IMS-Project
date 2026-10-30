@@ -168,7 +168,8 @@
 // }
 
 // export default Students
-import React, { useEffect, useState } from 'react'
+
+import React, { useEffect, useState } from 'react';
 import { hrService } from '../../services/hr.service';
 
 const initialState = {
@@ -182,6 +183,7 @@ const initialState = {
   course: "",
   batchId: "",
   mentorId: "",
+  projectId: "",
   joiningDate: "",
 };
 
@@ -194,7 +196,14 @@ const FieldLabel = ({ children }) => (
 const inputClasses =
   "w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition";
 
-function StudentRegistrationForm({ onSubmit, colleges, batches, mentors, submitting, formError }) {
+function StudentRegistrationForm({
+  onSubmit,
+  colleges,
+  batches,
+  mentors,
+  submitting,
+  formError,
+}) {
   const [form, setForm] = useState(initialState);
 
   const handleChange = (field) => (e) =>
@@ -213,7 +222,9 @@ function StudentRegistrationForm({ onSubmit, colleges, batches, mentors, submitt
         Student Registration Form
       </h2>
 
-      {formError && <p className="text-red-500 text-sm mb-4">{formError}</p>}
+      {formError && (
+        <p className="text-red-500 text-sm mb-4">{formError}</p>
+      )}
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
@@ -225,6 +236,7 @@ function StudentRegistrationForm({ onSubmit, colleges, batches, mentors, submitt
               value={form.fullName}
               onChange={handleChange("fullName")}
               className={inputClasses}
+              required
             />
           </div>
 
@@ -236,17 +248,20 @@ function StudentRegistrationForm({ onSubmit, colleges, batches, mentors, submitt
               value={form.email}
               onChange={handleChange("email")}
               className={inputClasses}
+              required
             />
           </div>
 
           <div>
             <FieldLabel>Password</FieldLabel>
             <input
-              type="text"
+              type="password"
               placeholder="Set initial password"
               value={form.password}
               onChange={handleChange("password")}
               className={inputClasses}
+              minLength={8}
+              required
             />
           </div>
 
@@ -254,7 +269,7 @@ function StudentRegistrationForm({ onSubmit, colleges, batches, mentors, submitt
             <FieldLabel>Mobile Number</FieldLabel>
             <input
               type="tel"
-              placeholder="+91 98765 43210"
+              placeholder="9876543210"
               value={form.mobile}
               onChange={handleChange("mobile")}
               className={inputClasses}
@@ -262,7 +277,7 @@ function StudentRegistrationForm({ onSubmit, colleges, batches, mentors, submitt
           </div>
 
           <div>
-            <FieldLabel>Roll Number / Enrollment No.</FieldLabel>
+            <FieldLabel>Roll Number / Enrollment No. (Optional)</FieldLabel>
             <input
               type="text"
               placeholder="CS2021001"
@@ -278,10 +293,13 @@ function StudentRegistrationForm({ onSubmit, colleges, batches, mentors, submitt
               value={form.collegeId}
               onChange={handleChange("collegeId")}
               className={`${inputClasses} appearance-none text-slate-700`}
+              required
             >
               <option value="">Select college</option>
               {colleges.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
               ))}
             </select>
           </div>
@@ -317,7 +335,9 @@ function StudentRegistrationForm({ onSubmit, colleges, batches, mentors, submitt
             >
               <option value="">No batch</option>
               {batches.map((b) => (
-                <option key={b.id} value={b.id}>{b.name}</option>
+                <option key={b.id} value={b.id}>
+                  {b.name}
+                </option>
               ))}
             </select>
           </div>
@@ -337,19 +357,15 @@ function StudentRegistrationForm({ onSubmit, colleges, batches, mentors, submitt
               ))}
             </select>
           </div>
+
           <div>
             <FieldLabel>Assign Project (optional)</FieldLabel>
             <select
-              value={form.mentorId}
-              onChange={handleChange("mentorId")}
+              value={form.projectId}
+              onChange={handleChange("projectId")}
               className={`${inputClasses} appearance-none text-slate-700`}
             >
-              <option value="">No mentor</option>
-              {mentors.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.firstName} {m.lastName || ""}
-                </option>
-              ))}
+              <option value="">No project</option>
             </select>
           </div>
 
@@ -372,6 +388,7 @@ function StudentRegistrationForm({ onSubmit, colleges, batches, mentors, submitt
           >
             {submitting ? "Registering..." : "Register Student"}
           </button>
+
           <button
             type="button"
             onClick={handleClear}
@@ -398,11 +415,13 @@ function Students() {
   const fetchData = async () => {
     try {
       setLoading(true);
+
       const [collegesRes, batchesRes, mentorsRes] = await Promise.all([
         hrService.getAllColleges(),
         hrService.getAllBatches(),
         hrService.getAllMentors(),
       ]);
+
       setColleges(collegesRes.data || []);
       setBatches(batchesRes.data || []);
       setMentors(mentorsRes.data || []);
@@ -422,14 +441,26 @@ function Students() {
     setFormError("");
     setSuccessMsg("");
 
-    if (!form.fullName || !form.email || !form.password || !form.collegeId || !form.rollNumber) {
-      setFormError("Full name, email, password, roll number and college are required");
+    if (
+      !form.fullName.trim() ||
+      !form.email.trim() ||
+      !form.password ||
+      !form.collegeId
+    ) {
+      setFormError(
+        "Full name, email, password and college are required"
+      );
+      return;
+    }
+
+    if (form.password.length < 8) {
+      setFormError("Password must be at least 8 characters long");
       return;
     }
 
     setSubmitting(true);
 
-    const nameParts = form.fullName.trim().split(" ");
+    const nameParts = form.fullName.trim().split(/\s+/);
     const firstName = nameParts[0];
     const lastName = nameParts.slice(1).join(" ");
 
@@ -437,11 +468,11 @@ function Students() {
       const res = await hrService.createStudent({
         firstName,
         lastName,
-        email: form.email,
+        email: form.email.trim(),
         password: form.password,
         phone: form.mobile,
         collegeId: form.collegeId,
-        enrollmentNumber: form.rollNumber,
+        enrollmentNumber: form.rollNumber.trim() || null,
         course: form.course,
         branch: form.branch,
         joiningDate: form.joiningDate || null,
@@ -450,18 +481,32 @@ function Students() {
       const newStudent = res.data?.data || res.data;
 
       if (form.batchId && newStudent?.id) {
-        await hrService.assignStudentToBatch(form.batchId, newStudent.id);
+        await hrService.assignStudentToBatch(
+          form.batchId,
+          newStudent.id
+        );
       }
 
       if (form.mentorId && newStudent?.id) {
-        await hrService.assignStudentToMentor(form.mentorId, newStudent.id);
+        await hrService.assignStudentToMentor(
+          form.mentorId,
+          newStudent.id
+        );
       }
 
       setSuccessMsg("Student registered successfully!");
       resetForm();
     } catch (err) {
-      console.error("Create student error:", err);
-      setFormError(err.response?.data?.message || err.message || "Failed to register student");
+      console.error(
+        "Create student error:",
+        err.response?.data || err
+      );
+
+      setFormError(
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to register student"
+      );
     } finally {
       setSubmitting(false);
     }
@@ -477,11 +522,13 @@ function Students() {
 
   return (
     <div className="sm:p-6 min-h-screen">
-      <div className='flex flex-col sm:flex-row gap-4 justify-between items-center'>
-        <h1 className='text-xl font-medium'>Student Registration</h1>
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+        <h1 className="text-xl font-medium">Student Registration</h1>
       </div>
 
-      {successMsg && <p className="text-emerald-600 text-sm mt-4">{successMsg}</p>}
+      {successMsg && (
+        <p className="text-emerald-600 text-sm mt-4">{successMsg}</p>
+      )}
 
       <div className="mt-6">
         <StudentRegistrationForm
@@ -494,7 +541,7 @@ function Students() {
         />
       </div>
     </div>
-  )
+  );
 }
 
-export default Students
+export default Students;

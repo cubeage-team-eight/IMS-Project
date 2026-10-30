@@ -296,7 +296,6 @@
 
 // export default SupEdit;
 
-
 import { useState, useEffect } from "react";
 import { X, Eye } from "lucide-react";
 
@@ -323,15 +322,9 @@ const FieldLabel = ({ children }) => (
 
 const Overlay = ({ children, onClose }) => (
   <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-900/50 p-4 backdrop-blur-[2px]">
-    <div
-      onClick={onClose}
-      aria-hidden="true"
-      className="absolute inset-0"
-    />
+    <div onClick={onClose} aria-hidden="true" className="absolute inset-0" />
 
-    <div className="relative z-10 flex w-full justify-center">
-      {children}
-    </div>
+    <div className="relative z-10 flex w-full justify-center">{children}</div>
   </div>
 );
 
@@ -357,7 +350,7 @@ const SupEdit = ({ account, onClose, onSave, submitting, formError }) => {
           email: account.email,
           password: "",
         }
-      : EMPTY_FORM
+      : EMPTY_FORM,
   );
 
   const [showPassword, setShowPassword] = useState(false);
@@ -366,7 +359,8 @@ const SupEdit = ({ account, onClose, onSave, submitting, formError }) => {
 
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
 
-  const canSave = form.name.trim() && form.email.trim();
+  const canSave = form.name.trim() && form.email.trim() &&
+  (isEdit || form.password.length >= 8);
 
   const submit = () => {
     if (!canSave) return;
@@ -439,8 +433,14 @@ const SupEdit = ({ account, onClose, onSave, submitting, formError }) => {
                   value={form.password}
                   onChange={set("password")}
                   placeholder="Set initial password"
+                  minLength={8}
                   className={`${inputClass} pr-12`}
                 />
+                {form.password.length > 0 && form.password.length < 8 && (
+                  <p className="mt-2 text-sm text-red-500">
+                    Password must be at least 8 characters long.
+                  </p>
+                )}
                 <button
                   type="button"
                   onClick={() => setShowPassword((s) => !s)}
@@ -468,7 +468,11 @@ const SupEdit = ({ account, onClose, onSave, submitting, formError }) => {
             disabled={!canSave || submitting}
             className="rounded-lg bg-[#F5A623] px-7 py-3.5 text-[15px] font-bold text-white transition hover:bg-[#DE9114] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {submitting ? "Saving..." : isEdit ? "Save Changes" : "Create HR / Admin Account"}
+            {submitting
+              ? "Saving..."
+              : isEdit
+                ? "Save Changes"
+                : "Create HR / Admin Account"}
           </button>
         </div>
       </div>
