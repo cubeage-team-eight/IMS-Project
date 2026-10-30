@@ -367,15 +367,23 @@ function MentorRegistrationForm({ onSubmit, onCancel, submitting, formError }) {
             </div>
 
             <div>
-              <FieldLabel>Password</FieldLabel>
-              <input
-                type="text"
-                placeholder="Set initial password"
-                value={form.password}
-                onChange={handleChange("password")}
-                className={inputClasses}
-              />
-            </div>
+  <FieldLabel>Password</FieldLabel>
+  <input
+    type="password"
+    placeholder="Set initial password"
+    value={form.password}
+    onChange={handleChange("password")}
+    minLength={8}
+    required
+    className={inputClasses}
+  />
+
+  {form.password.length > 0 && form.password.length < 8 && (
+    <p className="mt-1 text-sm text-red-500">
+      Password must be at least 8 characters long.
+    </p>
+  )}
+</div>
 
             <div>
               <FieldLabel>Mobile Number</FieldLabel>
@@ -399,16 +407,30 @@ function MentorRegistrationForm({ onSubmit, onCancel, submitting, formError }) {
               />
             </div>
 
-            <div>
-              <FieldLabel>Role / Designation</FieldLabel>
-              <input
-                type="text"
-                placeholder="Senior Engineer"
-                value={form.role}
-                onChange={handleChange("role")}
-                className={inputClasses}
-              />
-            </div>
+           <div>
+  <FieldLabel>Role / Designation</FieldLabel>
+  <input
+    list="designation-options"
+    value={form.role}
+    onChange={handleChange("role")}
+    className={inputClasses}
+    placeholder="Select or type designation"
+    autoComplete="off"
+    required
+  />
+
+  <datalist id="designation-options">
+    <option value="Technical Mentor" />
+    <option value="Senior Engineer" />
+    <option value="Software Developer" />
+    <option value="Team Lead" />
+    <option value="Project Manager" />
+    <option value="Full Stack Developer" />
+    <option value="Frontend Developer" />
+    <option value="Backend Developer" />
+    <option value="AI/ML Engineer" />
+  </datalist>
+</div>
 
             <div>
               <FieldLabel>Branch / Department</FieldLabel>
@@ -528,9 +550,16 @@ function Mentors() {
     setFormError("");
 
     if (!formData.name || !formData.email || !formData.password) {
-      setFormError("Name, email and password are required");
-      return;
-    }
+  setFormError("Name, email and password are required");
+  return;
+}
+
+if (formData.password.length < 8) {
+  setFormError("Password must be at least 8 characters long");
+  return;
+}
+
+setSubmitting(true);
 
     setSubmitting(true);
 

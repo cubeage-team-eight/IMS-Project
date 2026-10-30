@@ -200,7 +200,7 @@ const Student = sequelize.define(
 
     enrollmentNumber: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       unique: true,
     },
 
