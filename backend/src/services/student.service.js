@@ -1,63 +1,15 @@
-// import Student from "../models/student/Student.js";
-
-// const studentService = {
-//   // Create student
-//   async createStudent(data) {
-//     return await Student.create(data);
-//   },
-
-//   // Get all students
-//   async getAllStudents() {
-//     return await Student.findAll();
-//   },
-
-//   // Get student by ID
-//   async getStudentById(id) {
-//     return await Student.findByPk(id);
-//   },
-
-//   // Update student
-//   async updateStudent(id, data) {
-//     const student = await Student.findByPk(id);
-
-//     if (!student) {
-//       return null;
-//     }
-
-//     await student.update(data);
-
-//     return student;
-//   },
-
-//   // Delete student
-//   async deleteStudent(id) {
-//     const student = await Student.findByPk(id);
-
-//     if (!student) {
-//       return null;
-//     }
-
-//     await student.destroy();
-
-//     return student;
-//   },
-// };
-
-// export default studentService;
 import crypto from "crypto";
 import { sequelize } from "../config/database.js";
-
 import Student from "../models/student/Student.js";
 import User from "../models/User.js";
 import MentorStudent from "../models/mentor/MentorStudent.js";
 import ProjectStudent from "../models/project/ProjectStudent.js";
-
 import { createUser } from "./user.service.js";
 
 const STUDENT_ROLE_ID = "d263d975-a511-45fb-b6d0-f5bc12eae8c2";
 
 const studentService = {
-  // Create student
+  // Create Student
   async createStudent(data) {
     const {
       firstName,
@@ -73,6 +25,23 @@ const studentService = {
       joiningDate,
     } = data;
 
+    const normalizedEnrollmentNumber =
+      enrollmentNumber == null || String(enrollmentNumber).trim() === ""
+        ? null
+        : String(enrollmentNumber).trim();
+
+    if (
+      !firstName ||
+      !email ||
+      !password ||
+      !collegeId ||
+      !normalizedEnrollmentNumber
+    ) {
+      throw new Error(
+        "First name, email, password, college and enrollment number are required."
+      );
+    }
+
     const user = await createUser({
       name: `${firstName} ${lastName || ""}`.trim(),
       email,
@@ -80,26 +49,32 @@ const studentService = {
       roleId: STUDENT_ROLE_ID,
     });
 
-    const normalizedEnrollmentNumber =
-      enrollmentNumber == null || String(enrollmentNumber).trim() === ""
-        ? null
-        : String(enrollmentNumber).trim();
+    try {
+      const student = await Student.create({
+        userId: user.id,
+        collegeId,
+        enrollmentNumber: normalizedEnrollmentNumber,
+        firstName,
+        lastName,
+        email,
+        phone,
+        course,
+        branch,
+        semester,
+        joiningDate: joiningDate || null,
+      });
 
-    const student = await Student.create({
-      userId: user.id,
-      collegeId,
-      enrollmentNumber: normalizedEnrollmentNumber,
-      firstName,
-      lastName,
-      email,
-      phone,
-      course,
-      branch,
-      semester,
-      joiningDate,
-    });
+      return student;
+    } catch (error) {
+      console.error("STUDENT PROFILE CREATION FAILED");
+      console.error(
+        "Database error:",
+        error.original?.message || error.message
+      );
+      console.error("Database code:", error.original?.code);
 
-    return student;
+      throw error;
+    }
   },
 
   // Approve student and create login account
@@ -119,10 +94,6 @@ const studentService = {
     }
 
     const temporaryPassword = crypto.randomBytes(4).toString("hex");
-
-    if (temporaryPassword.length < 8) {
-      throw new Error("Password must be at least 8 characters long");
-    }
 
     const user = await createUser({
       name: `${student.firstName} ${student.lastName || ""}`.trim(),
@@ -165,7 +136,6 @@ const studentService = {
         return null;
       }
 
-      // Only allow editable student fields
       const allowedFields = [
         "firstName",
         "lastName",
@@ -193,7 +163,6 @@ const studentService = {
 
       await student.update(updateData, { transaction });
 
-      // Synchronize linked Student User account
       if (student.userId) {
         const user = await User.findByPk(student.userId, { transaction });
 
@@ -209,7 +178,6 @@ const studentService = {
       }
 
       await transaction.commit();
-
       return student;
     } catch (error) {
       await transaction.rollback();
@@ -229,32 +197,30 @@ const studentService = {
         return null;
       }
 
-      // Delete mentor assignment
       await MentorStudent.destroy({
         where: { studentId: student.id },
         transaction,
       });
 
-      // Delete project assignment
       await ProjectStudent.destroy({
         where: { studentId: student.id },
         transaction,
       });
 
-      // Delete linked account only if it belongs to Student role
-      if (student.userId) {
-        const user = await User.findByPk(student.userId, { transaction });
+      const linkedUserId = student.userId;
+      let linkedUser = null;
 
-        if (user && user.roleId === STUDENT_ROLE_ID) {
-          await user.destroy({ transaction });
-        }
+      if (linkedUserId) {
+        linkedUser = await User.findByPk(linkedUserId, { transaction });
       }
 
-      // Delete student record
       await student.destroy({ transaction });
 
-      await transaction.commit();
+      if (linkedUser && linkedUser.roleId === STUDENT_ROLE_ID) {
+        await linkedUser.destroy({ transaction });
+      }
 
+      await transaction.commit();
       return student;
     } catch (error) {
       await transaction.rollback();

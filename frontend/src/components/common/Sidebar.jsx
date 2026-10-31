@@ -117,7 +117,7 @@ const Sidebar = ({ role = "", userName = "", menuItems = [], isOpen, onClose }) 
             {role.toUpperCase()}
           </h2>
 
-          <p className="mt-0.5 text-[11px] text-slate-500">Portal</p>
+          <p className="mt-0.5 text-[11px] text-white">Portal</p>
         </div>
       </div>
 
@@ -131,7 +131,7 @@ const Sidebar = ({ role = "", userName = "", menuItems = [], isOpen, onClose }) 
           <div className="min-w-0">
             <h3 className="truncate text-[15px] font-semibold">{displayName}</h3>
 
-            <p className="mt-0.5 text-[11px] text-slate-500">{role}</p>
+            <p className="mt-0.5 text-[11px] text-white">{role}</p>
           </div>
         </div>
       </div>
@@ -154,7 +154,7 @@ const Sidebar = ({ role = "", userName = "", menuItems = [], isOpen, onClose }) 
                 `mb-0.5 flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all ${
                   isActive
                     ? theme.activeItem
-                    : "text-slate-500 hover:bg-white/5 hover:text-slate-200"
+                    : "text-white hover:bg-white/5 hover:text-white"
                 }`
               }
             >
@@ -177,7 +177,7 @@ const Sidebar = ({ role = "", userName = "", menuItems = [], isOpen, onClose }) 
   <NavLink
     to="/login"
     onClick={closeNow}
-    className="flex w-full items-center gap-3 px-3 py-2 text-slate-500 transition hover:text-white"
+    className="flex w-full items-center gap-3 px-3 py-2 text-white transition hover:text-white"
   >
     <LogOut size={18} strokeWidth={1.6} />
 
