@@ -1,4 +1,6 @@
+
 import studentService from "../../services/student.service.js";
+import { sendStudentCredentials } from "../../services/email.service.js";
 
 // Create Student
 export const createStudent = async (req, res, next) => {
@@ -9,6 +11,26 @@ export const createStudent = async (req, res, next) => {
       success: true,
       message: "Student created successfully",
       data: student,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Approve Student
+export const approveStudent = async (req, res, next) => {
+  try {
+    const result = await studentService.approveStudent(req.params.id);
+
+    await sendStudentCredentials({
+      email: result.email,
+      name: `${result.student.firstName} ${result.student.lastName || ""}`.trim(),
+      password: result.password,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Student approved and login credentials sent successfully",
     });
   } catch (error) {
     next(error);

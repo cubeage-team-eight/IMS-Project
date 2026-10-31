@@ -255,7 +255,7 @@
 import { Op } from "sequelize";
 import Student from "../../models/student/Student.js";
 import CollegeCoordinator from "../../models/coordinator/CollegeCoordinator.js";
-import Mentor from "../../models/mentor/Mentor.js";
+import Mentor from "../../models/mentor/mentor.js";
 import MentorStudent from "../../models/mentor/MentorStudent.js";
 import Batch from "../../models/Batch.js";
 import BatchStudent from "../../models/BatchStudent.js";
