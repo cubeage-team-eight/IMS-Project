@@ -66,6 +66,12 @@ export const hrService = {
     const response = await axiosInstance.get(API_ENDPOINTS.HR.STUDENT_BY_ID(id));
     return response.data;
   },
+  approveStudent: async (id) => {
+    const response = await axiosInstance.patch(
+      `${API_ENDPOINTS.HR.STUDENT_BY_ID(id)}/approve`
+    );
+    return response.data;
+  },
   updateStudent: async (id, data) => {
     const response = await axiosInstance.put(API_ENDPOINTS.HR.STUDENT_BY_ID(id), data);
     return response.data;
@@ -104,14 +110,14 @@ export const hrService = {
     });
     return response.data;
   },
-  
-assignStudentToMentor: async (mentorId, studentId) => {
-  const response = await axiosInstance.post(API_ENDPOINTS.HR.MENTOR_ASSIGN_STUDENT, {
-    mentorId,
-    studentId,
-  });
-  return response.data;
-},
+
+  assignStudentToMentor: async (mentorId, studentId) => {
+    const response = await axiosInstance.post(API_ENDPOINTS.HR.MENTOR_ASSIGN_STUDENT, {
+      mentorId,
+      studentId,
+    });
+    return response.data;
+  },
 
   // Projects
   createProject: async (data) => {
@@ -148,6 +154,6 @@ assignStudentToMentor: async (mentorId, studentId) => {
       students,
       mentors,
     });
-  return response.data;
-},
+    return response.data;
+  },
 };

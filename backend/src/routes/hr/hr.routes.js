@@ -15,6 +15,7 @@ import {
   getStudentById,
   updateStudent,
   deleteStudent,
+  approveStudent,
 } from "../../controllers/hr/student.controller.js";
 
 import {
@@ -25,8 +26,6 @@ import {
   deleteCollege,
 } from "../../controllers/hr/college.controller.js";
 
-
-
 import {
   createBatch,
   getAllBatches,
@@ -35,7 +34,6 @@ import {
   deleteBatch,
   assignStudent,
 } from "../../controllers/hr/batch.controller.js";
-
 
 import {
   createInternship,
@@ -82,8 +80,6 @@ import {
 import certificateController from "../../controllers/hr/certificate.controller.js";
 import upload from "../../config/multer.js";
 
-
-
 const router = express.Router();
 
 // HR/Admin authentication and authorization
@@ -100,11 +96,9 @@ router.get("/colleges/:id", getCollegeById);
 router.put("/colleges/:id", updateCollege);
 router.delete("/colleges/:id", deleteCollege);
 
-
 // =========================
 // BATCH ROUTES
 // =========================
-
 
 router.post("/batches", createBatch);
 router.get("/batches", getAllBatches);
@@ -126,6 +120,8 @@ router.post(
 router.get("/students", getAllStudents);
 
 router.get("/students/:id", getStudentById);
+
+router.patch("/students/:id/approve", approveStudent);
 
 // =========================
 // INTERNSHIP MANAGEMENT
@@ -163,11 +159,10 @@ router.put(
 router.delete("/students/:id", deleteStudent);
 router.post("/mentors/assign-student", assignStudentToMentor);
 
-// cetificate routes
+// certificate routes
 router.get("/certificates", certificateController.getAllCertificates);
 router.get("/certificates/:certificateId/download", certificateController.downloadCertificate);
 router.post("/certificates/upload", upload.single("certificateFile"), certificateController.uploadCertificate);
-
 
 // =========================
 // PROJECT ROUTES

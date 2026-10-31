@@ -1,8 +1,11 @@
-
+import crypto from "crypto";
+import { sequelize } from "../config/database.js";
 import Student from "../models/student/Student.js";
+import User from "../models/User.js";
+import MentorStudent from "../models/mentor/MentorStudent.js";
+import ProjectStudent from "../models/project/ProjectStudent.js";
 import { createUser } from "./user.service.js";
 
-// const STUDENT_ROLE_ID = "9faf25d3-8086-437d-b648-7c4ad0425949";
 const STUDENT_ROLE_ID = "d263d975-a511-45fb-b6d0-f5bc12eae8c2";
 
 const studentService = {
@@ -22,13 +25,11 @@ const studentService = {
       joiningDate,
     } = data;
 
-    // Normalize enrollment number
     const normalizedEnrollmentNumber =
       enrollmentNumber == null || String(enrollmentNumber).trim() === ""
         ? null
         : String(enrollmentNumber).trim();
 
-    // Validate required fields
     if (
       !firstName ||
       !email ||
@@ -41,7 +42,6 @@ const studentService = {
       );
     }
 
-    // Create login user
     const user = await createUser({
       name: `${firstName} ${lastName || ""}`.trim(),
       email,
@@ -50,7 +50,6 @@ const studentService = {
     });
 
     try {
-      // Create student profile
       const student = await Student.create({
         userId: user.id,
         collegeId,
@@ -67,63 +66,166 @@ const studentService = {
 
       return student;
     } catch (error) {
-      // Show the actual database error in backend terminal
       console.error("STUDENT PROFILE CREATION FAILED");
       console.error(
         "Database error:",
         error.original?.message || error.message
       );
       console.error("Database code:", error.original?.code);
-      console.error("Student data:", {
-        userId: user.id,
-        collegeId,
-        enrollmentNumber: normalizedEnrollmentNumber,
-        firstName,
-        lastName,
-        email,
-        phone,
-        course,
-        branch,
-        semester,
-        joiningDate,
-      });
 
       throw error;
     }
   },
 
-  // Get All Students
+  // Approve student and create login account
+  async approveStudent(studentId) {
+    const student = await Student.findByPk(studentId);
+
+    if (!student) {
+      throw new Error("Student not found");
+    }
+
+    if (student.status !== "PENDING") {
+      throw new Error("Student is not pending approval");
+    }
+
+    if (student.userId) {
+      throw new Error("Student account already exists");
+    }
+
+    const temporaryPassword = crypto.randomBytes(4).toString("hex");
+
+    const user = await createUser({
+      name: `${student.firstName} ${student.lastName || ""}`.trim(),
+      email: student.email,
+      password: temporaryPassword,
+      roleId: STUDENT_ROLE_ID,
+    });
+
+    await student.update({
+      userId: user.id,
+      status: "ACTIVE",
+    });
+
+    return {
+      student,
+      email: student.email,
+      password: temporaryPassword,
+    };
+  },
+
+  // Get all students
   async getAllStudents() {
     return await Student.findAll();
   },
 
-  // Get Student By ID
+  // Get student by ID
   async getStudentById(id) {
     return await Student.findByPk(id);
   },
 
-  // Update Student
+  // Update student
   async updateStudent(id, data) {
-    const student = await Student.findByPk(id);
+    const transaction = await sequelize.transaction();
 
-    if (!student) {
-      return null;
+    try {
+      const student = await Student.findByPk(id, { transaction });
+
+      if (!student) {
+        await transaction.rollback();
+        return null;
+      }
+
+      const allowedFields = [
+        "firstName",
+        "lastName",
+        "email",
+        "phone",
+        "collegeId",
+        "enrollmentNumber",
+        "course",
+        "branch",
+        "semester",
+        "joiningDate",
+      ];
+
+      const updateData = {};
+
+      for (const field of allowedFields) {
+        if (data[field] !== undefined) {
+          updateData[field] =
+            field === "enrollmentNumber" &&
+            String(data[field]).trim() === ""
+              ? null
+              : data[field];
+        }
+      }
+
+      await student.update(updateData, { transaction });
+
+      if (student.userId) {
+        const user = await User.findByPk(student.userId, { transaction });
+
+        if (user && user.roleId === STUDENT_ROLE_ID) {
+          await user.update(
+            {
+              name: `${student.firstName} ${student.lastName || ""}`.trim(),
+              email: student.email,
+            },
+            { transaction }
+          );
+        }
+      }
+
+      await transaction.commit();
+      return student;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
     }
-
-    await student.update(data);
-    return student;
   },
 
-  // Delete Student
+  // Delete student and linked records
   async deleteStudent(id) {
-    const student = await Student.findByPk(id);
+    const transaction = await sequelize.transaction();
 
-    if (!student) {
-      return null;
+    try {
+      const student = await Student.findByPk(id, { transaction });
+
+      if (!student) {
+        await transaction.rollback();
+        return null;
+      }
+
+      await MentorStudent.destroy({
+        where: { studentId: student.id },
+        transaction,
+      });
+
+      await ProjectStudent.destroy({
+        where: { studentId: student.id },
+        transaction,
+      });
+
+      const linkedUserId = student.userId;
+      let linkedUser = null;
+
+      if (linkedUserId) {
+        linkedUser = await User.findByPk(linkedUserId, { transaction });
+      }
+
+      await student.destroy({ transaction });
+
+      if (linkedUser && linkedUser.roleId === STUDENT_ROLE_ID) {
+        await linkedUser.destroy({ transaction });
+      }
+
+      await transaction.commit();
+      return student;
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
     }
-
-    await student.destroy();
-    return student;
   },
 };
 
