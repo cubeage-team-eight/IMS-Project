@@ -1,11 +1,14 @@
+
 // from student dashboard to mentor dashboard, the student can view their profile, tasks, leave requests, and certificates. The mentor can manage their students, review tasks and leave requests, and provide evaluations. The HR admin can manage mentors and students, as well as handle certificates. Each role has specific endpoints to interact with the backend services
+
 export const roleConfig = {
-  'super-admin':         { label: 'Super Admin',         abbr: 'SA', color: '#22c55e' },
-  'hr-admin':            { label: 'HR / Admin',          abbr: 'HR', color: '#3b82f6' },
+  'super-admin': { label: 'Super Admin', abbr: 'SA', color: '#22c55e' },
+  'hr-admin': { label: 'HR / Admin', abbr: 'HR', color: '#3b82f6' },
   'college-coordinator': { label: 'College Coordinator', abbr: 'CC', color: '#f59e0b' },
-  'mentor':              { label: 'Mentor',              abbr: 'ME', color: '#ef4444' },
-  'student-intern':      { label: 'Student / Intern',    abbr: 'IN', color: '#8b5cf6' },
-}
+  'mentor': { label: 'Mentor', abbr: 'ME', color: '#ef4444' },
+  'student-intern': { label: 'Student / Intern', abbr: 'IN', color: '#8b5cf6' },
+};
+
 export const roleRouteMap = {
   SUPER_ADMIN: 'superadmin',
   HR_ADMIN: 'hradmin',
@@ -22,20 +25,30 @@ export const API_ENDPOINTS = {
     REGISTER: "/auth/register",
     ME: "/auth/me",
   },
+
   MENTOR: {
     STUDENTS: "/mentor/students",
     STUDENT_BY_ID: (id) => `/mentor/students/${id}`,
+
     TASKS: "/mentor/tasks",
     TASK_BY_ID: (id) => `/mentor/tasks/${id}`,
     TASK_REVIEW: (id) => `/mentor/tasks/${id}/review`,
+
+    // Daily Reports
+    DAILY_REPORTS: "/mentor/daily-reports",
+    DAILY_REPORT_REVIEW: (id) => `/mentor/daily-reports/${id}/review`,
+
     LEAVES: "/mentor/leaves",
     LEAVE_BY_ID: (id) => `/mentor/leaves/${id}`,
     LEAVE_REVIEW: (id) => `/mentor/leaves/${id}/review`,
+
     EVALUATIONS: "/mentor/evaluations",
     EVALUATION_BY_ID: (id) => `/mentor/evaluations/${id}`,
+
     CERTIFICATES: "/mentor/certificates",
-    PROJECTS: "/mentor/projects" ,
+    PROJECTS: "/mentor/projects",
   },
+
   HR: {
     // Colleges
     COLLEGES: "/hr/colleges",
@@ -65,15 +78,16 @@ export const API_ENDPOINTS = {
     DOCUMENT_REVIEW: (id) => `/hr/documents/${id}/review`,
 
     MENTOR_ASSIGN_STUDENT: "/hr/mentors/assign-student",
-    
+
     PROJECTS: "/hr/projects",
     PROJECT_BY_ID: (id) => `/hr/projects/${id}`,
     PROJECT_ASSIGN: "/hr/projects/assign",
     PROJECT_UNASSIGN: "/hr/projects/unassign",
   },
+
   STUDENT: {
     PROFILE: "/student/profile",
-     
+
     // Student Document Upload & Status
     DOCUMENTS: "/student/documents",
     DOCUMENT_UPLOAD: "/student/documents",
@@ -99,22 +113,24 @@ export const API_ENDPOINTS = {
 
     PROJECTS: "/student/projects",
   },
-SUPER_ADMIN: {
-  USERS: "/super-admin/users",
-  USER_BY_ID: (id) => `/super-admin/users/${id}`,
-  USER_STATUS: (id) => `/super-admin/users/${id}/status`,
 
-  ROLES: "/super-admin/roles",
-  ROLE_BY_ID: (id) => `/super-admin/roles/${id}`,
+  SUPER_ADMIN: {
+    USERS: "/super-admin/users",
+    USER_BY_ID: (id) => `/super-admin/users/${id}`,
+    USER_STATUS: (id) => `/super-admin/users/${id}/status`,
 
-  DASHBOARD: "/super-admin/dashboard",
-  HEALTH: "/super-admin/health",
-  SETTINGS: "/super-admin/settings",
-},
-COORDINATOR: {
-  STUDENTS: "/coordinator/students",
-  STUDENT_BY_ID: (id) => `/coordinator/students/${id}`,
-  ATTENDANCE: "/coordinator/attendance",
-  STUDENTS_BULK_UPLOAD: "/coordinator/students/bulk-upload",
-},
+    ROLES: "/super-admin/roles",
+    ROLE_BY_ID: (id) => `/super-admin/roles/${id}`,
+
+    DASHBOARD: "/super-admin/dashboard",
+    HEALTH: "/super-admin/health",
+    SETTINGS: "/super-admin/settings",
+  },
+
+  COORDINATOR: {
+    STUDENTS: "/coordinator/students",
+    STUDENT_BY_ID: (id) => `/coordinator/students/${id}`,
+    ATTENDANCE: "/coordinator/attendance",
+    STUDENTS_BULK_UPLOAD: "/coordinator/students/bulk-upload",
+  },
 };

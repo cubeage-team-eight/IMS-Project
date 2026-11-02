@@ -78,7 +78,7 @@
 
 // export default Student;
 
-
+import dailyReportController from "../../controllers/student/dailyReport.controller.js";
 import express from "express";
 
 import profileController from "../../controllers/student/profile.controller.js";
@@ -129,6 +129,18 @@ router.get("/tasks", authMiddleware, taskController.getMyTasks);
 router.get("/tasks/:id", authMiddleware, taskController.getTaskById);
 router.post("/tasks/:id/start", authMiddleware, taskController.startTask);
 router.post("/tasks/:id/submit", authMiddleware, taskController.submitTask);  
+// Student Daily Report
+router.post(
+  "/daily-reports",
+  authMiddleware,
+  dailyReportController.createReport
+);
+
+router.get(
+  "/daily-reports",
+  authMiddleware,
+  dailyReportController.getMyReports
+);
 // Student Certificate
 
 router.get("/certificates", authMiddleware, certificateController.getMyCertificates);

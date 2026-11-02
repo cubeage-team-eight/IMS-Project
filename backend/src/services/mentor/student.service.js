@@ -1,5 +1,5 @@
 import Student from "../../models/student/Student.js";
-import Mentor from "../../models/mentor/Mentor.js";
+import Mentor from "../../models/mentor/mentor.js";
 import MentorStudent from "../../models/mentor/MentorStudent.js";
 
 // Get the logged-in mentor's record

@@ -1,5 +1,6 @@
 import express from "express";
 
+import dailyReportController from "../../controllers/mentor/dailyReport.controller.js";
 import studentController from "../../controllers/mentor/student.controller.js";
 import taskController from "../../controllers/mentor/task.controller.js";
 import leaveController from "../../controllers/mentor/leave.controller.js";
@@ -34,5 +35,20 @@ router.get("/students/:studentId/evaluations", authMiddleware, evaluationControl
 router.post("/certificates", authMiddleware, certificateController.issueCertificate);
 router.get("/certificates", authMiddleware, certificateController.getMyCertificates);
 router.get("/certificates/:certificateId", authMiddleware, certificateController.getCertificateById);
+
+
+ // Mentor Daily Reports
+router.get(
+  "/daily-reports",
+  authMiddleware,
+  dailyReportController.getDailyReports
+);
+
+router.put(
+  "/daily-reports/:reportId/review",
+  authMiddleware,
+  dailyReportController.reviewReport
+);
+
 
 export default router;

@@ -48,6 +48,7 @@ import Project from "../models/project/Project.js";
 import ProjectStudent from "../models/project/ProjectStudent.js";
 import ProjectMentor from "../models/project/ProjectMentor.js"
 import Document from "./Document.js";
+import DailyReport from "./DailyReport.js";
 
 College.hasMany(CollegeCoordinator, {
   foreignKey: "collegeId",
@@ -190,6 +191,7 @@ Mentor.belongsToMany(Project, {
   otherKey: "projectId",
   as: "projects",
 });
+
 export {
   User,
   Role,
@@ -204,4 +206,5 @@ export {
   Document,
   Batch,
   BatchStudent,
+  DailyReport,
 };
