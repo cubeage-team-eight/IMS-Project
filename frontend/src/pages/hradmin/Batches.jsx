@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import CreateBatchForm from "../../components/forms/hradmin/CreateBatchForm.jsx";
 import BatchModal from "../../components/forms/hradmin/BatchModal.jsx";
@@ -77,7 +76,7 @@ function Batches() {
       console.error("Failed to create batch:", err);
       setError(
         err.response?.data?.message ||
-          "Batch create zala nahi. Required fields check kara."
+          "Batch creation failed. Please check the required fields."
       );
     }
   };

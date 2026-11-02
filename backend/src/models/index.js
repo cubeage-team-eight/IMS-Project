@@ -70,6 +70,16 @@ User.belongsTo(Role, {
   as: "role",
 });
 
+User.hasOne(Student, {
+  foreignKey: "userId",
+  as: "studentProfile",
+});
+
+Student.belongsTo(User, {
+  foreignKey: "userId",
+  as: "user",
+});
+
 // College → Students
 College.hasMany(Student, {
   foreignKey: "collegeId",
