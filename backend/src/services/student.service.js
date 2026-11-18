@@ -6,7 +6,7 @@ import MentorStudent from "../models/mentor/MentorStudent.js";
 import ProjectStudent from "../models/project/ProjectStudent.js";
 import { createUser } from "./user.service.js";
 
-const STUDENT_ROLE_ID = "d263d975-a511-45fb-b6d0-f5bc12eae8c2";
+const STUDENT_ROLE_ID = "9faf25d3-8086-437d-b648-7c4ad0425949";
 
 const studentService = {
   // Create Student

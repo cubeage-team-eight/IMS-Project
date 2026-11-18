@@ -1,3 +1,4 @@
+
 import axiosInstance from "./axiosInstance";
 import { API_ENDPOINTS } from "../utils/constants";
 
@@ -31,6 +32,20 @@ export const mentorService = {
 
   reviewTask: async (id, data) => {
     const response = await axiosInstance.put(API_ENDPOINTS.MENTOR.TASK_REVIEW(id), data);
+    return response.data;
+  },
+
+  // Daily Reports
+  getDailyReports: async () => {
+    const response = await axiosInstance.get(API_ENDPOINTS.MENTOR.DAILY_REPORTS);
+    return response.data;
+  },
+
+  reviewDailyReport: async (id, data) => {
+    const response = await axiosInstance.put(
+      API_ENDPOINTS.MENTOR.DAILY_REPORT_REVIEW(id),
+      data
+    );
     return response.data;
   },
 
@@ -76,8 +91,10 @@ export const mentorService = {
     const response = await axiosInstance.get(API_ENDPOINTS.MENTOR.CERTIFICATES);
     return response.data;
   },
+
+  // Projects
   getMyProjects: async () => {
-  const response = await axiosInstance.get(API_ENDPOINTS.MENTOR.PROJECTS); // STUDENT.PROJECTS in the student service
-  return response.data;
-},
+    const response = await axiosInstance.get(API_ENDPOINTS.MENTOR.PROJECTS);
+    return response.data;
+  },
 };
