@@ -178,7 +178,7 @@ useEffect(() => {
   "College ID",
   "NOC Letter",
   "Bonafide Certificate",
-  "Offer Letter",
+  "Id Size Photo",
   "PAN Card",
   "Other",
 ].map((name) => {
