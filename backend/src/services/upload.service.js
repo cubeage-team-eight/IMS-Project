@@ -13,6 +13,7 @@ const ALLOWED_DOCUMENT_TYPES = [
   "Bonafide Certificate",
   "Offer Letter",
   "PAN Card",
+  "Id Size Photo",
   "Other",
 ];
 
