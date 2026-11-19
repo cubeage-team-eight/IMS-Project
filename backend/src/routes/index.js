@@ -5,7 +5,7 @@ import hrRoutes from "./hr/hr.routes.js";
 import studentRoutes from "./student/student.routes.js";
 import mentorRoutes from "./mentor/mentor.routes.js";
 import coordinatorRoutes from "./coordinator/coordinator.routes.js";
-
+import attendanceRoutes from "./attendance.routes.js";
 
 
 const router = express.Router();
@@ -16,6 +16,7 @@ router.use("/hr", hrRoutes);
 router.use("/student", studentRoutes);
 router.use("/mentor", mentorRoutes);
 router.use("/coordinator", coordinatorRoutes);
+router.use("/attendance", attendanceRoutes);
 
 export default router;
 

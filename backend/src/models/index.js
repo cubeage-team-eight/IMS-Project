@@ -1,40 +1,4 @@
-// import User from "./User.js";
-// import Role from "./Role.js";
-// import College from "./College.js";
-// import Student from "./student/Student.js";
 
-// // User → Role
-// Role.hasMany(User, {
-//   foreignKey: "roleId",
-//   as: "users",
-// });
-
-// User.belongsTo(Role, {
-//   foreignKey: "roleId",
-//   as: "role",
-// });
-
-// // College → Students
-// College.hasMany(Student, {
-//   foreignKey: "collegeId",
-//   as: "students",
-// });
-
-// Student.belongsTo(College, {
-//   foreignKey: "collegeId",
-//   as: "college",
-// });
-
-// export {
-//   User,
-//   Role,
-//   College,
-//   Student,
-// };/
-
-
-
-//from mentor model
 import User from "./User.js";
 import Role from "./Role.js";
 import College from "./College.js";
@@ -44,11 +8,17 @@ import BatchStudent from "./BatchStudent.js";
 import Mentor from "./mentor/mentor.js";
 import MentorStudent from "./mentor/MentorStudent.js";
 import CollegeCoordinator from "./coordinator/CollegeCoordinator.js";
-import Project from "../models/project/Project.js";
-import ProjectStudent from "../models/project/ProjectStudent.js";
-import ProjectMentor from "../models/project/ProjectMentor.js"
+import Project from "./project/Project.js";
+import ProjectStudent from "./project/ProjectStudent.js";
+import ProjectMentor from "./project/ProjectMentor.js";
 import Document from "./Document.js";
 
+// QR Attendance Models
+import Attendance from "./Attendance.js";
+import QRSession from "./QRSession.js";
+import AttendanceSyncOutbox from "./AttendanceSyncOutbox.js";
+
+// College → Coordinators
 College.hasMany(CollegeCoordinator, {
   foreignKey: "collegeId",
   as: "coordinators",
@@ -70,6 +40,7 @@ User.belongsTo(Role, {
   as: "role",
 });
 
+// User → Student
 User.hasOne(Student, {
   foreignKey: "userId",
   as: "studentProfile",
@@ -91,7 +62,7 @@ Student.belongsTo(College, {
   as: "college",
 });
 
-// Batch -> Mentor
+// Batch → Mentor
 Batch.belongsTo(Mentor, {
   foreignKey: "mentorId",
   as: "mentor",
@@ -102,7 +73,7 @@ Mentor.hasMany(Batch, {
   as: "batches",
 });
 
-// Batch -> BatchStudent
+// Batch → BatchStudent
 Batch.hasMany(BatchStudent, {
   foreignKey: "batchId",
   as: "batchStudents",
@@ -134,7 +105,7 @@ Document.belongsTo(Student, {
   as: "student",
 });
 
-// HR user who reviewed the document
+// Document → Reviewer
 Document.belongsTo(User, {
   foreignKey: "reviewedBy",
   as: "reviewer",
@@ -145,7 +116,7 @@ User.hasMany(Document, {
   as: "reviewedDocuments",
 });
 
-// Mentor ↔ Student (through MentorStudent)
+// Mentor ↔ Student
 Mentor.belongsToMany(Student, {
   through: MentorStudent,
   foreignKey: "mentorId",
@@ -160,7 +131,7 @@ Student.belongsToMany(Mentor, {
   as: "mentors",
 });
 
-// Direct associations for MentorStudent join queries
+// MentorStudent direct associations
 MentorStudent.belongsTo(Student, {
   foreignKey: "studentId",
   as: "student",
@@ -171,7 +142,7 @@ MentorStudent.belongsTo(Mentor, {
   as: "mentor",
 });
 
-// Project ↔ Student (through ProjectStudent)
+// Project ↔ Student
 Project.belongsToMany(Student, {
   through: ProjectStudent,
   foreignKey: "projectId",
@@ -186,7 +157,7 @@ Student.belongsToMany(Project, {
   as: "projects",
 });
 
-// Project ↔ Mentor (through ProjectMentor)
+// Project ↔ Mentor
 Project.belongsToMany(Mentor, {
   through: ProjectMentor,
   foreignKey: "projectId",
@@ -200,6 +171,51 @@ Mentor.belongsToMany(Project, {
   otherKey: "projectId",
   as: "projects",
 });
+
+// QRSession → Mentor
+QRSession.belongsTo(Mentor, {
+  foreignKey: "mentorId",
+  as: "mentor",
+});
+
+Mentor.hasMany(QRSession, {
+  foreignKey: "mentorId",
+  as: "qrSessions",
+});
+
+// QRSession → Batch
+QRSession.belongsTo(Batch, {
+  foreignKey: "batchId",
+  as: "batch",
+});
+
+Batch.hasMany(QRSession, {
+  foreignKey: "batchId",
+  as: "qrSessions",
+});
+
+// QRSession → Attendance
+QRSession.hasMany(Attendance, {
+  foreignKey: "qrSessionId",
+  as: "attendanceRecords",
+});
+
+Attendance.belongsTo(QRSession, {
+  foreignKey: "qrSessionId",
+  as: "qrSession",
+});
+
+// Attendance → Student
+Attendance.belongsTo(Student, {
+  foreignKey: "studentId",
+  as: "student",
+});
+
+Student.hasMany(Attendance, {
+  foreignKey: "studentId",
+  as: "attendanceRecords",
+});
+
 export {
   User,
   Role,
@@ -214,4 +230,7 @@ export {
   Document,
   Batch,
   BatchStudent,
+  Attendance,
+  QRSession,
+  AttendanceSyncOutbox,
 };

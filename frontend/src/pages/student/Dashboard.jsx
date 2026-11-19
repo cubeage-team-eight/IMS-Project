@@ -22,7 +22,7 @@
 //         <StatCard
 //           title="Leave Balance"
 //           value="5 days"
-//           subtitle="Medical: 3 · Personal: 2"
+//           subtitle="Medical: 3 ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â· Personal: 2"
 //           valueColor="text-orange-500"
 //         />
 
@@ -55,7 +55,7 @@
 //             </p>
 
 //             <p className="text-red-500 mt-4 text-xs">
-//               ● Not yet checked in
+//               ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â Not yet checked in
 //             </p>
 
 //             <button className="w-full mt-5 bg-violet-500 hover:bg-violet-600 text-white py-2.5 rounded-xl text-sm font-semibold">
@@ -213,7 +213,10 @@
 // export default Dashboard;
 
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { studentService } from "../../services/student.service";
+import { qrAttendanceService } from "../../services/qrAttendance.service";
+import { QRCodeSVG } from "qrcode.react";
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -222,8 +225,8 @@ const Dashboard = () => {
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [todayAttendance, setTodayAttendance] = useState(null);
   const [tasks, setTasks] = useState([]);
-  const [checkingIn, setCheckingIn] = useState(false);
-  const [checkInError, setCheckInError] = useState("");
+  const [activeQrSessions, setActiveQrSessions] = useState([]);
+  const [qrSessionError, setQrSessionError] = useState("");
 
   const todayDateStr = new Date().toISOString().split("T")[0];
 
@@ -255,6 +258,31 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchStudentQrSessions = async () => {
+      try {
+        const response = await qrAttendanceService.getStudentSessions();
+        if (mounted) {
+          setActiveQrSessions(response.data || []);
+          setQrSessionError("");
+        }
+      } catch (err) {
+        console.error("Student QR sessions error:", err);
+        if (mounted) setQrSessionError("Unable to load active QR sessions.");
+      }
+    };
+
+    fetchStudentQrSessions();
+    const intervalId = setInterval(fetchStudentQrSessions, 10000);
+
+    return () => {
+      mounted = false;
+      clearInterval(intervalId);
+    };
+  }, []);
+
   const attendancePercent =
     attendanceRecords.length > 0
       ? Math.round(
@@ -271,45 +299,6 @@ const Dashboard = () => {
   const pendingTasks = tasks.filter(
     (t) => !["SUBMITTED", "COMPLETED"].includes(t.status)
   );
-
-  const handleMarkAttendance = () => {
-    setCheckInError("");
-
-    if (!navigator.geolocation) {
-      setCheckInError("Geolocation is not supported by your browser");
-      return;
-    }
-
-    setCheckingIn(true);
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          const { latitude, longitude } = position.coords;
-
-          if (todayAttendance && !todayAttendance.checkOutTime) {
-            await studentService.checkOut(latitude, longitude);
-          } else {
-            await studentService.checkIn(latitude, longitude);
-          }
-
-          await fetchData();
-        } catch (err) {
-          console.error("Attendance error:", err);
-          setCheckInError(
-            err.response?.data?.message || err.message || "Attendance failed"
-          );
-        } finally {
-          setCheckingIn(false);
-        }
-      },
-      (geoError) => {
-        console.error("Geolocation error:", geoError);
-        setCheckInError("Unable to get your location. Please enable location access.");
-        setCheckingIn(false);
-      }
-    );
-  };
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
@@ -328,18 +317,63 @@ const Dashboard = () => {
     return <div className="p-6 text-red-500">{error}</div>;
   }
 
-  const attendanceButtonLabel = !todayAttendance
-    ? "Mark Attendance"
-    : !todayAttendance.checkOutTime
-    ? "Check Out"
-    : "Checked Out";
-
   return (
     <div className="space-y-6">
+      {/* ACTIVE QR ATTENDANCE SESSIONS */}
+      <section className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+        <h2 className="text-lg font-semibold mb-5">Active QR Attendance</h2>
+
+        {qrSessionError && (
+          <p className="text-red-500 text-sm">{qrSessionError}</p>
+        )}
+
+        {!qrSessionError && activeQrSessions.length === 0 && (
+          <p className="text-slate-500 text-sm">
+            No active attendance sessions for your assigned batches.
+          </p>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {activeQrSessions.map((session) => (
+            <div
+              key={session.id}
+              className="border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row gap-4 items-center"
+            >
+              <div className="bg-white p-2 border rounded-lg">
+                <QRCodeSVG
+                  value={session.attendanceUrl}
+                  size={132}
+                  level="M"
+                />
+              </div>
+
+              <div className="flex-1 min-w-0 text-center sm:text-left">
+                <h3 className="font-semibold text-slate-800">
+                  {session.subject}
+                </h3>
+
+                <p className="text-sm text-slate-500 mt-1">
+                  Batch: {session.batch?.name || "Assigned batch"}
+                </p>
+
+                <p className="text-xs text-slate-500 mt-2">
+                  Expires: {new Date(session.expiresAt).toLocaleTimeString()}
+                </p>
+
+                <Link
+                  to={session.attendanceUrl}
+                  className="inline-block mt-3 text-sm font-semibold text-violet-600 underline"
+                >
+                  Open attendance link
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* ================= STATS ================= */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-
         <StatCard
           title="Attendance"
           value={`${attendancePercent}%`}
@@ -356,33 +390,31 @@ const Dashboard = () => {
 
         <StatCard
           title="Leave Balance"
-          value="—"
+          value="-"
           subtitle="Not tracked yet"
           valueColor="text-orange-500"
         />
 
         <StatCard
           title="Performance Score"
-          value="—"
+          value="-"
           subtitle="Coming soon"
         />
-
       </div>
 
       {/* ================= LOWER SECTION ================= */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
         {/* TODAY */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6">
-
           <h2 className="text-base font-semibold mb-6">
             Today
           </h2>
 
           <div className="text-center">
-
             <h3 className="text-xl font-serif font-semibold">
-              {new Date().toLocaleDateString("en-US", { weekday: "long" })}
+              {new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+              })}
             </h3>
 
             <p className="text-slate-400 text-sm mt-1">
@@ -394,42 +426,39 @@ const Dashboard = () => {
                 todayAttendance ? "text-emerald-500" : "text-red-500"
               }`}
             >
-              ● {todayAttendance
+              Attendance status:{" "}
+              {todayAttendance
                 ? todayAttendance.checkOutTime
                   ? "Checked out"
                   : "Checked in"
                 : "Not yet checked in"}
             </p>
 
-            {checkInError && (
-              <p className="text-red-500 text-xs mt-2">{checkInError}</p>
+            {activeQrSessions.length > 0 ? (
+              <Link
+                to={activeQrSessions[0].attendanceUrl}
+                className="block w-full mt-5 bg-violet-500 hover:bg-violet-600 text-white py-2.5 rounded-xl text-sm font-semibold"
+              >
+                Open QR Attendance
+              </Link>
+            ) : (
+              <p className="mt-5 text-sm text-amber-600">
+                No active QR session available for your batch.
+              </p>
             )}
-
-            <button
-              onClick={handleMarkAttendance}
-              disabled={checkingIn || (todayAttendance && todayAttendance.checkOutTime)}
-              className="w-full mt-5 bg-violet-500 hover:bg-violet-600 text-white py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50"
-            >
-              {checkingIn ? "Please wait..." : attendanceButtonLabel}
-            </button>
-
           </div>
-
         </div>
 
         {/* PENDING TASKS */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6">
-
           <div className="flex justify-between mb-5">
-
             <h2 className="text-base font-semibold">
               Pending Tasks
             </h2>
-
           </div>
 
           {pendingTasks.length === 0 ? (
-            <p className="text-slate-400 text-sm">No pending tasks 🎉</p>
+            <p className="text-slate-400 text-sm">No pending tasks.</p>
           ) : (
             pendingTasks.slice(0, 3).map((task) => (
               <Task
@@ -440,30 +469,29 @@ const Dashboard = () => {
               />
             ))
           )}
-
         </div>
 
         {/* NOTICES */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6">
-
           <h2 className="text-base font-semibold mb-5">
             Notices
           </h2>
 
           <p className="text-slate-400 text-sm">Notices coming soon.</p>
-
         </div>
-
       </div>
-
     </div>
   );
 };
 
-
 /* ================= COMPONENTS ================= */
 
-const StatCard = ({ title, value, subtitle, valueColor = "text-slate-900" }) => (
+const StatCard = ({
+  title,
+  value,
+  subtitle,
+  valueColor = "text-slate-900",
+}) => (
   <div className="bg-white rounded-2xl border border-slate-200 p-6">
     <p className="text-slate-400 text-xs">{title}</p>
     <h2 className={`text-3xl font-bold mt-4 ${valueColor}`}>{value}</h2>

@@ -64,6 +64,23 @@ const Attendance = sequelize.define(
       type: DataTypes.ENUM("PRESENT", "ABSENT", "HALF_DAY"),
       defaultValue: "PRESENT",
     },
+
+    // QR Attendance Fields
+    qrSessionId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+
+    photoUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    attendanceMethod: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "GPS",
+    },
   },
   {
     tableName: "attendances",
