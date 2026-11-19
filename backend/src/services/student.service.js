@@ -2,6 +2,7 @@ import crypto from "crypto";
 import { sequelize } from "../config/database.js";
 import Student from "../models/student/Student.js";
 import User from "../models/User.js";
+import Role from "../models/Role.js";
 import MentorStudent from "../models/mentor/MentorStudent.js";
 import ProjectStudent from "../models/project/ProjectStudent.js";
 import { createUser } from "./user.service.js";
@@ -9,7 +10,7 @@ import { createUser } from "./user.service.js";
 const STUDENT_ROLE_ID = "d263d975-a511-45fb-b6d0-f5bc12eae8c2";
 
 const studentService = {
-  // Create Student
+  // Create Student and User atomically
   async createStudent(data) {
     const {
       firstName,
@@ -42,76 +43,135 @@ const studentService = {
       );
     }
 
-    const user = await createUser({
-      name: `${firstName} ${lastName || ""}`.trim(),
-      email,
-      password,
-      roleId: STUDENT_ROLE_ID,
-    });
+    const transaction = await sequelize.transaction();
 
     try {
-      const student = await Student.create({
-        userId: user.id,
-        collegeId,
-        enrollmentNumber: normalizedEnrollmentNumber,
-        firstName,
-        lastName,
-        email,
-        phone,
-        course,
-        branch,
-        semester,
-        joiningDate: joiningDate || null,
-      });
+      const user = await createUser(
+        {
+          name: `${firstName} ${lastName || ""}`.trim(),
+          email,
+          password,
+          roleId: STUDENT_ROLE_ID,
+        },
+        { transaction }
+      );
+
+      const student = await Student.create(
+        {
+          userId: user.id,
+          collegeId,
+          enrollmentNumber: normalizedEnrollmentNumber,
+          firstName,
+          lastName,
+          email,
+          phone,
+          course,
+          branch,
+          semester,
+          joiningDate: joiningDate || null,
+          status: "ACTIVE",
+        },
+        { transaction }
+      );
+
+      await transaction.commit();
 
       return student;
     } catch (error) {
-      console.error("STUDENT PROFILE CREATION FAILED");
-      console.error(
-        "Database error:",
-        error.original?.message || error.message
-      );
-      console.error("Database code:", error.original?.code);
+      if (!transaction.finished) {
+        await transaction.rollback();
+      }
 
       throw error;
     }
   },
 
-  // Approve student and create login account
+  // Approve student
   async approveStudent(studentId) {
-    const student = await Student.findByPk(studentId);
+    const transaction = await sequelize.transaction();
 
-    if (!student) {
-      throw new Error("Student not found");
+    try {
+      const student = await Student.findByPk(studentId, {
+        transaction,
+        lock: transaction.LOCK.UPDATE,
+      });
+
+      if (!student) {
+        throw new Error("Student not found");
+      }
+
+      if (student.status !== "PENDING") {
+        throw new Error("Student is not pending approval");
+      }
+
+      let temporaryPassword = null;
+
+      if (student.userId) {
+        // Existing account: validate it instead of creating another.
+        const user = await User.findByPk(student.userId, {
+          transaction,
+          lock: transaction.LOCK.UPDATE,
+        });
+
+        if (!user) {
+          throw new Error("Linked student account was not found");
+        }
+
+        const role = await Role.findByPk(user.roleId, {
+          transaction,
+        });
+
+        if (
+          user.roleId !== STUDENT_ROLE_ID ||
+          !role ||
+          role.name !== "STUDENT" ||
+          !role.isActive ||
+          !user.isActive
+        ) {
+          throw new Error(
+            "Linked account is invalid or inactive. Please verify the account before approval."
+          );
+        }
+      } else {
+        // No account: create one inside the same transaction.
+        temporaryPassword = crypto.randomBytes(16).toString("base64url");
+
+        const user = await createUser(
+          {
+            name: `${student.firstName} ${student.lastName || ""}`.trim(),
+            email: student.email,
+            password: temporaryPassword,
+            roleId: STUDENT_ROLE_ID,
+          },
+          { transaction }
+        );
+
+        await student.update(
+          { userId: user.id },
+          { transaction }
+        );
+      }
+
+      await student.update(
+        { status: "ACTIVE" },
+        { transaction }
+      );
+
+      await transaction.commit();
+
+      return {
+        student,
+        email: student.email,
+        password: temporaryPassword,
+        credentialsRequired: Boolean(temporaryPassword),
+      };
+    } catch (error) {
+      if (!transaction.finished) {
+        await transaction.rollback();
+      }
+
+      throw error;
     }
-
-    if (student.status !== "PENDING") {
-      throw new Error("Student is not pending approval");
-    }
-
-    if (student.userId) {
-      throw new Error("Student account already exists");
-    }
-
-    const temporaryPassword = crypto.randomBytes(4).toString("hex");
-
-    const user = await createUser({
-      name: `${student.firstName} ${student.lastName || ""}`.trim(),
-      email: student.email,
-      password: temporaryPassword,
-      roleId: STUDENT_ROLE_ID,
-    });
-
-    await student.update({
-      userId: user.id,
-      status: "ACTIVE",
-    });
-
-    return {
-      student,
-      email: student.email,
-      password: temporaryPassword,
-    };
   },
 
   // Get all students
@@ -178,9 +238,13 @@ const studentService = {
       }
 
       await transaction.commit();
+
       return student;
     } catch (error) {
-      await transaction.rollback();
+      if (!transaction.finished) {
+        await transaction.rollback();
+      }
+
       throw error;
     }
   },
@@ -221,9 +285,13 @@ const studentService = {
       }
 
       await transaction.commit();
+
       return student;
     } catch (error) {
-      await transaction.rollback();
+      if (!transaction.finished) {
+        await transaction.rollback();
+      }
+
       throw error;
     }
   },

@@ -4,34 +4,40 @@ import { User, Role } from "../models/index.js";
 // =========================
 // CREATE USER
 // =========================
-export const createUser = async ({
-  name,
-  email,
-  password,
-  roleId,
-}) => {
+export const createUser = async (
+  { name, email, password, roleId },
+  options = {}
+) => {
+  const { transaction } = options;
+
   const existingUser = await User.findOne({
     where: { email },
+    ...(transaction ? { transaction } : {}),
   });
 
   if (existingUser) {
     throw new Error("User already exists with this email");
   }
 
-  const role = await Role.findByPk(roleId);
+  const role = await Role.findByPk(roleId, {
+    ...(transaction ? { transaction } : {}),
+  });
 
-  if (!role) {
-    throw new Error("Invalid role");
+  if (!role || !role.isActive) {
+    throw new Error("Invalid or inactive role");
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 12);
 
-  const user = await User.create({
-    name,
-    email,
-    password: hashedPassword,
-    roleId,
-  });
+  const user = await User.create(
+    {
+      name,
+      email,
+      password: hashedPassword,
+      roleId,
+    },
+    transaction ? { transaction } : {}
+  );
 
   return user;
 };
@@ -94,7 +100,6 @@ export const updateUser = async (
     throw new Error("User not found");
   }
 
-  // Check email if changed
   if (email && email !== user.email) {
     const existingUser = await User.findOne({
       where: { email },
@@ -107,12 +112,11 @@ export const updateUser = async (
     user.email = email;
   }
 
-  // Check role if changed
   if (roleId) {
     const role = await Role.findByPk(roleId);
 
-    if (!role) {
-      throw new Error("Invalid role");
+    if (!role || !role.isActive) {
+      throw new Error("Invalid or inactive role");
     }
 
     user.roleId = roleId;

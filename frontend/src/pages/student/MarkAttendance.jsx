@@ -1,555 +1,709 @@
-// import React, { useState } from 'react';
-// import { MapPin, Wifi, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Camera,CheckCircle2,Clock3,Loader2,RefreshCw,ShieldCheck,XCircle,} from "lucide-react";
+import { studentService } from "../../services/student.service";
+import { qrAttendanceService } from "../../services/qrAttendance.service";
 
-// // Decoded from Plus Code HRX4+28W, Pimpri-Chinchwad, Maharashtra
-// const OFFICE_LAT = 18.5976125;
-// const OFFICE_LNG = 73.805828125;
-// const ALLOWED_RADIUS_METERS = 150;
+const getTodayDate = () =>
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+  }).format(new Date());
 
-// // Base URL of your real backend API.
-// // Confirmed from app.js: app.use("/api", routes) + router.use("/student", studentRoutes)
-// // Backend runs on PORT=5000 (see your .env), so this needs the full
-// // origin in dev since the frontend runs on a different port.
-// const API_BASE_URL = "http://localhost:5000/api/student";
+const formatTime = (value) => {
+  if (!value) return "--";
+const date = new Date(value);
+if (Number.isNaN(date.getTime())) return "--";
 
-// function getDistanceMeters(lat1, lng1, lat2, lng2) {
-//   const R = 6371000;
-//   const dLat = ((lat2 - lat1) * Math.PI) / 180;
-//   const dLng = ((lng2 - lng1) * Math.PI) / 180;
-//   const a =
-//     Math.sin(dLat / 2) ** 2 +
-//     Math.cos((lat1 * Math.PI) / 180) *
-//       Math.cos((lat2 * Math.PI) / 180) *
-//       Math.sin(dLng / 2) ** 2;
-//   return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-// }
+  return date.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "Asia/Kolkata",
+  });
+};
 
-// // Sends GPS coordinates to your real backend check-in endpoint.
-// // The backend computes WiFi/network verification itself from the
-// // request's IP — the frontend only needs to send lat/lng plus the JWT.
-// async function submitCheckIn({ latitude, longitude }) {
-//   const token = localStorage.getItem("token"); // adjust key name if yours differs
-//   const res = await fetch(`${API_BASE_URL}/attendance/check-in`, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//     },
-//     body: JSON.stringify({ latitude, longitude }),
-//   });
-//   const data = await res.json().catch(() => ({}));
-//   if (!res.ok || !data.success) {
-//     throw new Error(data.message || "Check-in failed");
-//   }
-//   return data.data;
-// }
+const formatShortDate = (value) => {
+  if (!value) return "--";
+  const date = new Date(`${String(value).slice(0, 10)}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return "--";
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
 
-// const StepRow = ({ icon: Icon, label, state, detail }) => (
-//   <div className="w-full flex items-center justify-between bg-slate-50 rounded-lg px-4 py-3">
-//     <div className="flex items-center gap-3">
-//       <Icon className="w-4 h-4 text-slate-500" />
-//       <div className="text-left">
-//         <p className="text-sm font-medium text-slate-700">{label}</p>
-//         {detail && <p className="text-xs text-slate-400">{detail}</p>}
-//       </div>
-//     </div>
-//     {state === 'pending' && <span className="w-4 h-4 rounded-full border-2 border-slate-200" />}
-//     {state === 'checking' && <Loader2 className="w-4 h-4 text-violet-500 animate-spin" />}
-//     {state === 'success' && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
-//     {state === 'error' && <XCircle className="w-4 h-4 text-red-500" />}
-//   </div>
-// );
+const getDuration = (checkIn, checkOut) => {
+  if (!checkIn || !checkOut) return "--";
 
-// const MarkAttendance = () => {
-//   const [locState, setLocState] = useState('pending'); // pending | checking | success | error
-//   const [submitState, setSubmitState] = useState('pending');
-//   const [distance, setDistance] = useState(null);
-//   const [errorMsg, setErrorMsg] = useState('');
-//   const [checkedIn, setCheckedIn] = useState(false);
-//   const [running, setRunning] = useState(false);
+  const start = new Date(checkIn).getTime();
+  const end = new Date(checkOut).getTime();
 
-//   const getLocation = () =>
-//     new Promise((resolve, reject) => {
-//       if (!navigator.geolocation) {
-//         reject('Geolocation is not supported by this browser.');
-//         return;
-//       }
-//       navigator.geolocation.getCurrentPosition(
-//         (position) => {
-//           const { latitude, longitude } = position.coords;
-//           const dist = getDistanceMeters(latitude, longitude, OFFICE_LAT, OFFICE_LNG);
-//           setDistance(Math.round(dist));
-//           resolve({ latitude, longitude });
-//         },
-//         () => reject('Location permission denied or unavailable.'),
-//         { enableHighAccuracy: true, timeout: 10000 }
-//       );
-//     });
+  if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) {
+    return "--";
+  }
 
-//   const handleCheckIn = async () => {
-//     setRunning(true);
-//     setErrorMsg('');
-//     setCheckedIn(false);
-//     setLocState('checking');
-//     setSubmitState('pending');
+  const minutes = Math.floor((end - start) / 60000);
 
-//     let locationData;
-//     try {
-//       locationData = await getLocation();
-//       setLocState('success');
-//     } catch (err) {
-//       setLocState('error');
-//       setErrorMsg(err.message || String(err));
-//       setRunning(false);
-//       return;
-//     }
-
-//     setSubmitState('checking');
-//     try {
-//       // Backend validates distance-from-office and WiFi/IP internally,
-//       // and throws a message we display directly if either check fails.
-//       await submitCheckIn(locationData);
-//       setSubmitState('success');
-//       setCheckedIn(true);
-//     } catch (err) {
-//       setSubmitState('error');
-//       setErrorMsg(err.message || String(err));
-//     }
-//     setRunning(false);
-//   };
-
-//   return (
-//     <div className="space-y-6 max-w-6xl">
-
-//       {/* Header section */}
-//       <div>
-//         <h1 className="text-xl font-semibold">Attendance</h1>
-//         <p className="text-slate-400 text-sm mt-1">Mark your daily attendance using location and network verification</p>
-//       </div>
-
-//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-//         {/* Left Column: Location & WiFi Attendance */}
-//         <div className="bg-white rounded-2xl border border-slate-200 p-8 flex flex-col items-center text-center">
-//           <h3 className="font-semibold mb-1">Attendance Check-In</h3>
-//           <p className="text-slate-400 text-xs mb-6">Verify location and WiFi to mark attendance</p>
-
-//           <div className="w-full flex flex-col gap-3 mb-6">
-//             <StepRow
-//               icon={MapPin}
-//               label="Location Captured"
-//               state={locState}
-//               detail={distance !== null ? `${distance}m from office` : 'GPS check within office radius'}
-//             />
-//             <StepRow
-//               icon={Wifi}
-//               label="Server Verification"
-//               state={submitState}
-//               detail="Checks office radius and network on the backend"
-//             />
-//           </div>
-
-//           <div className="mb-6 min-h-[20px]">
-//             {checkedIn && (
-//               <p className="flex items-center gap-2 text-emerald-600 text-xs font-medium">
-//                 <CheckCircle2 className="w-4 h-4" />
-//                 Checked in successfully!
-//               </p>
-//             )}
-//             {errorMsg && !checkedIn && (
-//               <p className="flex items-center gap-2 text-red-500 text-xs font-medium">
-//                 <XCircle className="w-4 h-4" />
-//                 {errorMsg}
-//               </p>
-//             )}
-//             {!errorMsg && !checkedIn && running === false && locState === 'pending' && (
-//               <p className="text-slate-400 text-xs">Tap Check In to verify your location and network</p>
-//             )}
-//           </div>
-
-//           <button
-//             onClick={handleCheckIn}
-//             disabled={running || checkedIn}
-//             className="w-full bg-violet-500 hover:bg-violet-600 disabled:opacity-60 text-white font-medium py-3 rounded-lg transition-colors"
-//           >
-//             {checkedIn ? 'Checked In' : running ? 'Verifying...' : 'Check In'}
-//           </button>
-//         </div>
-
-//         {/* Right Column: Attendance Summary */}
-//         <div className="bg-white rounded-2xl border border-slate-200 p-8">
-
-//           <div className="flex justify-between items-center mb-6">
-//             <h3 className="font-semibold">Attendance Summary</h3>
-//             <span className="text-emerald-500 font-bold text-lg">94%</span>
-//           </div>
-
-//           {/* Progress Bars */}
-//           <div className="space-y-4 mb-10">
-//             <div className="flex items-center gap-4 text-sm">
-//               <span className="w-20 text-slate-500">Present</span>
-//               <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-//                 <div className="h-full bg-emerald-500 rounded-full" style={{ width: '90%' }}></div>
-//               </div>
-//               <span className="w-6 text-right font-medium text-emerald-500">66</span>
-//             </div>
-
-//             <div className="flex items-center gap-4 text-sm">
-//               <span className="w-20 text-slate-500">Absent</span>
-//               <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-//                 <div className="h-full bg-red-500 rounded-full" style={{ width: '10%' }}></div>
-//               </div>
-//               <span className="w-6 text-right font-medium text-red-500">3</span>
-//             </div>
-
-//             <div className="flex items-center gap-4 text-sm">
-//               <span className="w-20 text-slate-500">Leave</span>
-//               <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-//                 <div className="h-full bg-orange-500 rounded-full" style={{ width: '5%' }}></div>
-//               </div>
-//               <span className="w-6 text-right font-medium text-orange-500">1</span>
-//             </div>
-
-//             <div className="flex items-center gap-4 text-sm">
-//               <span className="w-20 text-slate-500">Half Day</span>
-//               <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-//                 <div className="h-full bg-slate-200 rounded-full" style={{ width: '0%' }}></div>
-//               </div>
-//               <span className="w-6 text-right font-medium text-slate-400">0</span>
-//             </div>
-//           </div>
-
-//           {/* Recent Records */}
-//           <h4 className="text-slate-400 text-xs tracking-widest uppercase mb-5 font-mono">Recent Records</h4>
-
-//           <div className="space-y-4">
-
-//             <div className="flex justify-between items-center text-sm border-b border-slate-50 pb-3">
-//               <div className="flex gap-4">
-//                 <span className="text-slate-400">29 Jul</span>
-//                 <span className="text-slate-600">In: <strong>09:02</strong></span>
-//                 <span className="text-slate-600">Out: <strong>18:10</strong></span>
-//               </div>
-//               <span className="text-emerald-500 font-medium">9h 8m</span>
-//             </div>
-
-//             <div className="flex justify-between items-center text-sm border-b border-slate-50 pb-3">
-//               <div className="flex gap-4">
-//                 <span className="text-slate-400">28 Jul</span>
-//                 <span className="text-slate-600">In: <strong>09:15</strong></span>
-//                 <span className="text-slate-600">Out: <strong>18:00</strong></span>
-//               </div>
-//               <span className="text-emerald-500 font-medium">8h 45m</span>
-//             </div>
-
-//             <div className="flex justify-between items-center text-sm">
-//               <div className="flex gap-4">
-//                 <span className="text-slate-400">27 Jul</span>
-//                 <span className="text-slate-600">In: <strong>09:00</strong></span>
-//                 <span className="text-slate-600">Out: <strong>17:30</strong></span>
-//               </div>
-//               <span className="text-emerald-500 font-medium">8h 30m</span>
-//             </div>
-
-//           </div>
-
-//         </div>
-
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default MarkAttendance;
-
-import React, { useEffect, useState } from 'react';
-import { MapPin, Wifi, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
-import { studentService } from '../../services/student.service';
-
-function getDistanceMeters(lat1, lng1, lat2, lng2) {
-  const R = 6371000;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLng = ((lng2 - lng1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLng / 2) ** 2;
-  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-}
-
-// Office location — only used for the client-side distance display.
-// The backend independently verifies location/network on its own.
-const OFFICE_LAT = 18.5976125;
-const OFFICE_LNG = 73.805828125;
-
-const StepRow = ({ icon: Icon, label, state, detail }) => (
-  <div className="w-full flex items-center justify-between bg-slate-50 rounded-lg px-4 py-3">
-    <div className="flex items-center gap-3">
-      <Icon className="w-4 h-4 text-slate-500" />
-      <div className="text-left">
-        <p className="text-sm font-medium text-slate-700">{label}</p>
-        {detail && <p className="text-xs text-slate-400">{detail}</p>}
-      </div>
-    </div>
-    {state === 'pending' && <span className="w-4 h-4 rounded-full border-2 border-slate-200" />}
-    {state === 'checking' && <Loader2 className="w-4 h-4 text-violet-500 animate-spin" />}
-    {state === 'success' && <CheckCircle2 className="w-4 h-4 text-emerald-500" />}
-    {state === 'error' && <XCircle className="w-4 h-4 text-red-500" />}
-  </div>
-);
+  return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
+};
 
 const MarkAttendance = () => {
-  const [locState, setLocState] = useState('pending');
-  const [submitState, setSubmitState] = useState('pending');
-  const [distance, setDistance] = useState(null);
-  const [errorMsg, setErrorMsg] = useState('');
-  const [checkedIn, setCheckedIn] = useState(false);
-  const [running, setRunning] = useState(false);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const streamRef = useRef(null);
+
+  const [token, setToken] = useState(
+    () => new URLSearchParams(window.location.search).get("session") || "",
+  );
+
+  const [session, setSession] = useState(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
+
+  const [cameraLoading, setCameraLoading] = useState(false);
+  const [cameraActive, setCameraActive] = useState(false);
+  const [photoBlob, setPhotoBlob] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState("");
+
+  const [submitting, setSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [records, setRecords] = useState([]);
-  const [loadingRecords, setLoadingRecords] = useState(true);
+  const [historyLoading, setHistoryLoading] = useState(true);
 
-  const fetchRecords = async () => {
+  const stopCamera = useCallback(() => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    setCameraActive(false);
+  }, []);
+
+  const fetchRecords = useCallback(async () => {
     try {
-      setLoadingRecords(true);
-      const res = await studentService.getAttendance();
-      const data = res.data || [];
-      setRecords(data);
+      setHistoryLoading(true);
 
-      const todayStr = new Date().toISOString().split('T')[0];
-      const today = data.find((r) => r.date === todayStr);
-      if (today) setCheckedIn(true);
-    } catch (err) {
-      console.error('Fetch attendance error:', err);
+      const response = await studentService.getAttendance();
+      const data = response?.data;
+
+      setRecords(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Attendance history error:", error);
+      setRecords([]);
     } finally {
-      setLoadingRecords(false);
+      setHistoryLoading(false);
+    }
+  }, []);
+  useEffect(() => {
+    if (token) return;
+
+    let mounted = true;
+
+    const resolveStudentSession = async () => {
+      try {
+        setSessionLoading(true);
+        setErrorMessage("");
+
+        const response = await qrAttendanceService.getStudentSessions();
+        const sessions = Array.isArray(response?.data) ? response.data : [];
+
+        const activeSession = sessions.find((item) => item?.attendanceUrl);
+
+        if (!activeSession) {
+          throw new Error(
+            "No active QR attendance session found. Please ask your mentor to start an attendance session.",
+          );
+        }
+       const resolvedToken = new URL(
+          activeSession.attendanceUrl,
+          window.location.origin,
+        ).searchParams.get("session");
+
+        if (!resolvedToken) {
+          throw new Error("Unable to find the QR session token.");
+        }
+
+        if (mounted) {
+          setToken(resolvedToken);
+        }
+      } catch (error) {
+        if (!mounted) return;
+
+        setErrorMessage(
+          error.response?.data?.message ||
+            error.message ||
+            "Unable to find an active QR attendance session.",
+        );
+        setSessionLoading(false);
+      }
+    };
+ resolveStudentSession();
+ return () => {
+      mounted = false;
+    };
+  }, [token]);
+  useEffect(() => {
+    let mounted = true;
+
+    const initialize = async () => {
+      fetchRecords();
+      if (!token) return;
+      try {
+        setSessionLoading(true);
+        setErrorMessage("");
+
+        const response =
+          await qrAttendanceService.validateStudentSession(token);
+
+        if (!mounted) return;
+
+        if (!response?.success || !response?.data) {
+          throw new Error("Unable to validate QR session.");
+        }
+
+        setSession(response.data);
+      } catch (error) {
+        if (!mounted) return;
+
+        setSession(null);
+        setErrorMessage(
+          error.response?.data?.message ||
+            error.message ||
+            "QR session validation failed.",
+        );
+      } finally {
+        if (mounted) {
+          setSessionLoading(false);
+        }
+      }
+    };
+    initialize();
+
+    return () => {
+      mounted = false;
+    };
+  }, [token, fetchRecords]);
+  useEffect(() => {
+    if (videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+    }
+  }, [cameraActive]);
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      }
+    };
+  }, []);
+
+  const startCamera = async () => {
+    try {
+      setErrorMessage("");
+      setSuccessMessage("");
+      setCameraLoading(true);
+
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error(
+          "Camera is unavailable. Use HTTPS or localhost and a supported browser.",
+        );
+      }
+ stopCamera();
+const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: "user" },
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
+        audio: false,
+      });
+
+      streamRef.current = stream;
+      setCameraActive(true);
+    } catch (error) {
+      console.error("Camera error:", error);
+
+      setErrorMessage(
+        error.name === "NotAllowedError"
+          ? "Camera permission denied. Please allow camera access."
+          : error.message || "Unable to access the camera.",
+      );
+    } finally {
+      setCameraLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchRecords();
-  }, []);
+  const capturePhoto = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
 
-  const getLocation = () =>
-    new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject('Geolocation is not supported by this browser.');
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const dist = getDistanceMeters(latitude, longitude, OFFICE_LAT, OFFICE_LNG);
-          setDistance(Math.round(dist));
-          resolve({ latitude, longitude });
-        },
-        () => reject('Location permission denied or unavailable.'),
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
-    });
+    if (!video || !canvas || !video.videoWidth || !video.videoHeight) {
+      setErrorMessage("Camera is not ready. Please try again.");
+      return;
+    }
+   canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext("2d");
 
-  const handleCheckIn = async () => {
-    setRunning(true);
-    setErrorMsg('');
-    setLocState('checking');
-    setSubmitState('pending');
+    if (!context) {
+      setErrorMessage("Unable to capture photo.");
+      return;
+    }
+   context.drawImage(video, 0, 0, canvas.width, canvas.height);
+   canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          setErrorMessage("Photo capture failed. Please try again.");
+          return;
+        }
 
-    let locationData;
-    try {
-      locationData = await getLocation();
-      setLocState('success');
-    } catch (err) {
-      setLocState('error');
-      setErrorMsg(err.message || String(err));
-      setRunning(false);
+        setPhotoBlob(blob);
+        setPhotoPreview(URL.createObjectURL(blob));
+        setErrorMessage("");
+        stopCamera();
+      },
+      "image/jpeg",
+      0.9,
+    );
+  };
+
+  const retakePhoto = () => {
+    if (photoPreview) {
+      URL.revokeObjectURL(photoPreview);
+    }
+
+    setPhotoBlob(null);
+    setPhotoPreview("");
+    startCamera();
+  };
+
+  const handleSubmit = async () => {
+    if (!token || !session) {
+      setErrorMessage("Please scan a valid QR code first.");
       return;
     }
 
-    setSubmitState('checking');
-    try {
-      await studentService.checkIn(locationData.latitude, locationData.longitude);
-      setSubmitState('success');
-      setCheckedIn(true);
-      await fetchRecords();
-    } catch (err) {
-      setSubmitState('error');
-      setErrorMsg(
-        err.response?.data?.message || err.message || 'Check-in failed'
-      );
+    if (!photoBlob) {
+      setErrorMessage("Live photo is mandatory to mark attendance.");
+      return;
     }
-    setRunning(false);
+
+    try {
+      setSubmitting(true);
+      setErrorMessage("");
+      setSuccessMessage("");
+
+      const response = await qrAttendanceService.submitStudentAttendance(
+        token,
+        photoBlob,
+      );
+
+      if (!response?.success) {
+        throw new Error(response?.message || "Attendance submission failed.");
+      }
+
+      setSuccessMessage(response.message || "Attendance marked successfully!");
+
+      setPhotoBlob(null);
+
+      if (photoPreview) {
+        URL.revokeObjectURL(photoPreview);
+        setPhotoPreview("");
+      }
+
+      await fetchRecords();
+    } catch (error) {
+      console.error("QR attendance submission error:", error);
+
+      setErrorMessage(
+        error.response?.data?.message ||
+          error.message ||
+          "Unable to mark attendance.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  // Summary counts from real records
-  const total = records.length;
-  const presentCount = records.filter((r) => r.status === 'PRESENT').length;
-  const absentCount = records.filter((r) => r.status === 'ABSENT').length;
-  const halfDayCount = records.filter((r) => r.status === 'HALF_DAY').length;
-  const attendancePercent = total > 0 ? Math.round((presentCount / total) * 100) : 0;
+  const today = getTodayDate();
 
-  const formatTime = (dateTimeStr) => {
-    if (!dateTimeStr) return '—';
-    return new Date(dateTimeStr).toLocaleTimeString('en-GB', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
+  const todayRecords = records.filter(
+    (record) => String(record.date).slice(0, 10) === today,
+  );
 
-  const formatShortDate = (dateStr) => {
-    return new Date(dateStr).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-    });
-  };
+  const checkedIn = todayRecords.length > 0;
 
-  const getDuration = (checkIn, checkOut) => {
-    if (!checkIn || !checkOut) return '—';
-    const ms = new Date(checkOut) - new Date(checkIn);
-    const hrs = Math.floor(ms / (1000 * 60 * 60));
-    const mins = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hrs}h ${mins}m`;
-  };
+  const presentCount = records.filter(
+    (record) => record.status === "PRESENT",
+  ).length;
+
+  const absentCount = records.filter(
+    (record) => record.status === "ABSENT",
+  ).length;
+
+  const halfDayCount = records.filter(
+    (record) => record.status === "HALF_DAY",
+  ).length;
+
+  const totalDays = records.length;
+
+  const attendancePercentage =
+    totalDays > 0 ? Math.round((presentCount / totalDays) * 100) : 0;
 
   const recentRecords = [...records]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 3);
 
   return (
-    <div className="space-y-6 max-w-6xl">
-
-      {/* Header section */}
+    <div className="space-y-6 max-w-6xl mx-auto">
+      {/* Page Header */}
       <div>
-        <h1 className="text-xl font-semibold">Attendance</h1>
-        <p className="text-slate-400 text-sm mt-1">Mark your daily attendance using location and network verification</p>
+        <h1 className="text-2xl font-bold text-gray-800">Student Attendance</h1>
+
+        <p className="text-gray-500 mt-1">
+          Scan your mentor's QR code and capture a live photo to mark
+          attendance.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* QR Attendance Card */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="p-3 rounded-lg bg-violet-100">
+              <QrCodeIcon />
+            </div>
 
-        {/* Left Column: Location & WiFi Attendance */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 flex flex-col items-center text-center">
-          <h3 className="font-semibold mb-1">Attendance Check-In</h3>
-          <p className="text-slate-400 text-xs mb-6">Verify location and WiFi to mark attendance</p>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-800">
+                QR Attendance
+              </h2>
 
-          <div className="w-full flex flex-col gap-3 mb-6">
-            <StepRow
-              icon={MapPin}
-              label="Location Captured"
-              state={locState}
-              detail={distance !== null ? `${distance}m from office` : 'GPS check within office radius'}
-            />
-            <StepRow
-              icon={Wifi}
-              label="Server Verification"
-              state={submitState}
-              detail="Checks office radius and network on the backend"
-            />
+              <p className="text-sm text-gray-500">
+                Secure session verification
+              </p>
+            </div>
           </div>
 
-          <div className="mb-6 min-h-[20px]">
-            {checkedIn && !running && (
-              <p className="flex items-center gap-2 text-emerald-600 text-xs font-medium">
-                <CheckCircle2 className="w-4 h-4" />
-                Checked in successfully!
-              </p>
-            )}
-            {errorMsg && !checkedIn && (
-              <p className="flex items-center gap-2 text-red-500 text-xs font-medium">
-                <XCircle className="w-4 h-4" />
-                {errorMsg}
-              </p>
-            )}
-            {!errorMsg && !checkedIn && running === false && locState === 'pending' && (
-              <p className="text-slate-400 text-xs">Tap Check In to verify your location and network</p>
-            )}
-          </div>
+          {sessionLoading ? (
+            <div className="py-12 flex flex-col items-center gap-3 text-gray-500">
+              <Loader2 className="animate-spin" size={30} />
+              <p>Validating QR session...</p>
+            </div>
+          ) : session ? (
+            <div className="space-y-5">
+              <div className="rounded-lg bg-violet-50 border border-violet-100 p-4">
+                <div className="flex items-center gap-2 text-violet-700 mb-3">
+                  <ShieldCheck size={20} />
+                  <span className="font-semibold">QR Session Verified</span>
+                </div>
 
-          <button
-            onClick={handleCheckIn}
-            disabled={running || checkedIn}
-            className="w-full bg-violet-500 hover:bg-violet-600 disabled:opacity-60 text-white font-medium py-3 rounded-lg transition-colors"
-          >
-            {checkedIn ? 'Checked In' : running ? 'Verifying...' : 'Check In'}
-          </button>
+                <p className="text-sm text-gray-600">Subject</p>
+                <p className="font-semibold text-gray-800">{session.subject}</p>
+
+                <p className="text-sm text-gray-600 mt-3">Batch</p>
+                <p className="font-semibold text-gray-800">
+                  {session.batch?.name || "--"}
+                </p>
+
+                <p className="text-sm text-gray-600 mt-3">Session expires</p>
+
+                <p className="font-medium text-gray-800">
+                  {formatTime(session.expiresAt)}
+                </p>
+              </div>
+
+              {checkedIn && (
+                <div className="flex items-start gap-2 rounded-lg bg-green-50 border border-green-200 p-3 text-green-700">
+                  <CheckCircle2 size={20} className="shrink-0 mt-0.5" />
+                  <p className="text-sm">
+                    You already have an attendance record for today. Check the
+                    attendance history below.
+                  </p>
+                </div>
+              )}
+
+              {!photoBlob && (
+                <div className="space-y-3">
+                  <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-5 text-center">
+                    <Camera size={36} className="mx-auto text-gray-400 mb-2" />
+
+                    <p className="font-medium text-gray-700">
+                      Live photo required
+                    </p>
+
+                    <p className="text-sm text-gray-500 mt-1">
+                      Use your camera to capture your current photo.
+                    </p>
+                  </div>
+
+                  {!cameraActive ? (
+                    <button
+                      type="button"
+                      onClick={startCamera}
+                      disabled={cameraLoading || submitting}
+                      className="w-full flex items-center justify-center gap-2 rounded-lg bg-violet-600 hover:bg-violet-700 disabled:opacity-60 text-white font-medium py-3 transition"
+                    >
+                      {cameraLoading ? (
+                        <Loader2 className="animate-spin" size={20} />
+                      ) : (
+                        <Camera size={20} />
+                      )}
+
+                      {cameraLoading ? "Opening camera..." : "Open Camera"}
+                    </button>
+                  ) : (
+                    <div className="space-y-3">
+                      <video
+                        ref={videoRef}
+                        autoPlay
+                        muted
+                        playsInline
+                        className="w-full rounded-lg bg-black aspect-video object-cover"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={capturePhoto}
+                        className="w-full flex items-center justify-center gap-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-medium py-3"
+                      >
+                        <Camera size={20} />
+                        Capture Live Photo
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {photoBlob && photoPreview && (
+                <div className="space-y-3">
+                  <div>
+                    <p className="font-medium text-gray-700 mb-2">
+                      Captured Photo
+                    </p>
+
+                    <img
+                      src={photoPreview}
+                      alt="Captured live attendance"
+                      className="w-full max-h-72 rounded-lg object-contain bg-gray-100"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={retakePhoto}
+                    disabled={submitting}
+                    className="w-full flex items-center justify-center gap-2 rounded-lg border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2.5 disabled:opacity-60"
+                  >
+                    <RefreshCw size={18} />
+                    Retake Photo
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={submitting}
+                    className="w-full flex items-center justify-center gap-2 rounded-lg bg-violet-600 hover:bg-violet-700 disabled:opacity-60 text-white font-medium py-3"
+                  >
+                    {submitting ? (
+                      <Loader2 className="animate-spin" size={20} />
+                    ) : (
+                      <CheckCircle2 size={20} />
+                    )}
+
+                    {submitting
+                      ? "Submitting Attendance..."
+                      : "Submit Attendance"}
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="py-8 text-center">
+              <XCircle size={42} className="mx-auto text-red-400 mb-3" />
+
+              <h3 className="font-semibold text-gray-800">
+                QR Session Unavailable
+              </h3>
+
+              <p className="text-sm text-gray-500 mt-2">
+                Scan an active QR code generated by your mentor.
+              </p>
+            </div>
+          )}
+
+          <canvas ref={canvasRef} className="hidden" />
+
+          {errorMessage && (
+            <div className="mt-4 flex items-start gap-2 rounded-lg bg-red-50 border border-red-200 p-3 text-red-700">
+              <XCircle size={19} className="shrink-0 mt-0.5" />
+              <p className="text-sm">{errorMessage}</p>
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="mt-4 flex items-start gap-2 rounded-lg bg-green-50 border border-green-200 p-3 text-green-700">
+              <CheckCircle2 size={19} className="shrink-0 mt-0.5" />
+              <p className="text-sm">{successMessage}</p>
+            </div>
+          )}
         </div>
 
-        {/* Right Column: Attendance Summary */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-8">
+        {/* Attendance Summary */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-lg font-semibold text-gray-800">
+              Attendance Summary
+            </h2>
 
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-semibold">Attendance Summary</h3>
-            <span className="text-emerald-500 font-bold text-lg">{attendancePercent}%</span>
+            <button
+              type="button"
+              onClick={fetchRecords}
+              disabled={historyLoading}
+              className="p-2 rounded-lg hover:bg-gray-100 text-gray-500"
+              title="Refresh attendance history"
+            >
+              <RefreshCw
+                size={18}
+                className={historyLoading ? "animate-spin" : ""}
+              />
+            </button>
           </div>
 
-          {loadingRecords ? (
-            <p className="text-slate-400 text-sm">Loading...</p>
+          {historyLoading ? (
+            <div className="py-10 flex justify-center text-gray-500">
+              <Loader2 className="animate-spin" size={28} />
+            </div>
           ) : (
             <>
-              {/* Progress Bars */}
-              <div className="space-y-4 mb-10">
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="w-20 text-slate-500">Present</span>
-                  <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-emerald-500 rounded-full"
-                      style={{ width: total > 0 ? `${(presentCount / total) * 100}%` : '0%' }}
-                    ></div>
-                  </div>
-                  <span className="w-6 text-right font-medium text-emerald-500">{presentCount}</span>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="rounded-lg bg-green-50 p-4">
+                  <p className="text-sm text-green-700">Present</p>
+                  <p className="text-2xl font-bold text-green-800">
+                    {presentCount}
+                  </p>
                 </div>
 
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="w-20 text-slate-500">Absent</span>
-                  <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-red-500 rounded-full"
-                      style={{ width: total > 0 ? `${(absentCount / total) * 100}%` : '0%' }}
-                    ></div>
-                  </div>
-                  <span className="w-6 text-right font-medium text-red-500">{absentCount}</span>
+                <div className="rounded-lg bg-red-50 p-4">
+                  <p className="text-sm text-red-700">Absent</p>
+                  <p className="text-2xl font-bold text-red-800">
+                    {absentCount}
+                  </p>
                 </div>
 
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="w-20 text-slate-500">Half Day</span>
-                  <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-slate-400 rounded-full"
-                      style={{ width: total > 0 ? `${(halfDayCount / total) * 100}%` : '0%' }}
-                    ></div>
-                  </div>
-                  <span className="w-6 text-right font-medium text-slate-400">{halfDayCount}</span>
+                <div className="rounded-lg bg-yellow-50 p-4">
+                  <p className="text-sm text-yellow-700">Half Day</p>
+                  <p className="text-2xl font-bold text-yellow-800">
+                    {halfDayCount}
+                  </p>
+                </div>
+
+                <div className="rounded-lg bg-violet-50 p-4">
+                  <p className="text-sm text-violet-700">Total Records</p>
+                  <p className="text-2xl font-bold text-violet-800">
+                    {totalDays}
+                  </p>
                 </div>
               </div>
 
-              {/* Recent Records */}
-              <h4 className="text-slate-400 text-xs tracking-widest uppercase mb-5 font-mono">Recent Records</h4>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-600">
+                    Attendance Percentage
+                  </span>
 
-              <div className="space-y-4">
-                {recentRecords.length === 0 ? (
-                  <p className="text-slate-400 text-sm">No records yet.</p>
-                ) : (
-                  recentRecords.map((r) => (
-                    <div key={r.id} className="flex justify-between items-center text-sm border-b border-slate-50 pb-3 last:border-0">
-                      <div className="flex gap-4">
-                        <span className="text-slate-400">{formatShortDate(r.date)}</span>
-                        <span className="text-slate-600">In: <strong>{formatTime(r.checkInTime)}</strong></span>
-                        <span className="text-slate-600">Out: <strong>{formatTime(r.checkOutTime)}</strong></span>
-                      </div>
-                      <span className="text-emerald-500 font-medium">
-                        {getDuration(r.checkInTime, r.checkOutTime)}
-                      </span>
-                    </div>
-                  ))
-                )}
+                  <span className="font-bold text-gray-800">
+                    {attendancePercentage}%
+                  </span>
+                </div>
+
+                <div className="w-full h-3 rounded-full bg-gray-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-violet-600 transition-all"
+                    style={{
+                      width: `${attendancePercentage}%`,
+                    }}
+                  />
+                </div>
               </div>
             </>
           )}
+        </div>
+      </div>
 
+      {/* Recent Attendance Records */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+        <div className="flex items-center gap-2 mb-5">
+          <Clock3 size={21} className="text-violet-600" />
+
+          <h2 className="text-lg font-semibold text-gray-800">
+            Recent Attendance Records
+          </h2>
         </div>
 
+        {historyLoading ? (
+          <div className="py-8 flex justify-center text-gray-500">
+            <Loader2 className="animate-spin" size={26} />
+          </div>
+        ) : recentRecords.length === 0 ? (
+          <div className="py-8 text-center text-gray-500">
+            No attendance records found.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {recentRecords.map((record) => (
+              <div
+                key={record.id}
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg border border-gray-100 p-4"
+              >
+                <div>
+                  <p className="font-semibold text-gray-800">
+                    {formatShortDate(record.date)}
+                  </p>
+
+                  <p className="text-sm text-gray-500 mt-1">
+                    In: {formatTime(record.checkInTime)}
+                    {" · "}
+                    Out: {formatTime(record.checkOutTime)}
+                  </p>
+
+                  <p className="text-sm text-gray-500 mt-1">
+                    Duration:{" "}
+                    {getDuration(record.checkInTime, record.checkOutTime)}
+                  </p>
+                </div>
+
+                <span
+                  className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold ${
+                    record.status === "PRESENT"
+                      ? "bg-green-100 text-green-700"
+                      : record.status === "HALF_DAY"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {record.status || "UNKNOWN"}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
+const QrCodeIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="3" y="3" width="7" height="7" rx="1" />
+    <rect x="14" y="3" width="7" height="7" rx="1" />
+    <rect x="3" y="14" width="7" height="7" rx="1" />
+    <path d="M14 14h3v3h-3zM21 14v3M14 21h3M21 21v-3" />
+  </svg>
+);
 export default MarkAttendance;
