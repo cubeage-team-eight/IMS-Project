@@ -24,6 +24,7 @@ const Document = sequelize.define(
         "Bonafide Certificate",
         "Offer Letter",
         "PAN Card",
+        "Id Size Photo",
         "Other"
       ),
       allowNull: false,

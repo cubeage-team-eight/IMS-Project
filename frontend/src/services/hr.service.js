@@ -1,3 +1,4 @@
+
 import axiosInstance from "./axiosInstance";
 import { API_ENDPOINTS } from "../utils/constants";
 
@@ -98,6 +99,12 @@ export const hrService = {
     const response = await axiosInstance.put(API_ENDPOINTS.HR.MENTOR_BY_ID(id), data);
     return response.data;
   },
+  deleteMentor: async (id) => {
+    const response = await axiosInstance.delete(
+      API_ENDPOINTS.HR.MENTOR_BY_ID(id)
+    );
+    return response.data;
+  },
 
   // Certificates
   getAllCertificates: async () => {
@@ -105,12 +112,23 @@ export const hrService = {
     return response.data;
   },
   uploadCertificate: async (formData) => {
-    const response = await axiosInstance.post(API_ENDPOINTS.HR.CERTIFICATE_UPLOAD, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const response = await axiosInstance.post(
+      API_ENDPOINTS.HR.CERTIFICATE_UPLOAD,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    return response.data;
+  },
+  deleteCertificate: async (id) => {
+    const response = await axiosInstance.delete(
+      `${API_ENDPOINTS.HR.CERTIFICATES}/${id}`
+    );
     return response.data;
   },
 
+  // Mentor Student Assignment
   assignStudentToMentor: async (mentorId, studentId) => {
     const response = await axiosInstance.post(API_ENDPOINTS.HR.MENTOR_ASSIGN_STUDENT, {
       mentorId,

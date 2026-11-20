@@ -12,6 +12,7 @@ import Project from "./project/Project.js";
 import ProjectStudent from "./project/ProjectStudent.js";
 import ProjectMentor from "./project/ProjectMentor.js";
 import Document from "./Document.js";
+import DailyReport from "./DailyReport.js";
 
 // QR Attendance Models
 import Attendance from "./Attendance.js";
@@ -230,6 +231,7 @@ export {
   Document,
   Batch,
   BatchStudent,
+  DailyReport,
   Attendance,
   QRSession,
   AttendanceSyncOutbox,

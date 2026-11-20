@@ -227,11 +227,14 @@ export const login = async (req, res) => {
       password,
     });
 
-    return res.status(200).json({
+    
+   return res.status(200).json({
       success: true,
       message: "Login successful",
+      token: result.token,
       data: result,
     });
+
   } catch (error) {
     console.error("Login Error:", error.message);
 

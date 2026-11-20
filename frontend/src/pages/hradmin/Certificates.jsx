@@ -1,86 +1,15 @@
-// import React from 'react'
-// function CertificatePreview({
-//   studentName = "Aditi Verma",
-//   college = "VIT Vellore",
-//   mentor = "Dr. Arun Patel",
-//   startDate = "01 Jan 2025",
-//   endDate = "31 Mar 2025",
-//   certNo = "IMS-2025-0312",
-//   qrVerified = true,
-// }) {
-//   return (
-//     <div className="min-h-screen w-full bg-slate-100 pt-3 sm:p-6">
-//       <div className="mx-auto max-w-3xl rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
-//         <h2 className="text-base font-semibold text-slate-800">
-//           Certificate Preview
-//         </h2>
- 
-//         <div className="mt-5 rounded-xl border-2 border-orange-500 bg-slate-800 px-4 py-8 sm:px-10 sm:py-12">
-//           <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
-//             <p className="text-xs font-semibold tracking-[0.15em] text-orange-400 sm:text-sm sm:tracking-[0.2em]">
-//               CERTIFICATE OF COMPLETION
-//             </p>
- 
-//             <p className="mt-6 text-sm text-blue-200 sm:text-base">
-//               This is to certify that
-//             </p>
- 
-//             <h1 className="mt-2 break-words font-serif text-2xl font-bold text-white sm:text-4xl">
-//               {studentName}
-//             </h1>
- 
-//             <p className="mt-4 text-sm leading-relaxed text-blue-200 sm:text-base">
-//               from <span className="font-semibold text-white">{college}</span>{" "}
-//               has successfully completed the internship program
-//             </p>
- 
-//             <p className="mt-3 text-sm leading-relaxed text-blue-200 sm:text-base">
-//               under the guidance of{" "}
-//               <span className="font-semibold text-white">{mentor}</span>
-//             </p>
-//             <p className="text-sm text-blue-200 sm:text-base">
-//               Duration: {startDate} – {endDate}
-//             </p>
- 
-//             <div className="mt-8 flex max-w-full flex-col items-center gap-1 rounded-2xl border border-orange-400/50 px-4 py-2 sm:flex-row sm:gap-2 sm:rounded-full sm:px-5">
-//               <span className="whitespace-nowrap font-mono text-xs text-orange-400 sm:text-sm">
-//                 Cert No: {certNo}
-//               </span>
-//               {qrVerified && (
-//                 <span className="whitespace-nowrap font-mono text-xs text-orange-400 sm:text-sm">
-//                   <span className="hidden sm:inline">· </span>QR Verified
-//                 </span>
-//               )}
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-// function StudentCertificates() {
-//   return (
-//     <div className='lg:p-6 min-h-screen'>
-//          <div className='flex flex-col gap-4 sm:flex-row justify-between items-center'>
-//             <div>
-//                 <h1 className='text-xl font-medium'>Certificate Management</h1>
-//                 <p className='text-slate-400'>Generate and manage internship completion certificates</p>
-//             </div>
-//             <button className='bg-blue-500 text-white px-4 py-2 rounded-md'>Generate Certificate</button>
-//             </div>
-//         <CertificatePreview/>
-//     </div>
-//   )
-// }
 
-// export default StudentCertificates
+import React, { useEffect, useState } from "react";
+import { X, Trash2, AlertTriangle } from "lucide-react";
+import { hrService } from "../../services/hr.service";
 
-
-import React, { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
-import { hrService } from '../../services/hr.service';
-
-function UploadCertificateModal({ onClose, onSubmit, students, submitting, formError }) {
+function UploadCertificateModal({
+  onClose,
+  onSubmit,
+  students,
+  submitting,
+  formError,
+}) {
   const [studentId, setStudentId] = useState("");
   const [type, setType] = useState("");
   const [file, setFile] = useState(null);
@@ -96,7 +25,7 @@ function UploadCertificateModal({ onClose, onSubmit, students, submitting, formE
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg relative"
+        className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -106,17 +35,17 @@ function UploadCertificateModal({ onClose, onSubmit, students, submitting, formE
           <X size={16} />
         </button>
 
-        <h2 className="text-base font-semibold text-slate-900 mb-4">
+        <h2 className="mb-4 text-base font-semibold text-slate-900">
           Upload Certificate
         </h2>
 
         {formError && (
-          <p className="text-red-500 text-sm mb-3">{formError}</p>
+          <p className="mb-3 text-sm text-red-500">{formError}</p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[11px] font-medium tracking-wide text-slate-400 uppercase mb-2">
+            <label className="mb-2 block text-[11px] font-medium uppercase tracking-wide text-slate-400">
               Student
             </label>
             <select
@@ -135,7 +64,7 @@ function UploadCertificateModal({ onClose, onSubmit, students, submitting, formE
           </div>
 
           <div>
-            <label className="block text-[11px] font-medium tracking-wide text-slate-400 uppercase mb-2">
+            <label className="mb-2 block text-[11px] font-medium uppercase tracking-wide text-slate-400">
               Type
             </label>
             <select
@@ -152,7 +81,7 @@ function UploadCertificateModal({ onClose, onSubmit, students, submitting, formE
           </div>
 
           <div>
-            <label className="block text-[11px] font-medium tracking-wide text-slate-400 uppercase mb-2">
+            <label className="mb-2 block text-[11px] font-medium uppercase tracking-wide text-slate-400">
               Certificate File (PDF/JPG/PNG)
             </label>
             <input
@@ -167,7 +96,7 @@ function UploadCertificateModal({ onClose, onSubmit, students, submitting, formE
           <button
             type="submit"
             disabled={submitting}
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50"
+            className="w-full rounded-lg bg-blue-500 py-2.5 font-semibold text-white transition-colors hover:bg-blue-600 disabled:opacity-50"
           >
             {submitting ? "Uploading..." : "Upload Certificate"}
           </button>
@@ -186,13 +115,20 @@ function StudentCertificates() {
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
 
+  // Delete states
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
+  const [deleteError, setDeleteError] = useState("");
+
   const fetchData = async () => {
     try {
       setLoading(true);
+
       const [certsRes, studentsRes] = await Promise.all([
         hrService.getAllCertificates(),
         hrService.getAllStudents(),
       ]);
+
       setCertificates(certsRes.data || []);
       setStudents(studentsRes.data || []);
       setError("");
@@ -215,6 +151,7 @@ function StudentCertificates() {
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
+
     return new Date(dateStr).toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "short",
@@ -244,7 +181,9 @@ function StudentCertificates() {
     } catch (err) {
       console.error("Upload certificate error:", err);
       setFormError(
-        err.response?.data?.message || err.message || "Failed to upload certificate"
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to upload certificate"
       );
     } finally {
       setSubmitting(false);
@@ -289,6 +228,35 @@ function StudentCertificates() {
     }
   };
 
+  // Permanently delete certificate
+  const handleDeleteCertificate = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      setDeletingId(deleteTarget.id);
+      setDeleteError("");
+
+      await hrService.deleteCertificate(deleteTarget.id);
+
+      // Remove deleted certificate from the HR list
+      setCertificates((prev) =>
+        prev.filter((cert) => cert.id !== deleteTarget.id)
+      );
+
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error("Delete certificate error:", err);
+
+      setDeleteError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to delete certificate"
+      );
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   if (loading) {
     return <div className="p-6 text-slate-500">Loading certificates...</div>;
   }
@@ -298,70 +266,109 @@ function StudentCertificates() {
   }
 
   return (
-    <div className="lg:p-6 min-h-screen">
-      <div className="flex flex-col gap-4 sm:flex-row justify-between items-center">
+    <div className="min-h-screen lg:p-6">
+      <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <div>
           <h1 className="text-xl font-medium">Certificate Management</h1>
           <p className="text-slate-400">
             Generate and manage internship completion certificates
           </p>
         </div>
+
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+          className="rounded-md bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
         >
           Upload Certificate
         </button>
       </div>
 
-      <div className="mt-6 bg-white rounded-xl border border-slate-200 overflow-x-auto">
+      <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200 bg-white">
         {certificates.length === 0 ? (
-          <p className="text-slate-400 text-sm p-6">
+          <p className="p-6 text-sm text-slate-400">
             No certificates issued yet.
           </p>
         ) : (
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-slate-100">
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Student</th>
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Cert No.</th>
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Type</th>
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Source</th>
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Issue Date</th>
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Status</th>
-                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">Action</th>
+                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">
+                  Student
+                </th>
+                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">
+                  Cert No.
+                </th>
+                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">
+                  Type
+                </th>
+                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">
+                  Source
+                </th>
+                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">
+                  Issue Date
+                </th>
+                <th className="px-4 py-3 text-xs font-medium uppercase text-slate-400">
+                  Status
+                </th>
+                <th className="px-4 py-3 text-center text-xs font-medium  uppercase text-slate-400">
+                  Action
+                </th>
               </tr>
             </thead>
+
             <tbody>
               {certificates.map((cert) => (
-                <tr key={cert.id} className="border-b border-slate-50 last:border-0">
+                <tr
+                  key={cert.id}
+                  className="border-b border-slate-50 last:border-0"
+                >
                   <td className="px-4 py-3 text-sm font-medium text-slate-800">
                     {getStudentName(cert.studentId)}
                   </td>
-                  <td className="px-4 py-3 text-sm font-mono text-slate-500">
+
+                  <td className="px-4 py-3 font-mono text-sm text-slate-500">
                     {cert.certificateNumber}
                   </td>
+
                   <td className="px-4 py-3 text-sm text-slate-500">
                     {cert.type || "—"}
                   </td>
+
                   <td className="px-4 py-3 text-sm text-slate-500">
                     {cert.source}
                   </td>
+
                   <td className="px-4 py-3 text-sm text-slate-500">
                     {formatDate(cert.issueDate)}
                   </td>
+
                   <td className="px-4 py-3">
-                    <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">
+                    <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs text-emerald-700">
                       {cert.status}
                     </span>
                   </td>
+
                   <td className="px-4 py-3">
-                    <button
-                      onClick={() => handleDownload(cert.id)}
-                      className="text-blue-500 hover:text-blue-700 text-sm font-medium"
-                    >
-                      Download
-                    </button>
+                    <div className="flex w-full items-center justify-center gap-4">
+                      <button
+                        onClick={() => handleDownload(cert.id)}
+                        className="text-sm font-medium text-blue-500 hover:text-blue-700"
+                      >
+                        Download
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setDeleteTarget(cert);
+                          setDeleteError("");
+                        }}
+                        className="flex items-center gap-1 text-sm font-medium text-red-500 transition-colors hover:text-red-700"
+                        title="Delete certificate"
+                      >
+                        <Trash2 size={15} />
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -381,6 +388,84 @@ function StudentCertificates() {
           submitting={submitting}
           formError={formError}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteTarget && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4"
+          onClick={() => {
+            if (!deletingId) {
+              setDeleteTarget(null);
+              setDeleteError("");
+            }
+          }}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-500">
+                <AlertTriangle size={24} />
+              </div>
+
+              <button
+                onClick={() => {
+                  setDeleteTarget(null);
+                  setDeleteError("");
+                }}
+                disabled={!!deletingId}
+                className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 disabled:opacity-50"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <h2 className="text-lg font-semibold text-slate-900">
+              Delete Certificate?
+            </h2>
+
+            <p className="mt-2 text-sm leading-relaxed text-slate-500">
+              Are you sure you want to permanently delete this certificate?
+              This action cannot be undone. The certificate will also no
+              longer be available on the student's dashboard.
+            </p>
+
+            <div className="mt-4 rounded-lg bg-slate-50 p-3">
+              <p className="text-xs text-slate-400">Certificate Number</p>
+              <p className="mt-1 break-all text-sm font-semibold text-slate-700">
+                {deleteTarget.certificateNumber}
+              </p>
+            </div>
+
+            {deleteError && (
+              <p className="mt-3 text-sm text-red-500">{deleteError}</p>
+            )}
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setDeleteTarget(null);
+                  setDeleteError("");
+                }}
+                disabled={!!deletingId}
+                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleDeleteCertificate}
+                disabled={!!deletingId}
+                className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Trash2 size={15} />
+                {deletingId ? "Deleting..." : "Delete Permanently"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
