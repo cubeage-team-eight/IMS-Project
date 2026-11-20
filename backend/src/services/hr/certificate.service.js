@@ -93,7 +93,7 @@
 import Certificate from "../../models/Certificate.js";
 import Student from "../../models/student/Student.js";
 import College from "../../models/College.js";
-import Mentor from "../../models/mentor/Mentor.js";
+import Mentor from "../../models/mentor/mentor.js";
 import SystemSettings from "../../models/SystemSettings.js";
 import certificatePdfService from "../pdf/certificate-pdf.service.js";
 

@@ -26,7 +26,7 @@ import SystemSettings from "../pages/superadmin/systemsettings";
 import HRAdminDashboard from "../pages/hradmin/Dashboard";
 import CollegeDashboard from "../pages/college/Dashboard";
 import NominatedStudents from "../pages/college/NominatedStudents";
-import ProgressTracking from "../pages/college/ProgressTracking";
+//import ProgressTracking from "../pages/college/ProgressTracking";
 import CollegeReports from "../pages/college/Reports";
 import StudentDashboard from "../pages/student/Dashboard";
 import Profile from "../pages/student/Profile";
@@ -204,11 +204,12 @@ const AppRoutes = () => {
           element={<Attendance />}
         />
 
-        {/* Student Progress */}
+        {/*
         <Route
           path={ROUTES.COLLEGE.PROGRESS}
           element={<ProgressTracking />}
         />
+        */}
 
         {/* Reports */}
         <Route

@@ -1,4 +1,4 @@
-import crypto from "crypto";
+
 import { sequelize } from "../config/database.js";
 import Student from "../models/student/Student.js";
 import User from "../models/User.js";
@@ -77,41 +77,63 @@ const studentService = {
     }
   },
 
-  // Approve student and create login account
+  // Approve Student using existing User account
   async approveStudent(studentId) {
-    const student = await Student.findByPk(studentId);
+    const transaction = await sequelize.transaction();
 
-    if (!student) {
-      throw new Error("Student not found");
+    try {
+      const student = await Student.findByPk(studentId, {
+        transaction,
+      });
+
+      if (!student) {
+        throw new Error("Student not found");
+      }
+
+      if (student.status !== "PENDING") {
+        throw new Error("Student is not pending approval");
+      }
+
+      if (!student.userId) {
+        throw new Error("Student login account not found");
+      }
+
+      const user = await User.findByPk(student.userId, {
+        transaction,
+      });
+
+      if (!user) {
+        throw new Error("Linked user account not found");
+      }
+
+      if (user.roleId !== STUDENT_ROLE_ID) {
+        throw new Error("Invalid student account role");
+      }
+
+      await user.update(
+        {
+          isActive: true,
+        },
+        { transaction }
+      );
+
+      await student.update(
+        {
+          status: "ACTIVE",
+        },
+        { transaction }
+      );
+
+      await transaction.commit();
+
+      return {
+        student,
+        email: student.email,
+      };
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
     }
-
-    if (student.status !== "PENDING") {
-      throw new Error("Student is not pending approval");
-    }
-
-    if (student.userId) {
-      throw new Error("Student account already exists");
-    }
-
-    const temporaryPassword = crypto.randomBytes(4).toString("hex");
-
-    const user = await createUser({
-      name: `${student.firstName} ${student.lastName || ""}`.trim(),
-      email: student.email,
-      password: temporaryPassword,
-      roleId: STUDENT_ROLE_ID,
-    });
-
-    await student.update({
-      userId: user.id,
-      status: "ACTIVE",
-    });
-
-    return {
-      student,
-      email: student.email,
-      password: temporaryPassword,
-    };
   },
 
   // Get all students
@@ -124,7 +146,7 @@ const studentService = {
     return await Student.findByPk(id);
   },
 
-  // Update student
+  // Update Student
   async updateStudent(id, data) {
     const transaction = await sequelize.transaction();
 
@@ -164,7 +186,9 @@ const studentService = {
       await student.update(updateData, { transaction });
 
       if (student.userId) {
-        const user = await User.findByPk(student.userId, { transaction });
+        const user = await User.findByPk(student.userId, {
+          transaction,
+        });
 
         if (user && user.roleId === STUDENT_ROLE_ID) {
           await user.update(
@@ -211,7 +235,9 @@ const studentService = {
       let linkedUser = null;
 
       if (linkedUserId) {
-        linkedUser = await User.findByPk(linkedUserId, { transaction });
+        linkedUser = await User.findByPk(linkedUserId, {
+          transaction,
+        });
       }
 
       await student.destroy({ transaction });

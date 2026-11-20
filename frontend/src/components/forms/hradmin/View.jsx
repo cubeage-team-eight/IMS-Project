@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   Laptop,
@@ -10,7 +11,7 @@ import {
 } from "lucide-react";
 
 function formatDate(dateString) {
-  if (!dateString) return "";
+  if (!dateString) return "Not specified";
 
   const date = new Date(dateString + "T00:00:00");
 
@@ -23,6 +24,18 @@ function formatDate(dateString) {
 
 function View({ project, onClose }) {
   if (!project) return null;
+
+  // Get assigned mentors
+  const mentors = project.mentors || [];
+
+  const mentorNames = mentors
+    .map((mentor) =>
+      `${mentor.firstName || ""} ${mentor.lastName || ""}`.trim()
+    )
+    .filter(Boolean);
+
+  // Get assigned students
+  const students = project.students || [];
 
   return (
     <div
@@ -52,7 +65,7 @@ function View({ project, onClose }) {
 
             <div>
               <h2 className="text-lg font-semibold text-slate-900">
-                {project.name}
+                {project.title || project.name || "Project Details"}
               </h2>
 
               <p className="text-sm text-slate-400 mt-0.5">
@@ -79,12 +92,13 @@ function View({ project, onClose }) {
             </p>
 
             <p className="text-sm text-slate-600 leading-relaxed">
-              {project.description}
+              {project.description || "No description available"}
             </p>
           </div>
 
           {/* PROJECT DETAILS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
             {/* TECHNICAL STACK */}
             <div className="rounded-xl bg-blue-50/70 border border-blue-100 p-4">
               <div className="flex items-center gap-3">
@@ -98,7 +112,7 @@ function View({ project, onClose }) {
                   </p>
 
                   <p className="text-sm font-semibold text-slate-800 mt-0.5">
-                    {project.technology}
+                    {project.technology || "Not specified"}
                   </p>
                 </div>
               </div>
@@ -111,14 +125,27 @@ function View({ project, onClose }) {
                   <UserRound size={18} />
                 </div>
 
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs text-slate-400">
                     Mentor
                   </p>
 
-                  <p className="text-sm font-semibold text-slate-800 mt-0.5">
-                    {project.mentor}
-                  </p>
+                  <div className="mt-0.5">
+                    {mentorNames.length > 0 ? (
+                      mentorNames.map((name, index) => (
+                        <p
+                          key={`${name}-${index}`}
+                          className="text-sm font-semibold text-slate-800"
+                        >
+                          {name}
+                        </p>
+                      ))
+                    ) : (
+                      <p className="text-sm font-semibold text-slate-500">
+                        No mentor assigned
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -136,7 +163,7 @@ function View({ project, onClose }) {
                   </p>
 
                   <p className="text-sm font-semibold text-slate-800 mt-0.5">
-                    {project.students.length} Students
+                    {students.length} Students
                   </p>
                 </div>
               </div>
@@ -155,7 +182,7 @@ function View({ project, onClose }) {
                   </p>
 
                   <p className="text-sm font-semibold text-slate-800 mt-0.5">
-                    {formatDate(project.deadline)}
+                    {formatDate(project.endDate || project.deadline)}
                   </p>
                 </div>
               </div>
@@ -167,15 +194,23 @@ function View({ project, onClose }) {
             <p className="text-xs font-medium uppercase tracking-wide text-slate-400 mb-3">
               Assigned Students
             </p>
+
             <div className="flex flex-wrap gap-2">
-               {project.students.map((student) => (
-                <span
-                   key={student.id}
-                   className="px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-600">
-                      {student.firstName} {student.lastName}
-                 </span>
-             ))}
-          </div>
+              {students.length > 0 ? (
+                students.map((student) => (
+                  <span
+                    key={student.id}
+                    className="px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-sm text-slate-600"
+                  >
+                    {student.firstName} {student.lastName}
+                  </span>
+                ))
+              ) : (
+                <span className="text-sm text-slate-400">
+                  No students assigned
+                </span>
+              )}
+            </div>
           </div>
 
           {/* PROJECT STATUS */}
@@ -188,31 +223,15 @@ function View({ project, onClose }) {
               className={`text-xs font-medium px-3 py-1.5 rounded-full ${
                 project.status === "COMPLETED"
                   ? "bg-green-50 text-green-600"
-                  : project.status === "UPCOMING"
+                  : project.status === "PLANNED"
                   ? "bg-yellow-50 text-yellow-600"
-                  : project.status === "ON HOLD"
+                  : project.status === "ON_HOLD"
                   ? "bg-orange-50 text-orange-600"
                   : project.status === "CANCELLED"
                   ? "bg-red-50 text-red-600"
-                  : project.status === "OVERDUE"
-                  ? "bg-purple-50 text-purple-600"
-                  : project.status === "MAINTENANCE"
+                  : project.status === "ACTIVE"
                   ? "bg-blue-50 text-blue-600"
-                  : project.status === "UNDER REVIEW"
-                  ? "bg-slate-100 text-slate-600"
-                  : project.status === "PENDING"
-                  ? "bg-orange-50 text-orange-600"
-                  : project.status === "NOT STARTED"
-                  ? "bg-slate-100 text-slate-600"
-                  : project.status === "TESTING"
-                  ? "bg-green-50 text-green-600"
-                  : project.status === "DEPLOYMENT"
-                  ? "bg-blue-50 text-blue-600"
-                  : project.status === "REWORK REQUIRED"
-                  ? "bg-purple-50 text-purple-600"
-                  : project.status === "ARCHIVED"
-                  ? "bg-slate-100 text-slate-500"
-                  : "bg-blue-50 text-blue-600"
+                  : "bg-slate-100 text-slate-600"
               }`}
             >
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-current mr-1.5 align-middle" />
