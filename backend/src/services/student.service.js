@@ -1,11 +1,17 @@
-
+import crypto from "crypto";
+import { sequelize } from "../config/database.js";
 import Student from "../models/student/Student.js";
+import User from "../models/User.js";
+import Role from "../models/Role.js";
+import MentorStudent from "../models/mentor/MentorStudent.js";
+import ProjectStudent from "../models/project/ProjectStudent.js";
 import { createUser } from "./user.service.js";
 
+<<<<<<< HEAD
 const STUDENT_ROLE_ID = "9ff34a29-948a-4ead-9c52-197c6fc62428";
 
 const studentService = {
-  // Create Student
+  // Create Student and User atomically
   async createStudent(data) {
     const {
       firstName,
@@ -21,13 +27,11 @@ const studentService = {
       joiningDate,
     } = data;
 
-    // Normalize enrollment number
     const normalizedEnrollmentNumber =
       enrollmentNumber == null || String(enrollmentNumber).trim() === ""
         ? null
         : String(enrollmentNumber).trim();
 
-    // Validate required fields
     if (
       !firstName ||
       !email ||
@@ -40,89 +44,257 @@ const studentService = {
       );
     }
 
-    // Create login user
-    const user = await createUser({
-      name: `${firstName} ${lastName || ""}`.trim(),
-      email,
-      password,
-      roleId: STUDENT_ROLE_ID,
-    });
+    const transaction = await sequelize.transaction();
 
     try {
-      // Create student profile
-      const student = await Student.create({
-        userId: user.id,
-        collegeId,
-        enrollmentNumber: normalizedEnrollmentNumber,
-        firstName,
-        lastName,
-        email,
-        phone,
-        course,
-        branch,
-        semester,
-        joiningDate: joiningDate || null,
-      });
+      const user = await createUser(
+        {
+          name: `${firstName} ${lastName || ""}`.trim(),
+          email,
+          password,
+          roleId: STUDENT_ROLE_ID,
+        },
+        { transaction }
+      );
+
+      const student = await Student.create(
+        {
+          userId: user.id,
+          collegeId,
+          enrollmentNumber: normalizedEnrollmentNumber,
+          firstName,
+          lastName,
+          email,
+          phone,
+          course,
+          branch,
+          semester,
+          joiningDate: joiningDate || null,
+          status: "ACTIVE",
+        },
+        { transaction }
+      );
+
+      await transaction.commit();
 
       return student;
     } catch (error) {
-      // Show the actual database error in backend terminal
-      console.error("STUDENT PROFILE CREATION FAILED");
-      console.error(
-        "Database error:",
-        error.original?.message || error.message
-      );
-      console.error("Database code:", error.original?.code);
-      console.error("Student data:", {
-        userId: user.id,
-        collegeId,
-        enrollmentNumber: normalizedEnrollmentNumber,
-        firstName,
-        lastName,
-        email,
-        phone,
-        course,
-        branch,
-        semester,
-        joiningDate,
-      });
+      if (!transaction.finished) {
+        await transaction.rollback();
+      }
 
       throw error;
     }
   },
 
-  // Get All Students
+  // Approve student
+  async approveStudent(studentId) {
+    const transaction = await sequelize.transaction();
+
+    try {
+      const student = await Student.findByPk(studentId, {
+        transaction,
+        lock: transaction.LOCK.UPDATE,
+      });
+
+      if (!student) {
+        throw new Error("Student not found");
+      }
+
+      if (student.status !== "PENDING") {
+        throw new Error("Student is not pending approval");
+      }
+
+      let temporaryPassword = null;
+
+      if (student.userId) {
+        // Existing account: validate it instead of creating another.
+        const user = await User.findByPk(student.userId, {
+          transaction,
+          lock: transaction.LOCK.UPDATE,
+        });
+
+        if (!user) {
+          throw new Error("Linked student account was not found");
+        }
+
+        const role = await Role.findByPk(user.roleId, {
+          transaction,
+        });
+
+        if (
+          user.roleId !== STUDENT_ROLE_ID ||
+          !role ||
+          role.name !== "STUDENT" ||
+          !role.isActive ||
+          !user.isActive
+        ) {
+          throw new Error(
+            "Linked account is invalid or inactive. Please verify the account before approval."
+          );
+        }
+      } else {
+        // No account: create one inside the same transaction.
+        temporaryPassword = crypto.randomBytes(16).toString("base64url");
+
+        const user = await createUser(
+          {
+            name: `${student.firstName} ${student.lastName || ""}`.trim(),
+            email: student.email,
+            password: temporaryPassword,
+            roleId: STUDENT_ROLE_ID,
+          },
+          { transaction }
+        );
+
+        await student.update(
+          { userId: user.id },
+          { transaction }
+        );
+      }
+
+      await student.update(
+        { status: "ACTIVE" },
+        { transaction }
+      );
+
+      await transaction.commit();
+
+      return {
+        student,
+        email: student.email,
+        password: temporaryPassword,
+        credentialsRequired: Boolean(temporaryPassword),
+      };
+    } catch (error) {
+      if (!transaction.finished) {
+        await transaction.rollback();
+      }
+
+      throw error;
+    }
+  },
+
+  // Get all students
   async getAllStudents() {
     return await Student.findAll();
   },
 
-  // Get Student By ID
+  // Get student by ID
   async getStudentById(id) {
     return await Student.findByPk(id);
   },
 
-  // Update Student
+  // Update student
   async updateStudent(id, data) {
-    const student = await Student.findByPk(id);
+    const transaction = await sequelize.transaction();
 
-    if (!student) {
-      return null;
+    try {
+      const student = await Student.findByPk(id, { transaction });
+
+      if (!student) {
+        await transaction.rollback();
+        return null;
+      }
+
+      const allowedFields = [
+        "firstName",
+        "lastName",
+        "email",
+        "phone",
+        "collegeId",
+        "enrollmentNumber",
+        "course",
+        "branch",
+        "semester",
+        "joiningDate",
+      ];
+
+      const updateData = {};
+
+      for (const field of allowedFields) {
+        if (data[field] !== undefined) {
+          updateData[field] =
+            field === "enrollmentNumber" &&
+            String(data[field]).trim() === ""
+              ? null
+              : data[field];
+        }
+      }
+
+      await student.update(updateData, { transaction });
+
+      if (student.userId) {
+        const user = await User.findByPk(student.userId, { transaction });
+
+        if (user && user.roleId === STUDENT_ROLE_ID) {
+          await user.update(
+            {
+              name: `${student.firstName} ${student.lastName || ""}`.trim(),
+              email: student.email,
+            },
+            { transaction }
+          );
+        }
+      }
+
+      await transaction.commit();
+
+      return student;
+    } catch (error) {
+      if (!transaction.finished) {
+        await transaction.rollback();
+      }
+
+      throw error;
     }
-
-    await student.update(data);
-    return student;
   },
 
-  // Delete Student
+  // Delete student and linked records
   async deleteStudent(id) {
-    const student = await Student.findByPk(id);
+    const transaction = await sequelize.transaction();
 
-    if (!student) {
-      return null;
+    try {
+      const student = await Student.findByPk(id, { transaction });
+
+      if (!student) {
+        await transaction.rollback();
+        return null;
+      }
+
+      await MentorStudent.destroy({
+        where: { studentId: student.id },
+        transaction,
+      });
+
+      await ProjectStudent.destroy({
+        where: { studentId: student.id },
+        transaction,
+      });
+
+      const linkedUserId = student.userId;
+      let linkedUser = null;
+
+      if (linkedUserId) {
+        linkedUser = await User.findByPk(linkedUserId, { transaction });
+      }
+
+      await student.destroy({ transaction });
+
+      if (linkedUser && linkedUser.roleId === STUDENT_ROLE_ID) {
+        await linkedUser.destroy({ transaction });
+      }
+
+      await transaction.commit();
+
+      return student;
+    } catch (error) {
+      if (!transaction.finished) {
+        await transaction.rollback();
+      }
+
+      throw error;
     }
-
-    await student.destroy();
-    return student;
   },
 };
 

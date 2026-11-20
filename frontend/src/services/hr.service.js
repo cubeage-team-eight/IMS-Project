@@ -67,6 +67,12 @@ export const hrService = {
     const response = await axiosInstance.get(API_ENDPOINTS.HR.STUDENT_BY_ID(id));
     return response.data;
   },
+  approveStudent: async (id) => {
+    const response = await axiosInstance.patch(
+      `${API_ENDPOINTS.HR.STUDENT_BY_ID(id)}/approve`
+    );
+    return response.data;
+  },
   updateStudent: async (id, data) => {
     const response = await axiosInstance.put(API_ENDPOINTS.HR.STUDENT_BY_ID(id), data);
     return response.data;
@@ -100,12 +106,11 @@ export const hrService = {
     return response.data;
   },
 
-    // Certificates
+  // Certificates
   getAllCertificates: async () => {
     const response = await axiosInstance.get(API_ENDPOINTS.HR.CERTIFICATES);
     return response.data;
   },
-
   uploadCertificate: async (formData) => {
     const response = await axiosInstance.post(
       API_ENDPOINTS.HR.CERTIFICATE_UPLOAD,
@@ -116,7 +121,6 @@ export const hrService = {
     );
     return response.data;
   },
-
   deleteCertificate: async (id) => {
     const response = await axiosInstance.delete(
       `${API_ENDPOINTS.HR.CERTIFICATES}/${id}`

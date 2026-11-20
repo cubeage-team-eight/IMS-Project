@@ -86,10 +86,24 @@ const StatCard = ({
 function AttendanceOverview() {
   return (
     <div className="sm:p-4 min-h-screen">
-        <div className="    ">
-                <h1 className='text-xl font-medium'>Attendance Management</h1>
-                <p className='text-slate-700/50'>Monitor and manage daily attendance across all batches</p>
-            </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+  <div>
+    <h1 className="text-xl font-medium">Attendance Management</h1>
+    <p className="text-slate-700/50">
+      Monitor and manage daily attendance across all batches
+    </p>
+  </div>
+
+  <a
+    href="https://docs.google.com/spreadsheets/d/1vh71WbYdU37MBG4wKREtvcESCl9SBxYBZMdDpZu1k4o/edit"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition"
+  >
+    Open Attendance Sheet
+    <span>↗</span>
+  </a>
+</div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
             <StatCard 
                 title="Present Today"

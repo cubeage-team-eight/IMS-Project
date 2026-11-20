@@ -188,7 +188,7 @@ const Student = sequelize.define(
 
     userId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
     },
 
     collegeId: {
@@ -247,11 +247,12 @@ const Student = sequelize.define(
       allowNull: true,
     },
 
+   
     status: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      defaultValue: "ACTIVE",
-    },
+     type: DataTypes.STRING,
+     allowNull: true,
+     defaultValue: "PENDING",
+},
   },
   {
     tableName: "students",

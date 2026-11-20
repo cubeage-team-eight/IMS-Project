@@ -1,6 +1,4 @@
 import * as XLSX from "xlsx";
-import bcrypt from "bcrypt";
-import { User, Role } from "../../models/index.js";
 import Student from "../../models/student/Student.js";
 import CollegeCoordinator from "../../models/coordinator/CollegeCoordinator.js";
 
@@ -17,28 +15,23 @@ const getCoordinator = async (userId) => {
 const bulkUploadStudents = async (userId, fileBuffer) => {
   const coordinator = await getCoordinator(userId);
 
-  const role = await Role.findOne({ where: { name: "STUDENT" } });
-  if (!role) {
-    throw new Error("STUDENT role not found. Please create it first.");
-  }
-
-console.log("Uploaded file buffer exists:", !!fileBuffer);
-console.log("Uploaded file buffer size:", fileBuffer?.length);
+  console.log("Uploaded file buffer exists:", !!fileBuffer);
+  console.log("Uploaded file buffer size:", fileBuffer?.length);
 
   const workbook = XLSX.read(fileBuffer, { type: "buffer" });
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
   const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-console.log("Workbook sheets:", workbook.SheetNames);
-console.log("Parsed row count:", rows.length);
-console.log("First parsed row:", rows[0]);
+  console.log("Workbook sheets:", workbook.SheetNames);
+  console.log("Parsed row count:", rows.length);
+  console.log("First parsed row:", rows[0]);
 
   const results = [];
   let created = 0;
   let failed = 0;
 
   for (const [index, row] of rows.entries()) {
-    const rowNumber = index + 2; // account for header row
+    const rowNumber = index + 2;
 
     try {
       const fullName = String(row["Full Name"] || "").trim();
@@ -53,14 +46,10 @@ console.log("First parsed row:", rows[0]);
         throw new Error("Full Name, Roll Number and Email are required");
       }
 
-      const existingUser = await User.findOne({ where: { email } });
-      if (existingUser) {
-        throw new Error("A user with this email already exists");
-      }
-
       const existingEnrollment = await Student.findOne({
         where: { enrollmentNumber: rollNumber },
       });
+
       if (existingEnrollment) {
         throw new Error("A student with this roll number already exists");
       }
@@ -69,18 +58,8 @@ console.log("First parsed row:", rows[0]);
       const firstName = nameParts[0];
       const lastName = nameParts.slice(1).join(" ");
 
-      // Default password = roll number, student can change it later
-      const hashedPassword = await bcrypt.hash(rollNumber, 10);
-
-      const user = await User.create({
-        name: fullName,
-        email,
-        password: hashedPassword,
-        roleId: role.id,
-      });
-
       await Student.create({
-        userId: user.id,
+        userId: null,
         collegeId: coordinator.collegeId,
         enrollmentNumber: rollNumber,
         firstName,
@@ -90,13 +69,23 @@ console.log("First parsed row:", rows[0]);
         branch,
         semester,
         course,
+        status: "PENDING",
       });
 
-      created += 1;
-      results.push({ row: rowNumber, name: fullName, status: "created" });
+      created++;
+      results.push({
+        row: rowNumber,
+        name: fullName,
+        status: "created",
+      });
+
     } catch (err) {
-      failed += 1;
-      results.push({ row: rowNumber, status: "failed", message: err.message });
+      failed++;
+      results.push({
+        row: rowNumber,
+        status: "failed",
+        message: err.message,
+      });
     }
   }
 

@@ -1,4 +1,6 @@
+
 import studentService from "../../services/student.service.js";
+import { sendStudentCredentials } from "../../services/email.service.js";
 
 // Create Student
 export const createStudent = async (req, res, next) => {
@@ -14,6 +16,49 @@ export const createStudent = async (req, res, next) => {
     next(error);
   }
 };
+
+// Approve Student
+
+// Approve Student
+export const approveStudent = async (req, res, next) => {
+  try {
+    const result = await studentService.approveStudent(req.params.id);
+
+    // Send credentials only when a new login account was created.
+    if (result.credentialsRequired) {
+      try {
+        await sendStudentCredentials({
+          email: result.email,
+          name: `${result.student.firstName} ${result.student.lastName || ""}`.trim(),
+          password: result.password,
+        });
+
+        return res.status(200).json({
+          success: true,
+          message: "Student approved and login credentials sent successfully.",
+        });
+      } catch (emailError) {
+        console.error("Student approved, but credentials email failed:", emailError);
+
+        return res.status(200).json({
+          success: true,
+          message:
+            "Student approved, but credentials email could not be sent. Please use the password reset workflow.",
+        });
+      }
+    }
+
+    // Existing login account: do not send another password.
+    return res.status(200).json({
+      success: true,
+      message:
+        "Student approved. Existing login account retained; no new credentials were sent.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 // Get All Students
 export const getAllStudents = async (req, res, next) => {
