@@ -58,6 +58,7 @@ import {
   getAllMentors,
   getMentorById,
   updateMentor,
+  deleteMentor,
   assignStudentToMentor,
 } from "../../controllers/hr/mentor.controller.js";
 
@@ -155,6 +156,7 @@ router.post("/mentors", createMentor);
 router.get("/mentors", getAllMentors);
 router.get("/mentors/:id", getMentorById);
 router.put("/mentors/:id", updateMentor);
+router.delete("/mentors/:id", deleteMentor);
 router.put(
   "/students/:id",
   validationMiddleware(updateStudentValidation),
@@ -163,10 +165,24 @@ router.put(
 router.delete("/students/:id", deleteStudent);
 router.post("/mentors/assign-student", assignStudentToMentor);
 
-// cetificate routes
+// CERTIFICATE ROUTES
 router.get("/certificates", certificateController.getAllCertificates);
-router.get("/certificates/:certificateId/download", certificateController.downloadCertificate);
-router.post("/certificates/upload", upload.single("certificateFile"), certificateController.uploadCertificate);
+
+router.get(
+  "/certificates/:certificateId/download",
+  certificateController.downloadCertificate
+);
+
+router.post(
+  "/certificates/upload",
+  upload.single("certificateFile"),
+  certificateController.uploadCertificate
+);
+
+router.delete(
+  "/certificates/:certificateId",
+  certificateController.deleteCertificate
+);
 
 
 // =========================
