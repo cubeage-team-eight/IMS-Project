@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { ROUTES } from "./routeConstants";
+import ProtectedRoute from "./ProtectedRoute";
 
 import Home from "../pages/home/Home";
 
@@ -41,6 +42,7 @@ import FeedbackForm from "../pages/student/FeedbackForm";
 import StudentProjects from "../pages/student/Projects";
 
 import MentorDashboard from "../pages/mentor/Dashboard";
+import QRAttendance from "../pages/mentor/QRAttendance";
 import MyStudents from "../pages/mentor/MyStudents";
 import MentorProjects from "../pages/mentor/Projects";
 import AssignTask from "../pages/mentor/AssignTask";
@@ -232,6 +234,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* ================= STUDENT / INTERN ================= */}
+      <Route element={<ProtectedRoute allowedRole="STUDENT" loginPath="/login/student-intern" fallbackPath="/student/dashboard" /> }>
       <Route element={<StudentLayout />}>
 
         <Route
@@ -290,13 +293,20 @@ const AppRoutes = () => {
         />
 
       </Route>
+      </Route>
 
       {/* ================= MENTOR ================= */}
+      <Route element={<ProtectedRoute allowedRole="MENTOR" loginPath="/login/mentor" fallbackPath="/mentor/dashboard" /> }>
       <Route element={<MentorLayout />}>
 
         <Route
           path={ROUTES.MENTOR.DASHBOARD}
           element={<MentorDashboard />}
+        />
+
+        <Route
+          path={ROUTES.MENTOR.ATTENDANCE}
+          element={<QRAttendance />}
         />
 
         <Route
@@ -335,9 +345,12 @@ const AppRoutes = () => {
         />
 
       </Route>
+      </Route>
 
     </Routes>
   );
 };
 
 export default AppRoutes;
+
+

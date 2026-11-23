@@ -1,4 +1,4 @@
-// src/routes/routeConstants.js
+﻿// src/routes/routeConstants.js
 
 export const ROUTES = {
   HOME: "/",
@@ -32,6 +32,7 @@ export const ROUTES = {
 
   MENTOR: {
     DASHBOARD: "/mentor/dashboard",
+    ATTENDANCE: "/mentor/attendance",
     MYSTUDENTS: "/mentor/students",
     ASSIGNTASK: "/mentor/assign-task",
     REVIEWDAILYREPORTS: "/mentor/daily-reports",

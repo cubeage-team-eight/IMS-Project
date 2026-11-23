@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import Sidebar from "../components/common/Sidebar";
@@ -6,6 +6,7 @@ import Navbar from "../components/navbar/Navbar";
 
 import {
   LayoutDashboard,
+  QrCode,
   UsersRound,
   FolderKanban,
   ClipboardList,
@@ -20,6 +21,11 @@ const mentorMenu = [
     label: "Overview",
     path: "/mentor/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    label: "QR Attendance",
+    path: "/mentor/attendance",
+    icon: QrCode,
   },
   {
     label: "My Students",
