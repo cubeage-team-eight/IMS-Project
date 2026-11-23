@@ -1,4 +1,4 @@
-import crypto from "crypto";
+
 import { sequelize } from "../config/database.js";
 import Student from "../models/student/Student.js";
 import User from "../models/User.js";
@@ -7,8 +7,7 @@ import MentorStudent from "../models/mentor/MentorStudent.js";
 import ProjectStudent from "../models/project/ProjectStudent.js";
 import { createUser } from "./user.service.js";
 
-<<<<<<< HEAD
-const STUDENT_ROLE_ID = "9ff34a29-948a-4ead-9c52-197c6fc62428";
+const STUDENT_ROLE_ID = "9faf25d3-8086-437d-b648-7c4ad0425949";
 
 const studentService = {
   // Create Student and User atomically
@@ -163,13 +162,13 @@ const studentService = {
       return {
         student,
         email: student.email,
-        password: temporaryPassword,
-        credentialsRequired: Boolean(temporaryPassword),
-      };
-    } catch (error) {
-      if (!transaction.finished) {
-        await transaction.rollback();
-      }
+    password: temporaryPassword,
+    credentialsRequired: Boolean(temporaryPassword),
+  };
+} catch (error) {
+  if (!transaction.finished) {
+    await transaction.rollback();
+  }
 
       throw error;
     }
@@ -185,7 +184,7 @@ const studentService = {
     return await Student.findByPk(id);
   },
 
-  // Update student
+  // Update Student
   async updateStudent(id, data) {
     const transaction = await sequelize.transaction();
 
@@ -225,7 +224,9 @@ const studentService = {
       await student.update(updateData, { transaction });
 
       if (student.userId) {
-        const user = await User.findByPk(student.userId, { transaction });
+        const user = await User.findByPk(student.userId, {
+          transaction,
+        });
 
         if (user && user.roleId === STUDENT_ROLE_ID) {
           await user.update(
@@ -276,7 +277,9 @@ const studentService = {
       let linkedUser = null;
 
       if (linkedUserId) {
-        linkedUser = await User.findByPk(linkedUserId, { transaction });
+        linkedUser = await User.findByPk(linkedUserId, {
+          transaction,
+        });
       }
 
       await student.destroy({ transaction });

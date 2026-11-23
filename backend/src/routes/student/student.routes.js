@@ -78,6 +78,7 @@
 
 // export default Student;
 
+
 import dailyReportController from "../../controllers/student/dailyReport.controller.js";
 import express from "express";
 
@@ -87,6 +88,7 @@ import leaveController from "../../controllers/student/leave.controller.js";
 import taskController from "../../controllers/student/task.controller.js";
 import certificateController from "../../controllers/student/certificate.controller.js";
 import * as documentController from "../../controllers/student/document.controller.js";
+import { getMyProjects } from "../../controllers/student/stdproject.controller.js";
 import documentUpload from "../../config/documentUpload.js";
 
 import authMiddleware from "../../middleware/auth.middleware.js";
@@ -97,62 +99,40 @@ const router = express.Router();
 router.get("/profile", authMiddleware, profileController.getProfile);
 router.put("/profile", authMiddleware, profileController.updateProfile);
 
+// Student Projects
+router.get("/projects", authMiddleware, getMyProjects);
+
 // Student Attendance
-router.post(
-  "/attendance/check-in",
-  authMiddleware,
-  attendanceController.checkIn
-);
+router.post("/attendance/check-in", authMiddleware, attendanceController.checkIn);
 
-router.put(
-  "/attendance/check-out",
-  authMiddleware,
-  attendanceController.checkOut
-);
+router.put("/attendance/check-out", authMiddleware, attendanceController.checkOut);
 
-router.get(
-  "/attendance",
-  authMiddleware,
-  attendanceController.getAttendance
-);
-
+router.get("/attendance", authMiddleware, attendanceController.getAttendance);
 
 // Student Leave
-router.post( "/leave", authMiddleware, leaveController.applyLeave );
-router.get( "/leave", authMiddleware, leaveController.getMyLeaves );
-router.get( "/leave/:leaveId", authMiddleware, leaveController.getLeaveById );
-router.put( "/leave/:leaveId/cancel", authMiddleware, leaveController.cancelLeave );
-
+router.post("/leave", authMiddleware, leaveController.applyLeave);
+router.get("/leave", authMiddleware, leaveController.getMyLeaves);
+router.get("/leave/:leaveId", authMiddleware, leaveController.getLeaveById);
+router.put("/leave/:leaveId/cancel", authMiddleware, leaveController.cancelLeave);
 
 // Student Task
 router.get("/tasks", authMiddleware, taskController.getMyTasks);
 router.get("/tasks/:id", authMiddleware, taskController.getTaskById);
 router.post("/tasks/:id/start", authMiddleware, taskController.startTask);
-router.post("/tasks/:id/submit", authMiddleware, taskController.submitTask);  
+router.post("/tasks/:id/submit", authMiddleware, taskController.submitTask);
+
 // Student Daily Report
-router.post(
-  "/daily-reports",
-  authMiddleware,
-  dailyReportController.createReport
-);
+router.post("/daily-reports", authMiddleware, dailyReportController.createReport);
+router.get("/daily-reports", authMiddleware, dailyReportController.getMyReports);
 
-router.get(
-  "/daily-reports",
-  authMiddleware,
-  dailyReportController.getMyReports
-);
 // Student Certificate
-
 router.get("/certificates", authMiddleware, certificateController.getMyCertificates);
 router.get("/certificates/:certificateId/download", authMiddleware, certificateController.downloadMyCertificate);
+
 console.log("STUDENT DOCUMENT ROUTE FILE LOADED");
 
-
-router.get(
-  "/documents",
-  authMiddleware,
-  documentController.getMyDocuments
-);
+// Student Documents
+router.get("/documents", authMiddleware, documentController.getMyDocuments);
 
 router.post(
   "/documents",
@@ -160,4 +140,5 @@ router.post(
   authMiddleware,
   documentController.uploadDocument
 );
+
 export default router;

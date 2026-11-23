@@ -7,7 +7,7 @@ import {
   LayoutDashboard,
   GraduationCap,
   CheckCircle,
-  BarChart3,
+ // BarChart3,
   FileText,
   Trophy,
   Upload,
@@ -29,11 +29,13 @@ const collegeMenu = [
     path: "/college/attendance",
     icon: CheckCircle,
   },
-  {
+  
+/* {
     label: "Student Progress",
     path: "/college/progress",
     icon: BarChart3,
   },
+*/
   {
     label: "View Reports",
     path: "/college/reports",

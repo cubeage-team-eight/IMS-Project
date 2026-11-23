@@ -52,10 +52,16 @@ const Project = sequelize.define(
     },
 
     status: {
-      type: DataTypes.ENUM("PLANNED", "ACTIVE", "COMPLETED", "ON_HOLD"),
+      type: DataTypes.ENUM(
+        "PLANNED",
+        "ACTIVE",
+        "COMPLETED",
+        "ON_HOLD",
+        "CANCELLED"
+      ),
       defaultValue: "PLANNED",
     },
-
+    
     createdBy: {
       type: DataTypes.UUID,
       allowNull: true,

@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import app from "./app.js";
 import { connectDB, sequelize } from "./config/database.js";
 import seedRoles from "./seeders/role.seeder.js";
+
 import "./models/index.js";
 import { startAttendanceSheetsSync } from "./services/attendanceSheetsSync.service.js";
 

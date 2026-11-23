@@ -163,9 +163,6 @@
 //     res.status(500).json({ success: false, message: err.message });
 //   }
 // };
-
-
-
 import * as projectService from "../../services/hr/project.service.js";
 
 const handle = (fn) => async (req, res) => {

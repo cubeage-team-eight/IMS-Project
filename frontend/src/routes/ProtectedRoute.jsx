@@ -22,11 +22,16 @@ const ProtectedRoute = ({ allowedRole, loginPath, fallbackPath }) => {
   }
 
   // Prevent users from accessing another role's routes
-  if (user.role !== allowedRole) {
+  const userRole =
+    typeof user.role === "object"
+      ? user.role?.name
+      : user.role;
+
+  if (userRole !== allowedRole) {
     return <Navigate to={fallbackPath} replace />;
   }
 
-  return <Outlet />;
-};
+    return <Outlet />;
+  };
 
 export default ProtectedRoute;

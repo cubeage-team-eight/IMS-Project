@@ -1,7 +1,7 @@
 import { sequelize } from "../../config/database.js";
 import Project from "../../models/project/Project.js";
 import Student from "../../models/student/Student.js";
-import Mentor from "../../models/mentor/Mentor.js"; // use your real filename
+import Mentor from "../../models/mentor/mentor.js"; // use your real filename
 
 export class ServiceError extends Error {
   constructor(message, status = 400) {
@@ -65,8 +65,13 @@ export const updateProject = async (id, { students, mentors, ...data }) => {
 };
 
 export const deleteProject = async (id) => {
-  const deleted = await Project.destroy({ where: { id } });
-  if (!deleted) throw new ServiceError("Project not found", 404);
+  const project = await findOrFail(id);
+
+  await project.update({
+    status: "CANCELLED",
+  });
+
+  return project;
 };
 
 export const assignToProject = async (projectId, students = [], mentors = []) => {
