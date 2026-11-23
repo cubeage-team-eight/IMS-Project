@@ -1,3 +1,4 @@
+
 import express from "express";
 
 import authMiddleware from "../../middleware/auth.middleware.js";
@@ -56,6 +57,7 @@ import {
   getAllMentors,
   getMentorById,
   updateMentor,
+  deleteMentor,
   assignStudentToMentor,
 } from "../../controllers/hr/mentor.controller.js";
 
@@ -84,7 +86,7 @@ const router = express.Router();
 
 // HR/Admin authentication and authorization
 router.use(authMiddleware);
-router.use(roleMiddleware("HR_ADMIN","SUPER_ADMIN"));
+router.use(roleMiddleware("HR_ADMIN", "SUPER_ADMIN"));
 
 // =========================
 // COLLEGE ROUTES
@@ -118,9 +120,7 @@ router.post(
 );
 
 router.get("/students", getAllStudents);
-
 router.get("/students/:id", getStudentById);
-
 router.patch("/students/:id/approve", approveStudent);
 
 // =========================
@@ -129,7 +129,7 @@ router.patch("/students/:id/approve", approveStudent);
 
 router.post("/internships", createInternship);
 router.get("/internships", getAllInternships);
-router.get("/internships/:id", getInternshipById)
+router.get("/internships/:id", getInternshipById);
 router.put("/internships/:id", updateInternship);
 router.delete("/internships/:id", deleteInternship);
 
@@ -151,34 +151,73 @@ router.post("/mentors", createMentor);
 router.get("/mentors", getAllMentors);
 router.get("/mentors/:id", getMentorById);
 router.put("/mentors/:id", updateMentor);
+router.delete("/mentors/:id", deleteMentor);
+
 router.put(
   "/students/:id",
   validationMiddleware(updateStudentValidation),
   updateStudent
 );
+
 router.delete("/students/:id", deleteStudent);
 router.post("/mentors/assign-student", assignStudentToMentor);
 
-// certificate routes
+// =========================
+// CERTIFICATE ROUTES
+// =========================
+
 router.get("/certificates", certificateController.getAllCertificates);
-router.get("/certificates/:certificateId/download", certificateController.downloadCertificate);
-router.post("/certificates/upload", upload.single("certificateFile"), certificateController.uploadCertificate);
+
+router.get(
+  "/certificates/:certificateId/download",
+  certificateController.downloadCertificate
+);
+
+router.post(
+  "/certificates/upload",
+  upload.single("certificateFile"),
+  certificateController.uploadCertificate
+);
+
+router.delete(
+  "/certificates/:certificateId",
+  certificateController.deleteCertificate
+);
 
 // =========================
 // PROJECT ROUTES
 // =========================
 
-router.post("/projects/assign", validationMiddleware(assignProjectValidation), assignToProject);
-router.post("/projects/unassign", validationMiddleware(assignProjectValidation), unassignFromProject);
+router.post(
+  "/projects/assign",
+  validationMiddleware(assignProjectValidation),
+  assignToProject
+);
 
-router.post("/projects", validationMiddleware(createProjectValidation), createProject);
+router.post(
+  "/projects/unassign",
+  validationMiddleware(assignProjectValidation),
+  unassignFromProject
+);
+
+router.post(
+  "/projects",
+  validationMiddleware(createProjectValidation),
+  createProject
+);
+
 router.get("/projects", getAllProjects);
 router.get("/projects/:id", getProjectById);
-router.put("/projects/:id", validationMiddleware(updateProjectValidation), updateProject);
+router.put(
+  "/projects/:id",
+  validationMiddleware(updateProjectValidation),
+  updateProject
+);
 router.delete("/projects/:id", deleteProject);
 
 router.get("/documents/stats", documentController.getDocumentStats);
 router.get("/documents", documentController.getDocuments);
+
 router.patch(
   "/documents/:id/review",
   documentController.reviewStudentDocument

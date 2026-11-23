@@ -1,10 +1,13 @@
+
 import {
   createMentor as createMentorService,
   getAllMentors as getAllMentorsService,
   getMentorById as getMentorByIdService,
   updateMentor as updateMentorService,
   assignStudentToMentor as assignStudentToMentorService,
+  deleteMentor as deleteMentorService,
 } from "../../services/hr/mentor.service.js";
+
 export const createMentor = async (req, res) => {
   try {
     const mentor = await createMentorService(req.body);
@@ -54,6 +57,7 @@ export const getMentorById = async (req, res) => {
     });
   }
 };
+
 export const updateMentor = async (req, res) => {
   try {
     const mentor = await updateMentorService(req.params.id, req.body);
@@ -87,6 +91,24 @@ export const assignStudentToMentor = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Student assigned to mentor successfully",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Permanently delete mentor
+export const deleteMentor = async (req, res) => {
+  try {
+    const result = await deleteMentorService(req.params.id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Mentor permanently deleted successfully",
       data: result,
     });
   } catch (error) {

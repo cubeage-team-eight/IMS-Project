@@ -13,7 +13,7 @@ const downloadCertificate = async (req, res) => {
   }
 };
 
-// Get all certificates (HR view)
+// Get all certificates
 const getAllCertificates = async (req, res) => {
   try {
     const certificates = await certificateService.getAllCertificates();
@@ -31,7 +31,7 @@ const getAllCertificates = async (req, res) => {
   }
 };
 
-// Upload a certificate manually
+// Upload certificate
 const uploadCertificate = async (req, res) => {
   try {
     const { studentId, type } = req.body;
@@ -42,7 +42,11 @@ const uploadCertificate = async (req, res) => {
 
     const fileUrl = `/uploads/certificates/${req.file.filename}`;
 
-    const certificate = await certificateService.uploadCertificate(studentId, fileUrl, type);
+    const certificate = await certificateService.uploadCertificate(
+      studentId,
+      fileUrl,
+      type
+    );
 
     return res.status(201).json({
       success: true,
@@ -57,8 +61,29 @@ const uploadCertificate = async (req, res) => {
   }
 };
 
+// Permanently delete certificate
+const deleteCertificate = async (req, res) => {
+  try {
+    const { certificateId } = req.params;
+
+    const result = await certificateService.deleteCertificate(certificateId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Certificate permanently deleted successfully",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export default {
   downloadCertificate,
   getAllCertificates,
   uploadCertificate,
+  deleteCertificate,
 };

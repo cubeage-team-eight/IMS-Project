@@ -217,7 +217,6 @@ Student.hasMany(Attendance, {
   as: "attendanceRecords",
 });
 
-
 export {
   User,
   Role,
