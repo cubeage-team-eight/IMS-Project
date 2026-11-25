@@ -192,6 +192,8 @@ if (batch.status === "COMPLETED") {
     encryptedToken: encryptToken(rawToken),
     mentorId: mentor.id,
     batchId: batch.id,
+    batchName: batch.name,
+    originalBatchId: batch.id,
     subject: cleanSubject,
     expiresAt,
   });

@@ -47,8 +47,9 @@ const getSheetsClient = () => {
 };
 
 const getBatchSheetTitle = (batch) => {
-  const batchIdSuffix = String(batch.id).replace(/-/g, "").slice(-8);
-  const safeName = String(batch.name || "Batch")
+  const batchId = batch.id || batch.originalBatchId;
+  const batchIdSuffix = String(batchId).replace(/-/g, "").slice(-8);
+  const safeName = String(batch.name || batch.batchName || "Batch")
     .replace(/[\[\]:*?/\\]/g, "-")
     .replace(/^'+|'+$/g, "")
     .trim()
@@ -130,7 +131,10 @@ const makePhotoCell = (photoUrl) => {
 const buildAttendanceRow = (attendance) => {
   const student = attendance.student;
   const session = attendance.qrSession;
-  const batch = session?.batch;
+  const batch = session?.batch || {
+    id: session?.originalBatchId,
+    name: session?.batchName,
+  };
 
   return [
     attendance.id,
@@ -203,11 +207,12 @@ const syncOneOutboxRecord = async (sheets, outbox) => {
     return;
   }
 
-  const batch = attendance.qrSession?.batch;
+  const session = attendance.qrSession;
 
-  if (!batch) {
-    throw new Error("Batch information not found for QR attendance.");
-  }
+  const batch = session?.batch || {
+    id: session?.originalBatchId,
+    name: session?.batchName,
+  };
 
   const title = await ensureBatchTab(sheets, batch);
 

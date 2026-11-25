@@ -207,7 +207,7 @@ function MentorCards({
       <div className="flex flex-col items-end gap-3 flex-shrink-0">
         <div className="text-right">
           <div className="text-blue-600 font-bold text-2xl leading-none">
-            —
+            {mentor.internCount ?? mentor.students?.length ?? 0}
           </div>
           <div className="text-slate-400 text-xs mt-1">Interns</div>
         </div>
