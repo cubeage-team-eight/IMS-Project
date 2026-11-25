@@ -69,6 +69,7 @@ const batchService = {
     return batch;
   },
 
+  
   // Delete batch
   async deleteBatch(id) {
     const batch = await Batch.findByPk(id);
@@ -77,9 +78,17 @@ const batchService = {
       throw new Error("Batch not found");
     }
 
+    // Remove only student-batch assignment records
+    await BatchStudent.destroy({
+      where: { batchId: id },
+    });
+
+    // Delete only the batch
     await batch.destroy();
+
     return true;
   },
+
 
   // Assign student to batch
   async assignStudent(batchId, studentId) {

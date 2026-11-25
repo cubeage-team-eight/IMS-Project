@@ -1,3 +1,4 @@
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
@@ -17,21 +18,33 @@ const QRSession = sequelize.define(
       unique: true,
     },
 
-    // AES-256-GCM encrypted token for authorized student access.
-    // Nullable to support existing QR sessions.
+    // AES-256-GCM encrypted token.
     encryptedToken: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
 
+    // Nullable after mentor deletion.
     mentorId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
     },
 
+    // Nullable after batch deletion.
     batchId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
+    },
+
+    // Historical batch name retained after batch deletion.
+    batchName: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+
+    originalBatchId: {
+      type: DataTypes.UUID,
+      allowNull: true,
     },
 
     subject: {

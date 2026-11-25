@@ -6,6 +6,7 @@ import {
   Role,
   Batch,
   Mentor,
+  Student,
   MentorStudent,
   ProjectMentor,
 } from "../../models/index.js";
@@ -73,11 +74,32 @@ export const createMentor = async (data) => {
   };
 };
 
+
 export const getAllMentors = async () => {
-  return await Mentor.findAll({
+  const mentors = await Mentor.findAll({
+    include: [
+      {
+        model: Student,
+        as: "students",
+        attributes: ["id"],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
     order: [["createdAt", "DESC"]],
   });
+
+  return mentors.map((mentor) => {
+    const mentorData = mentor.toJSON();
+
+    return {
+      ...mentorData,
+      internCount: mentorData.students?.length || 0,
+    };
+  });
 };
+
 
 export const getMentorById = async (id) => {
   const mentor = await Mentor.findByPk(id);
